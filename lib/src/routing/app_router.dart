@@ -8,7 +8,6 @@ import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/pr
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_detail/block_detail_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_blocks_list_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
-
 import 'package:go_router/go_router.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
