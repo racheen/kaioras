@@ -2,6 +2,8 @@ import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/do
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/booking.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/membership.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart'
+    hide Block, Host;
 
 enum MembershipStatus { active, expired, cancelled }
 
@@ -117,7 +119,11 @@ final mockAppUser = AppUser(
       status: BookingStatus.booked.name,
       block: Block(
         blockId: '1',
-        businessId: '1',
+        businessDetails: BusinessDetails(
+          businessId: 'business001',
+          name: 'Pilates Studio',
+          picture: 'https://example.com/logos/pilates.png',
+        ),
         title: 'Pilates Class',
         type: '',
         startTime: 'Jul 26, 2025 3:00 PM * 55 mins',
@@ -142,7 +148,11 @@ final mockAppUser = AppUser(
       status: BookingStatus.attended.name,
       block: Block(
         blockId: '2',
-        businessId: '1',
+        businessDetails: BusinessDetails(
+          businessId: 'business001',
+          name: 'Pilates Studio',
+          picture: 'https://example.com/logos/pilates.png',
+        ),
         title: 'Dance Class',
         type: 'Class',
         startTime: 'Jul 26, 2025 3:00 PM * 55 mins',
@@ -167,7 +177,11 @@ final mockAppUser = AppUser(
       status: BookingStatus.attended.name,
       block: Block(
         blockId: '3',
-        businessId: '1',
+        businessDetails: BusinessDetails(
+          businessId: 'business001',
+          name: 'Pilates Studio',
+          picture: 'https://example.com/logos/pilates.png',
+        ),
         title: 'Studio A - Core',
         type: 'Class',
         startTime: 'Jul 26, 2025 3:00 PM * 55 mins',
@@ -190,7 +204,11 @@ final mockAppUser = AppUser(
 final mockBlocks = [
   Block(
     blockId: '1',
-    businessId: '1',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
     tenant: 'Yoga Center',
     title: 'Pilates Class',
     type: '',
@@ -209,7 +227,11 @@ final mockBlocks = [
   ),
   Block(
     blockId: '2',
-    businessId: '1',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
     tenant: 'Yoga Center',
     title: 'Dance Class',
     type: 'Class',
@@ -233,7 +255,11 @@ final mockBlocks = [
   ),
   Block(
     blockId: '3',
-    businessId: '1',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
     tenant: 'Yoga Center',
     title: 'Studio A - Core',
     type: 'Class',
@@ -257,7 +283,11 @@ final mockBlocks = [
   ),
   Block(
     blockId: '4',
-    businessId: '2',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
     tenant: 'Pilates Studio',
     title: 'Studio A - Core',
     type: 'Class',
@@ -281,7 +311,11 @@ final mockBlocks = [
   ),
   Block(
     blockId: '5',
-    businessId: '3',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
     tenant: 'Dance Academy',
     title: 'Studio A - Core',
     type: 'Class',
