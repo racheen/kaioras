@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/schedule_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/firebase_blocks_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/availability.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/schedule.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/presentation/custom_date_time_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
@@ -32,9 +32,14 @@ class ScheduleForm extends ConsumerWidget {
       final formData = _createClassKey.currentState!.value;
       final startTime = formData['startTime'] as DateTime;
 
-      final BlockModel newEvent = BlockModel(
-        id: '', // This will be set by Firestore when the document is created
-        businessId: 'stretch-n-flow',
+      final Block newEvent = Block(
+        blockId:
+            '', // This will be set by Firestore when the document is created
+        businessDetails: BusinessDetails(
+          businessId: 'business001',
+          name: 'Pialtes Studio',
+          picture: 'https://example.com/logo.png',
+        ),
         title: formData['title'],
         type: formData['type'],
         startTime: startTime,
@@ -52,15 +57,17 @@ class ScheduleForm extends ConsumerWidget {
             [],
         description: formData['description'] ?? '',
         attendees: {},
-        provider: Provider(
-          uid: 'user005',
-          name: "Pialtes Instructor 1",
-          details: 'Certfied Instructor',
+        host: Host(
+          uid: 'user001',
+          name: 'Jane Doe',
+          details:
+              'Experienced instructor specializing in beginner and intermediate Pilates',
         ),
       );
 
       try {
         await ref.read(eventServiceProvider).create(newEvent);
+        debugPrint('New Blocks: $newEvent');
         debugPrint('✅ Event created!');
 
         ScaffoldMessenger.of(context).showSnackBar(

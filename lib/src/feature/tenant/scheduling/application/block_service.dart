@@ -1,16 +1,16 @@
-import '../data/schedule_repository.dart';
-import '../domain/schedule.dart';
+import '../data/blocks_repository_base.dart';
+import '../domain/block.dart';
 
 class EventService {
-  final EventFirebaseRepository _repository;
+  final BlocksRepositoryBase _repository;
 
   EventService(this._repository);
 
-  Future<void> create(BlockModel event) {
+  Future<void> create(Block event) {
     return _repository.createEvent(event);
   }
 
-  Future<List<BlockModel>> getInstructorEvents(String instructorId) {
+  Future<List<Block>> getInstructorEvents(String instructorId) {
     return _repository.getInstructorEvents(instructorId);
   }
 

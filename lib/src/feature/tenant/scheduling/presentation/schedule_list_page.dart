@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/expandable_section_widget.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/schedule_repository.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/schedule.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/fake_blocks_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/presentation/schedule_form_page.dart';
-import 'package:flutter_riverpod_boilerplate/src/common/schedule_list_widget.dart';
 
 class ScheduleListPage extends ConsumerWidget {
   const ScheduleListPage({super.key});
@@ -12,7 +10,7 @@ class ScheduleListPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final instructorEventsAsync = ref.watch(
-      instructorEventsProvider('user005'),
+      instructorEventsProvider('user001'),
     );
 
     return Scaffold(

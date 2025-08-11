@@ -1,9 +1,9 @@
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class BlockModel {
-  final String id;
-  final String businessId;
+class Block {
+  final String blockId;
+  final BusinessDetails businessDetails;
   final String title;
   final String type;
   final DateTime startTime;
@@ -16,11 +16,11 @@ class BlockModel {
   final List<String> tags;
   final String description;
   final Map<String, Attendee> attendees;
-  final Provider provider;
+  final Host host;
 
-  BlockModel({
-    required this.id,
-    required this.businessId,
+  Block({
+    required this.blockId,
+    required this.businessDetails,
     required this.title,
     required this.type,
     required this.startTime,
@@ -33,13 +33,13 @@ class BlockModel {
     required this.tags,
     required this.description,
     required this.attendees,
-    required this.provider,
+    required this.host,
   });
 
-  factory BlockModel.fromJson(Map<String, dynamic> json) {
-    return BlockModel(
-      id: json['id'],
-      businessId: json['businessId'],
+  factory Block.fromJson(Map<String, dynamic> json) {
+    return Block(
+      blockId: json['id'],
+      businessDetails: json['businessDetails'],
       title: json['title'],
       type: json['type'],
       startTime: (json['startTime'] as Timestamp).toDate(),
@@ -56,13 +56,13 @@ class BlockModel {
             (key, value) => MapEntry(key, Attendee.fromJson(value)),
           ) ??
           {},
-      provider: Provider.fromJson(json['provider']),
+      host: Host.fromJson(json['provider']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'businessId': businessId,
+      'businessDetails': businessDetails.toJson(),
       'title': title,
       'type': type,
       'startTime': Timestamp.fromDate(startTime),
@@ -75,7 +75,7 @@ class BlockModel {
       'tags': tags,
       'description': description,
       'attendees': attendees.map((key, value) => MapEntry(key, value.toJson())),
-      'provider': provider.toJson(),
+      'provider': host.toJson(),
     };
   }
 }
@@ -116,22 +116,40 @@ class Attendee {
   }
 }
 
-class Provider {
+class Host {
   final String uid;
   final String name;
   final String details;
 
-  Provider({required this.uid, required this.name, required this.details});
+  Host({required this.uid, required this.name, required this.details});
 
-  factory Provider.fromJson(Map<String, dynamic> json) {
-    return Provider(
-      uid: json['uid'],
-      name: json['name'],
-      details: json['details'],
-    );
+  factory Host.fromJson(Map<String, dynamic> json) {
+    return Host(uid: json['uid'], name: json['name'], details: json['details']);
   }
 
   Map<String, dynamic> toJson() {
     return {'uid': uid, 'name': name, 'details': details};
+  }
+}
+
+class BusinessDetails {
+  final String businessId;
+  final String name;
+  final String picture;
+
+  BusinessDetails({
+    required this.businessId,
+    required this.name,
+    required this.picture,
+  });
+  factory BusinessDetails.fromMap(Map<String, dynamic> map) {
+    return BusinessDetails(
+      businessId: map['businessId'],
+      name: map['name'],
+      picture: map['picture'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {'businessId': businessId, 'name': name, 'picture': picture};
   }
 }

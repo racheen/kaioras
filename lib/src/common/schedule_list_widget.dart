@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/schedule.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/utils/date_time_utils.dart';
 
 class ScheduleList extends StatelessWidget {
@@ -11,7 +11,7 @@ class ScheduleList extends StatelessWidget {
   });
 
   final bool? isUpcomingSchedule;
-  final List<BlockModel> schedules;
+  final List<Block> schedules;
 
   final double _minHeight = 360;
 
@@ -71,10 +71,8 @@ class ScheduleList extends StatelessWidget {
     );
   }
 
-  Map<DateTime, List<BlockModel>> groupSchedulesByDate(
-    List<BlockModel> schedules,
-  ) {
-    final groupedSchedules = <DateTime, List<BlockModel>>{};
+  Map<DateTime, List<Block>> groupSchedulesByDate(List<Block> schedules) {
+    final groupedSchedules = <DateTime, List<Block>>{};
     for (final schedule in schedules) {
       final date = DateTime(
         schedule.startTime.year,
@@ -92,10 +90,8 @@ class ScheduleList extends StatelessWidget {
   }
 }
 
-Map<DateTime, List<BlockModel>> groupSchedulesByDate(
-  List<BlockModel> schedules,
-) {
-  final groupedSchedules = <DateTime, List<BlockModel>>{};
+Map<DateTime, List<Block>> groupSchedulesByDate(List<Block> schedules) {
+  final groupedSchedules = <DateTime, List<Block>>{};
   for (final schedule in schedules) {
     final date = DateTime(
       schedule.startTime.year,
@@ -112,7 +108,7 @@ Map<DateTime, List<BlockModel>> groupSchedulesByDate(
 
 class ScheduleItem extends StatelessWidget {
   final EventColor color;
-  final BlockModel data;
+  final Block data;
 
   const ScheduleItem({super.key, required this.color, required this.data});
 

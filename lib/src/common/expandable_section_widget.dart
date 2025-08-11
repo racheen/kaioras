@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/schedule.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/schedule_list_widget.dart';
 
 class ExpandableSection extends StatelessWidget {
   final String title;
-  final List<BlockModel> schedules;
+  final List<Block> schedules;
   final bool isUpcoming;
 
   const ExpandableSection({
