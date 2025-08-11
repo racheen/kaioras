@@ -4,7 +4,7 @@ import 'package:flutter_riverpod_boilerplate/src/common/schedule_list_widget.dar
 
 class ExpandableSection extends StatelessWidget {
   final String title;
-  final List<EventModel> schedules;
+  final List<BlockModel> schedules;
   final bool isUpcoming;
 
   const ExpandableSection({

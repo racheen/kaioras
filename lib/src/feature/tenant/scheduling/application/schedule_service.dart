@@ -6,11 +6,11 @@ class EventService {
 
   EventService(this._repository);
 
-  Future<void> create(EventModel event) {
+  Future<void> create(BlockModel event) {
     return _repository.createEvent(event);
   }
 
-  Stream<List<EventModel>> getInstructorEvents(String instructorId) {
+  Future<List<BlockModel>> getInstructorEvents(String instructorId) {
     return _repository.getInstructorEvents(instructorId);
   }
 

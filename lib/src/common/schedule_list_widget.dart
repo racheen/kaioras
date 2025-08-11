@@ -11,7 +11,7 @@ class ScheduleList extends StatelessWidget {
   });
 
   final bool? isUpcomingSchedule;
-  final List<EventModel> schedules;
+  final List<BlockModel> schedules;
 
   final double _minHeight = 360;
 
@@ -71,15 +71,15 @@ class ScheduleList extends StatelessWidget {
     );
   }
 
-  Map<DateTime, List<EventModel>> groupSchedulesByDate(
-    List<EventModel> schedules,
+  Map<DateTime, List<BlockModel>> groupSchedulesByDate(
+    List<BlockModel> schedules,
   ) {
-    final groupedSchedules = <DateTime, List<EventModel>>{};
+    final groupedSchedules = <DateTime, List<BlockModel>>{};
     for (final schedule in schedules) {
       final date = DateTime(
-        schedule.startTime.toDate().year,
-        schedule.startTime.toDate().month,
-        schedule.startTime.toDate().day,
+        schedule.startTime.year,
+        schedule.startTime.month,
+        schedule.startTime.day,
       );
       if (!groupedSchedules.containsKey(date)) {
         groupedSchedules[date] = [];
@@ -92,15 +92,15 @@ class ScheduleList extends StatelessWidget {
   }
 }
 
-Map<DateTime, List<EventModel>> groupSchedulesByDate(
-  List<EventModel> schedules,
+Map<DateTime, List<BlockModel>> groupSchedulesByDate(
+  List<BlockModel> schedules,
 ) {
-  final groupedSchedules = <DateTime, List<EventModel>>{};
+  final groupedSchedules = <DateTime, List<BlockModel>>{};
   for (final schedule in schedules) {
     final date = DateTime(
-      schedule.startTime.toDate().year,
-      schedule.startTime.toDate().month,
-      schedule.startTime.toDate().day,
+      schedule.startTime.year,
+      schedule.startTime.month,
+      schedule.startTime.day,
     );
     if (!groupedSchedules.containsKey(date)) {
       groupedSchedules[date] = [];
@@ -112,7 +112,7 @@ Map<DateTime, List<EventModel>> groupSchedulesByDate(
 
 class ScheduleItem extends StatelessWidget {
   final EventColor color;
-  final EventModel data;
+  final BlockModel data;
 
   const ScheduleItem({super.key, required this.color, required this.data});
 
@@ -125,7 +125,7 @@ class ScheduleItem extends StatelessWidget {
     final backgroundColor = color.backgroundColor;
 
     final title = "${data.title} • ${data.location}";
-    final startTime = data.startTime.toDate();
+    final startTime = data.startTime;
     final endTime = startTime.add(Duration(minutes: data.duration));
     final subtitle = formatTimeRange(startTime, endTime);
     final label = formatTime(startTime);

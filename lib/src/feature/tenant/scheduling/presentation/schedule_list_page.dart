@@ -36,10 +36,10 @@ class ScheduleListPage extends ConsumerWidget {
         child: instructorEventsAsync.when(
           data: (schedules) {
             final upcomingSchedules = schedules
-                .where((s) => s.startTime.toDate().isAfter(DateTime.now()))
+                .where((s) => s.startTime.isAfter(DateTime.now()))
                 .toList();
             final pastSchedules = schedules
-                .where((s) => s.startTime.toDate().isBefore(DateTime.now()))
+                .where((s) => s.startTime.isBefore(DateTime.now()))
                 .toList();
 
             return Column(
