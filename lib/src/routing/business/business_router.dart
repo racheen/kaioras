@@ -5,7 +5,7 @@ import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/auth_gate.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/data_table.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/grid.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/scheduling/presentation/schedule_list_page.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/presentation/schedule_list_page.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/home.dart';
 import 'package:go_router/go_router.dart';
