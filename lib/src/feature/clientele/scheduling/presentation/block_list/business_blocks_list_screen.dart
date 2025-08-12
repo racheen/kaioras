@@ -44,101 +44,133 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
         children: [
           AsyncValueWidget(
             value: blocksAsyncValue,
-            data: (blocks) => Container(
-              margin: const EdgeInsets.all(50.0),
-              width: 1080,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage(
-                        'assets/avatar_placeholder2.jpg',
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    title: Text(blocks[0]!.tenant.toString()),
-                  ),
-                  Column(
+            data: (blocks) {
+              if (blocks.isEmpty) {
+                return Container(
+                  margin: const EdgeInsets.all(50.0),
+                  width: 1080,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      EasyDateTimeLinePicker(
-                        firstDate: _currentWeekTimeline,
-                        lastDate: _currentWeekTimeline.add(Duration(days: 6)),
-                        headerOptions: HeaderOptions(
-                          headerType: HeaderType.viewOnly,
+                      Text(
+                        'Unable to find the business',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        focusedDate: _selectedDate,
-                        timelineOptions: TimelineOptions(
-                          padding: EdgeInsets.all(10),
-                        ),
-                        selectionMode: SelectionMode.autoCenter(),
-                        itemExtent: 50,
-                        onDateChange: (date) {
-                          setState(() {
-                            _selectedDate = date;
-                          });
-                        },
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentWeekTimeline = _currentWeekTimeline
-                                    .subtract(Duration(days: 7));
-                              });
-                            },
-                            icon: Icon(Icons.arrow_circle_left_rounded),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentWeekTimeline = _currentWeekTimeline.add(
-                                  Duration(days: 7),
-                                );
-                              });
-                            },
-                            icon: Icon(Icons.arrow_circle_right_rounded),
-                          ),
-                        ],
+                      TextButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        child: Text('Go back'),
                       ),
                     ],
                   ),
-                  Column(
-                    children: blocks
-                        .map(
-                          (block) => GestureDetector(
-                            child: BookingCardWidget(
-                              title: block!.title.toString(),
-                              host: block.host!.name.toString(),
-                              startTime: block.startTime.toString(),
-                              duration: block.duration.toString(),
-                              location: block.location.toString(),
-                              status: block.status.toString(),
-                              description: block.description.toString(),
-                              tags: block.tags!,
-                              price: '60',
+                );
+              } else {
+                return Container(
+                  margin: const EdgeInsets.all(50.0),
+                  width: 1080,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: AssetImage(
+                            'assets/avatar_placeholder2.jpg',
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        title: Text(blocks[0]!.businessDetails.name.toString()),
+                      ),
+                      Column(
+                        children: [
+                          EasyDateTimeLinePicker(
+                            firstDate: _currentWeekTimeline,
+                            lastDate: _currentWeekTimeline.add(
+                              Duration(days: 6),
                             ),
-                            onTap: () {
-                              if (isMobileView) {
-                                context.goNamed(
-                                  ClienteleRoute.block.name,
-                                  pathParameters: {
-                                    'businessId': block.businessId.toString(),
-                                    'blockId': block.blockId.toString(),
-                                  },
-                                );
-                              }
+                            headerOptions: HeaderOptions(
+                              headerType: HeaderType.viewOnly,
+                            ),
+                            focusedDate: _selectedDate,
+                            timelineOptions: TimelineOptions(
+                              padding: EdgeInsets.all(10),
+                            ),
+                            selectionMode: SelectionMode.autoCenter(),
+                            itemExtent: 50,
+                            onDateChange: (date) {
+                              setState(() {
+                                _selectedDate = date;
+                              });
                             },
                           ),
-                        )
-                        .toList(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _currentWeekTimeline = _currentWeekTimeline
+                                        .subtract(Duration(days: 7));
+                                  });
+                                },
+                                icon: Icon(Icons.arrow_circle_left_rounded),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _currentWeekTimeline = _currentWeekTimeline
+                                        .add(Duration(days: 7));
+                                  });
+                                },
+                                icon: Icon(Icons.arrow_circle_right_rounded),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: blocks
+                            .map(
+                              (block) => GestureDetector(
+                                child: BookingCardWidget(
+                                  title: block!.title.toString(),
+                                  host: block.host!.name.toString(),
+                                  startTime: block.startTime.toString(),
+                                  duration: block.duration.toString(),
+                                  location: block.location.toString(),
+                                  status: block.status.toString(),
+                                  description: block.description.toString(),
+                                  tags: block.tags!,
+                                  price: '60',
+                                ),
+                                onTap: () {
+                                  if (isMobileView) {
+                                    context.goNamed(
+                                      ClienteleRoute.block.name,
+                                      pathParameters: {
+                                        'businessId': block
+                                            .businessDetails
+                                            .businessId
+                                            .toString(),
+                                        'blockId': block.blockId.toString(),
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                );
+              }
+            },
           ),
         ],
       ),

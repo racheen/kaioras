@@ -31,7 +31,7 @@ final mockAppUser = AppUser(
   memberships: [
     Membership(
       membershipId: '1',
-      businessId: '1',
+      businessId: 'business001',
       offerId: '1',
       name: 'Yoga Center',
       credits: 1000,
@@ -61,7 +61,7 @@ final mockAppUser = AppUser(
     ),
     Membership(
       membershipId: '2',
-      businessId: '2',
+      businessId: 'business002',
       offerId: '1',
       name: 'Pilates Studio',
       credits: 1000,
@@ -86,7 +86,7 @@ final mockAppUser = AppUser(
     ),
     Membership(
       membershipId: '3',
-      businessId: '3',
+      businessId: 'business003',
       offerId: '1',
       name: 'Dance Acedemy',
       credits: 1000,
@@ -149,7 +149,7 @@ final mockAppUser = AppUser(
       block: Block(
         blockId: '2',
         businessDetails: BusinessDetails(
-          businessId: 'business001',
+          businessId: 'business002',
           name: 'Pilates Studio',
           picture: 'https://example.com/logos/pilates.png',
         ),
@@ -178,7 +178,7 @@ final mockAppUser = AppUser(
       block: Block(
         blockId: '3',
         businessDetails: BusinessDetails(
-          businessId: 'business001',
+          businessId: 'business002',
           name: 'Pilates Studio',
           picture: 'https://example.com/logos/pilates.png',
         ),
@@ -205,7 +205,7 @@ final mockBlocks = [
   Block(
     blockId: '1',
     businessDetails: BusinessDetails(
-      businessId: 'business001',
+      businessId: 'business002',
       name: 'Pilates Studio',
       picture: 'https://example.com/logos/pilates.png',
     ),
@@ -229,7 +229,7 @@ final mockBlocks = [
     blockId: '2',
     businessDetails: BusinessDetails(
       businessId: 'business001',
-      name: 'Pilates Studio',
+      name: 'Yoga Center',
       picture: 'https://example.com/logos/pilates.png',
     ),
     tenant: 'Yoga Center',
@@ -256,7 +256,7 @@ final mockBlocks = [
   Block(
     blockId: '3',
     businessDetails: BusinessDetails(
-      businessId: 'business001',
+      businessId: 'business002',
       name: 'Pilates Studio',
       picture: 'https://example.com/logos/pilates.png',
     ),
@@ -284,7 +284,7 @@ final mockBlocks = [
   Block(
     blockId: '4',
     businessDetails: BusinessDetails(
-      businessId: 'business001',
+      businessId: 'business002',
       name: 'Pilates Studio',
       picture: 'https://example.com/logos/pilates.png',
     ),
@@ -312,8 +312,8 @@ final mockBlocks = [
   Block(
     blockId: '5',
     businessDetails: BusinessDetails(
-      businessId: 'business001',
-      name: 'Pilates Studio',
+      businessId: 'business003',
+      name: 'Dance Academy',
       picture: 'https://example.com/logos/pilates.png',
     ),
     tenant: 'Dance Academy',

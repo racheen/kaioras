@@ -17,6 +17,7 @@ class Block {
   List<Attendee>? attendees;
   Host? host;
   String? tenant;
+  BusinessDetails businessDetails;
 
   Block({
     this.blockId,
@@ -35,7 +36,7 @@ class Block {
     this.attendees,
     this.host,
     this.tenant,
-    required BusinessDetails businessDetails,
+    required this.businessDetails,
   });
 
   // Block copyWith({

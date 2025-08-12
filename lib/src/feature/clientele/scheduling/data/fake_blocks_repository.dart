@@ -30,7 +30,7 @@ class FakeBlocksRepository {
 
   Future<List<Block>> fetchBlockByBusinessId(String businessId) {
     final blocks = _blocks.value
-        .where((block) => block.businessId == businessId)
+        .where((block) => block.businessDetails.businessId == businessId)
         .toList();
     return Future.value(blocks);
   }
