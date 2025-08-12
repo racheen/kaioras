@@ -1,10 +1,9 @@
-import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/async_value_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/booking_card_widget.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/clientele/helper.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/blocks_list_controller.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/inline_calendar/inline_calendar.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,9 +17,6 @@ class BusinessBlocksList extends ConsumerStatefulWidget {
 }
 
 class _BlocksListState extends ConsumerState<BusinessBlocksList> {
-  DateTime _selectedDate = DateTime.now();
-  DateTime _currentWeekTimeline = getMondayOfCurrentWeek();
-
   @override
   void initState() {
     super.initState();
@@ -71,7 +67,7 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                 );
               } else {
                 return Container(
-                  margin: const EdgeInsets.all(50.0),
+                  margin: EdgeInsets.all(isMobileView ? 16.0 : 50.0),
                   width: 1080,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,53 +82,7 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                         ),
                         title: Text(blocks[0]!.businessDetails.name.toString()),
                       ),
-                      Column(
-                        children: [
-                          EasyDateTimeLinePicker(
-                            firstDate: _currentWeekTimeline,
-                            lastDate: _currentWeekTimeline.add(
-                              Duration(days: 6),
-                            ),
-                            headerOptions: HeaderOptions(
-                              headerType: HeaderType.viewOnly,
-                            ),
-                            focusedDate: _selectedDate,
-                            timelineOptions: TimelineOptions(
-                              padding: EdgeInsets.all(10),
-                            ),
-                            selectionMode: SelectionMode.autoCenter(),
-                            itemExtent: 50,
-                            onDateChange: (date) {
-                              setState(() {
-                                _selectedDate = date;
-                              });
-                            },
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _currentWeekTimeline = _currentWeekTimeline
-                                        .subtract(Duration(days: 7));
-                                  });
-                                },
-                                icon: Icon(Icons.arrow_circle_left_rounded),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _currentWeekTimeline = _currentWeekTimeline
-                                        .add(Duration(days: 7));
-                                  });
-                                },
-                                icon: Icon(Icons.arrow_circle_right_rounded),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      InlineCalendar(),
                       Column(
                         children: blocks
                             .map(
