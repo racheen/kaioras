@@ -150,7 +150,7 @@ class _BlockDetailState extends ConsumerState<BlockDetail> {
                                               ),
                                             ),
                                             const SizedBox(height: 16),
-                                            Text(block?.host?.details ?? ''),
+                                            Text(block?.host?.title ?? ''),
                                           ],
                                         ),
                                       ],

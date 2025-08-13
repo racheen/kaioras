@@ -2,7 +2,6 @@ import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domai
 
 class Block {
   String? blockId;
-  String? businessId;
   String? title;
   String? type;
   String? startTime;
@@ -14,14 +13,15 @@ class Block {
   String? createdAt;
   List<String>? tags;
   String? description;
-  List<Attendee>? attendees;
   Host? host;
   String? tenant;
-  BusinessDetails businessDetails;
+  Origin origin;
+  List<Block>? booked;
+  List<Block>? waitlisted;
+  List<Block>? cancelled;
 
   Block({
     this.blockId,
-    this.businessId,
     this.title,
     this.type,
     this.startTime,
@@ -33,10 +33,12 @@ class Block {
     this.createdAt,
     this.tags,
     this.description,
-    this.attendees,
     this.host,
     this.tenant,
-    required this.businessDetails,
+    required this.origin,
+    this.booked,
+    this.waitlisted,
+    this.cancelled,
   });
 
   // Block copyWith({
@@ -109,13 +111,41 @@ class Attendee {
 class Host {
   String? uid;
   String? name;
-  String? details;
+  String? title;
+  String? about;
+  String? image;
 
-  Host({this.uid, this.name, this.details});
+  Host({this.uid, this.name, this.title, this.about, this.image});
 
-  Host copyWith({String? uid, String? name, String? details}) => Host(
+  Host copyWith({
+    String? uid,
+    String? name,
+    String? title,
+    String? about,
+    String? image,
+  }) => Host(
     uid: uid ?? this.uid,
     name: name ?? this.name,
-    details: details ?? this.details,
+    title: title ?? title,
+    about: about ?? about,
+    image: image ?? image,
   );
+}
+
+class Origin {
+  final String businessId;
+  final String name;
+  final String image;
+
+  Origin({required this.businessId, required this.name, required this.image});
+  factory Origin.fromMap(Map<String, dynamic> map) {
+    return Origin(
+      businessId: map['businessId'],
+      name: map['name'],
+      image: map['image'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {'businessId': businessId, 'name': name, 'image': image};
+  }
 }

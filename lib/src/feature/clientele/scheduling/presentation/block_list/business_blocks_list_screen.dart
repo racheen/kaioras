@@ -80,7 +80,7 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                           ),
                           backgroundColor: Colors.transparent,
                         ),
-                        title: Text(blocks[0]!.businessDetails.name.toString()),
+                        title: Text(blocks[0]!.origin.name.toString()),
                       ),
                       InlineCalendar(),
                       Column(
@@ -103,9 +103,7 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                                     context.goNamed(
                                       ClienteleRoute.block.name,
                                       pathParameters: {
-                                        'businessId': block
-                                            .businessDetails
-                                            .businessId
+                                        'businessId': block.origin.businessId
                                             .toString(),
                                         'blockId': block.blockId.toString(),
                                       },
