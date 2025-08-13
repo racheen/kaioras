@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/shared_preferences_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/data/shared_preferences_repository.dart';
 
 class PrivilegeController extends AutoDisposeNotifier<bool> {
   @override
