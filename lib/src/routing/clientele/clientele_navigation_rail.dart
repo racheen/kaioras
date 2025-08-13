@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/privilege_controller.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/privilege_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
 
 class ClienteleNavigationRail extends ConsumerStatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/privilege_controller.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/privilege_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_router.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
 

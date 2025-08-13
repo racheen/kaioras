@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/fake_user_role.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/auth_gate.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/auth_gate.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/data_table.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/grid.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/business_profile/presentation/business_profile_page.dart';
