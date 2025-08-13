@@ -4,22 +4,28 @@ import 'package:flutter_riverpod_boilerplate/src/common/inline_calendar/monthy_s
 import 'package:flutter_riverpod_boilerplate/src/common/inline_calendar/weekly_selector.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/inline_calendar/calendar_helper.dart';
 
+final now = DateTime.now();
+final dateToday = DateTime(now.year, now.month, now.day);
+
 class InlineCalendar extends StatefulWidget {
-  const InlineCalendar({super.key});
+  final Function selectDate;
+
+  const InlineCalendar({super.key, required this.selectDate});
 
   @override
   State<InlineCalendar> createState() => _InlineCalendarState();
 }
 
 class _InlineCalendarState extends State<InlineCalendar> {
-  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedDate = dateToday;
   DateTime _currentWeekTimeline = getMondayOfCurrentWeek();
-  DateTime _currentMonth = DateTime.now();
+  DateTime _currentMonth = dateToday;
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobileView = screenWidth < 900;
+    final isMediumScreen = screenWidth < 900;
+    final isMobileView = screenWidth < 600;
 
     void getPreviousWeek() {
       setState(() {
@@ -42,9 +48,12 @@ class _InlineCalendarState extends State<InlineCalendar> {
     }
 
     void getToday() {
+      if (_selectedDate != dateToday) {
+        widget.selectDate(dateToday);
+      }
       setState(() {
         final timelineMonth = _currentWeekTimeline.month;
-        _selectedDate = DateTime.now();
+        _selectedDate = dateToday;
         _currentWeekTimeline = getMondayOfCurrentWeek();
         if (_currentWeekTimeline.month != timelineMonth) {
           _currentMonth = _currentWeekTimeline;
@@ -81,35 +90,34 @@ class _InlineCalendarState extends State<InlineCalendar> {
               focusedDate: _selectedDate,
               timelineOptions: TimelineOptions(padding: EdgeInsets.all(10)),
               selectionMode: SelectionMode.autoCenter(),
-              itemExtent: 50,
+              itemExtent: isMobileView ? 45 : 50,
               onDateChange: (date) {
                 setState(() {
                   _selectedDate = date;
                 });
+                widget.selectDate(date);
               },
             ),
           ),
-          Flexible(
-            child: SizedBox(
-              width: isMobileView ? null : 300,
-              height: isMobileView ? null : 174,
-              child: Column(
-                mainAxisAlignment: isMobileView
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.end,
-                children: [
-                  MonthlySelector(
-                    getPreviousMonth: getPreviousMonth,
-                    getNextMonth: getNextMonth,
-                    currentMonth: getMonthName(_currentMonth.month),
-                  ),
-                  WeeklySelector(
-                    getPreviousWeek: getPreviousWeek,
-                    getNextWeek: getNextWeek,
-                    getToday: getToday,
-                  ),
-                ],
-              ),
+          SizedBox(
+            width: isMediumScreen ? null : 300,
+            height: isMediumScreen ? null : 174,
+            child: Column(
+              mainAxisAlignment: isMediumScreen
+                  ? MainAxisAlignment.start
+                  : MainAxisAlignment.end,
+              children: [
+                MonthlySelector(
+                  getPreviousMonth: getPreviousMonth,
+                  getNextMonth: getNextMonth,
+                  currentMonth: getMonthName(_currentMonth.month),
+                ),
+                WeeklySelector(
+                  getPreviousWeek: getPreviousWeek,
+                  getNextWeek: getNextWeek,
+                  getToday: getToday,
+                ),
+              ],
             ),
           ),
         ],

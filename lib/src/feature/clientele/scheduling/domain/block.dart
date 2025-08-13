@@ -4,7 +4,7 @@ class Block {
   String? blockId;
   String? title;
   String? type;
-  String? startTime;
+  DateTime? startTime;
   int? duration;
   String? location;
   int? capacity;

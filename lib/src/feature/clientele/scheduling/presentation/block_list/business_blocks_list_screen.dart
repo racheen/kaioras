@@ -4,6 +4,7 @@ import 'package:flutter_riverpod_boilerplate/src/common/async_value_widget.dart'
 import 'package:flutter_riverpod_boilerplate/src/common/booking_card_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/blocks_list_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/inline_calendar/inline_calendar.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_notifier.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
 
@@ -31,9 +32,17 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobileView = screenWidth < 800;
 
+    final businessName = ref.watch(activeBusinessProvider);
+
     final blocksAsyncValue = ref.watch(
       blocksListControllerProvider(widget.businessId!),
     );
+
+    void selectDate(date) async {
+      ref
+          .watch(blocksListControllerProvider(widget.businessId!).notifier)
+          .fetchBlocksByDate(widget.businessId!, date);
+    }
 
     return Scaffold(
       body: ListView(
@@ -41,7 +50,7 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
           AsyncValueWidget(
             value: blocksAsyncValue,
             data: (blocks) {
-              if (blocks.isEmpty) {
+              if (businessName == null) {
                 return Container(
                   margin: const EdgeInsets.all(50.0),
                   width: 1080,
@@ -80,9 +89,33 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                           ),
                           backgroundColor: Colors.transparent,
                         ),
-                        title: Text(blocks[0]!.origin.name.toString()),
+                        title: Text(businessName),
                       ),
-                      InlineCalendar(),
+                      InlineCalendar(selectDate: selectDate),
+                      Visibility(
+                        visible: blocks.isEmpty,
+                        child: SizedBox(
+                          width: 800,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 80),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.event_busy),
+                                  Text(
+                                    'No event',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                       Column(
                         children: blocks
                             .map(

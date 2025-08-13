@@ -1,20 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_blocks_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 
-class BlocksListController
-    extends AutoDisposeFamilyAsyncNotifier<List<Block?>, String> {
-  @override
-  Future<List<Block?>> build(businessId) async {
+DateTime now = DateTime.now();
+
+class BlocksListController extends FamilyAsyncNotifier<List<Block?>, String?> {
+  DateTime selectedDate = DateTime(now.year, now.month, now.day);
+
+  Future<List<Block?>> fetchBlocks(businessId) async {
     return await ref
-        .read(blocksRepositoryProvider)
-        .fetchBlockByBusinessId(businessId);
+        .watch(blocksRepositoryProvider)
+        .fetchBlocksByStartDate(businessId, selectedDate);
+  }
+
+  @override
+  Future<List<Block?>> build([businessId]) async {
+    return fetchBlocks(businessId);
+  }
+
+  Future<void> fetchBlocksByDate(String businessId, DateTime date) async {
+    state = AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      selectedDate = date;
+      return fetchBlocks(businessId);
+    });
   }
 }
 
 final blocksListControllerProvider =
-    AutoDisposeAsyncNotifierProviderFamily<
-      BlocksListController,
-      List<Block?>,
-      String
-    >(BlocksListController.new);
+    AsyncNotifierProviderFamily<BlocksListController, List<Block?>, String?>(
+      BlocksListController.new,
+    );

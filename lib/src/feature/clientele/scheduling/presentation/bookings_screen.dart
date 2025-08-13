@@ -4,6 +4,7 @@ import 'package:flutter_riverpod_boilerplate/src/common/async_value_widget.dart'
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_app_user_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_memberships_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_notifier.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/m_bookings_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
@@ -102,6 +103,11 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                   ),
                                   onTap: () {
                                     if (membership.businessId != null) {
+                                      // todo: implement different approach for displaying name
+                                      ref
+                                          .read(activeBusinessProvider.notifier)
+                                          .setActiveBusiness(membership.name!);
+
                                       context.goNamed(
                                         ClienteleRoute.tenantCalendar.name,
                                         pathParameters: {
