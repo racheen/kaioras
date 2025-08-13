@@ -117,8 +117,8 @@ final mockBusinesses = {
     },
     'plan': 'pro',
     'stripeAccountId': 'acct_123456',
-    'offers': {
-      'offer002': {
+    'offers': [
+      {
         'name': 'Monthly Unlimited',
         'type': 'recurring',
         'credits': 999999,
@@ -129,7 +129,8 @@ final mockBusinesses = {
         'active': true,
         'createdAt': DateTime.now().toIso8601String(),
       },
-    },
+    ],
+
     'roles': {
       'user001': {
         'uid': 'user001',
@@ -179,6 +180,142 @@ final mockBlocks = {
     title: 'Morning Pilates',
     type: BlockType.group.name,
     startTime: DateTime(2025, 8, 1, 9, 0),
+    duration: 60,
+    location: 'Main Studio',
+    capacity: 15,
+    visibility: VisibilityStatus.public.name,
+    status: BlockStatus.active.name,
+    createdAt: DateTime.now(),
+    tags: ['morning', 'beginner'],
+    description: 'Start your day with an energizing Pilates session',
+    attendees: {
+      'user002': Attendee(
+        uid: 'user002',
+        membershipId: 'membership001',
+        name: 'Janine Smith',
+        status: BookingStatus.booked.name,
+        bookedAt: DateTime.now(),
+      ),
+    },
+    host: Host(
+      uid: 'user001',
+      name: 'Jane Doe',
+      details:
+          'Experienced instructor specializing in beginner and intermediate Pilates',
+    ),
+  ),
+  'block002': Block(
+    blockId: 'block002',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
+    title: 'Morning Pilates',
+    type: BlockType.group.name,
+    startTime: DateTime(2025, 8, 22, 9, 0),
+    duration: 60,
+    location: 'Main Studio',
+    capacity: 15,
+    visibility: VisibilityStatus.public.name,
+    status: BlockStatus.active.name,
+    createdAt: DateTime.now(),
+    tags: ['morning', 'beginner'],
+    description: 'Start your day with an energizing Pilates session',
+    attendees: {
+      'user002': Attendee(
+        uid: 'user002',
+        membershipId: 'membership001',
+        name: 'Janine Smith',
+        status: BookingStatus.booked.name,
+        bookedAt: DateTime.now(),
+      ),
+    },
+    host: Host(
+      uid: 'user001',
+      name: 'Jane Doe',
+      details:
+          'Experienced instructor specializing in beginner and intermediate Pilates',
+    ),
+  ),
+  'block003': Block(
+    blockId: 'block003',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
+    title: 'Morning Pilates',
+    type: BlockType.group.name,
+    startTime: DateTime(2025, 8, 24, 9, 0),
+    duration: 60,
+    location: 'Main Studio',
+    capacity: 15,
+    visibility: VisibilityStatus.public.name,
+    status: BlockStatus.active.name,
+    createdAt: DateTime.now(),
+    tags: ['morning', 'beginner'],
+    description: 'Start your day with an energizing Pilates session',
+    attendees: {
+      'user002': Attendee(
+        uid: 'user002',
+        membershipId: 'membership001',
+        name: 'Janine Smith',
+        status: BookingStatus.booked.name,
+        bookedAt: DateTime.now(),
+      ),
+    },
+    host: Host(
+      uid: 'user001',
+      name: 'Jane Doe',
+      details:
+          'Experienced instructor specializing in beginner and intermediate Pilates',
+    ),
+  ),
+  'block004': Block(
+    blockId: 'block004',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
+    title: 'Morning Pilates',
+    type: BlockType.group.name,
+    startTime: DateTime(2025, 8, 24, 10, 0),
+    duration: 60,
+    location: 'Main Studio',
+    capacity: 15,
+    visibility: VisibilityStatus.public.name,
+    status: BlockStatus.active.name,
+    createdAt: DateTime.now(),
+    tags: ['morning', 'beginner'],
+    description: 'Start your day with an energizing Pilates session',
+    attendees: {
+      'user002': Attendee(
+        uid: 'user002',
+        membershipId: 'membership001',
+        name: 'Janine Smith',
+        status: BookingStatus.booked.name,
+        bookedAt: DateTime.now(),
+      ),
+    },
+    host: Host(
+      uid: 'user001',
+      name: 'Jane Doe',
+      details:
+          'Experienced instructor specializing in beginner and intermediate Pilates',
+    ),
+  ),
+  'block005': Block(
+    blockId: 'block005',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      picture: 'https://example.com/logos/pilates.png',
+    ),
+    title: 'Morning Pilates',
+    type: BlockType.group.name,
+    startTime: DateTime(2025, 8, 12, 13, 0),
     duration: 60,
     location: 'Main Studio',
     capacity: 15,

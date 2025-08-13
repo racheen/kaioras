@@ -17,6 +17,7 @@ class NavigationLabel {
   static const profile = 'Profile';
   static const dataTable = 'Data Table';
   static const calendar = 'Calendar';
+  static const businessProfile = 'Business Profile';
 }
 
 class ClienteleNavigationLabel {

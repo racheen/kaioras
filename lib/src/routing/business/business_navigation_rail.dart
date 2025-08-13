@@ -67,6 +67,10 @@ class _BusinessNavigationRailState
                 label: Text(NavigationLabel.dataTable),
                 icon: Icon(Icons.storage, color: Colors.white70),
               ),
+              NavigationRailDestination(
+                label: Text(NavigationLabel.businessProfile),
+                icon: Icon(Icons.business, color: Colors.white70),
+              ),
             ],
             trailing: Expanded(
               child: Align(

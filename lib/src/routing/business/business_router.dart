@@ -5,6 +5,8 @@ import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/auth_gate.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/data_table.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/grid.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/business_profile/presentation/business_profile_page.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/business_profile/presentation/edit_business_profile_page.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/presentation/schedule_list_page.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/home.dart';
@@ -23,8 +25,19 @@ final _shellNavigatorDataTableKey = GlobalKey<NavigatorState>(
 final _shellNavigatorScheduleKey = GlobalKey<NavigatorState>(
   debugLabel: 'shellSchedule',
 );
+final _shellNavigatorBusinessProfileKey = GlobalKey<NavigatorState>(
+  debugLabel: 'shellBusinessProfile',
+);
 
-enum AppRoute { signIn, home, profile, schedule, dataTable, calendarDetail }
+enum AppRoute {
+  signIn,
+  home,
+  profile,
+  businessProfile,
+  schedule,
+  dataTable,
+  calendarDetail,
+}
 
 final goRouterBusinessProvider = Provider((ref) {
   return GoRouter(
@@ -60,6 +73,25 @@ final goRouterBusinessProvider = Provider((ref) {
                 name: AppRoute.home.name,
                 pageBuilder: (context, state) =>
                     const NoTransitionPage(child: Home()),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorBusinessProfileKey,
+            routes: [
+              GoRoute(
+                path: '/business-profile',
+                name: AppRoute.businessProfile.name,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: BusinessProfilePage()),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    pageBuilder: (context, state) => const NoTransitionPage(
+                      child: EditBusinessProfilePage(),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
