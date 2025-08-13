@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/fake_user_role.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/auth_gate.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/tenant_sign_up.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/memberships_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_detail/block_detail_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_blocks_list_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
 import 'package:go_router/go_router.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -33,16 +36,27 @@ enum ClienteleRoute {
   bookingDetail,
   block,
   business,
+  tenantSignUp,
 }
 
 final goRouterClienteleProvider = Provider((ref) {
+  final authState = ref.watch(authStateProvider);
+
   return GoRouter(
-    initialLocation: '/bookings',
+    initialLocation: '/',
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: false,
     redirect: (context, state) {
       final path = state.uri.path;
       final userRole = FakeUserRole.tenant;
+      final isLoggedIn = authState.value != null;
+      final isLoggingIn = state.uri.toString() == '/sign-in';
+      final isSigningUp = state.uri.toString() == '/tenant-sign-up';
+
+      if (!isLoggedIn && !isLoggingIn && !isSigningUp) {
+        return '/sign-in';
+      }
+
       if (path.startsWith('/profile') ||
           path.startsWith('/schedule') && userRole == UserRoles.clientele) {
         return '/bookings';
@@ -52,10 +66,16 @@ final goRouterClienteleProvider = Provider((ref) {
     },
     routes: [
       GoRoute(
-        path: '/signIn',
+        path: '/sign-in',
         name: ClienteleRoute.signIn.name,
         pageBuilder: (context, state) =>
             const NoTransitionPage(child: AuthGate()),
+      ),
+      GoRoute(
+        path: '/tenant-sign-up',
+        name: ClienteleRoute.tenantSignUp.name,
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: TenantSignUp()),
       ),
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, navigationShell) => NoTransitionPage(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/privilege_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
+import 'package:go_router/go_router.dart';
 
 class BusinessNavigationRail extends ConsumerStatefulWidget {
   const BusinessNavigationRail({
@@ -22,6 +24,17 @@ class BusinessNavigationRail extends ConsumerStatefulWidget {
 class _BusinessNavigationRailState
     extends ConsumerState<BusinessNavigationRail> {
   bool isExtended = false;
+
+  void _handleLogout() async {
+    try {
+      await ref.read(authServiceProvider).signOut();
+      context.goNamed('sign-in');
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error signing out: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,16 +88,26 @@ class _BusinessNavigationRailState
             trailing: Expanded(
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      ref
-                          .read(privilegeControllerProvider.notifier)
-                          .togglePrivilage();
-                    },
-                    child: const Icon(Icons.public),
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.logout, color: Colors.white70),
+                      onPressed: _handleLogout,
+                      tooltip: 'Logout',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          ref
+                              .read(privilegeControllerProvider.notifier)
+                              .togglePrivilage();
+                        },
+                        child: const Icon(Icons.public),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
