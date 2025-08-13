@@ -10,15 +10,3 @@ final sharedPreferencesProvider = FutureProvider<SharedPreferences>((
 ) async {
   return await SharedPreferences.getInstance();
 });
-
-final userDataProvider = FutureProvider<bool>((ref) async {
-  final prefs = await ref.watch(sharedPreferencesProvider.future);
-  bool? hasAdminPrivilege = prefs.getBool('hasAdminPrivilege');
-  if (hasAdminPrivilege == null) {
-    final isAdmin = false;
-    await prefs.setBool('hasAdminPrivilege', isAdmin);
-    return isAdmin;
-  } else {
-    return hasAdminPrivilege;
-  }
-});

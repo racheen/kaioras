@@ -34,6 +34,17 @@ class FakeBlocksRepository {
         .toList();
     return Future.value(blocks);
   }
+
+  Future<List<Block>> fetchBlocksByStartDate(
+    String businessId,
+    DateTime selectedDate,
+  ) {
+    final blocks = _blocks.value.where((block) {
+      return block.origin.businessId == businessId &&
+          block.startTime == selectedDate;
+    }).toList();
+    return Future.value(blocks);
+  }
 }
 
 final blocksRepositoryProvider = Provider<FakeBlocksRepository>((ref) {
