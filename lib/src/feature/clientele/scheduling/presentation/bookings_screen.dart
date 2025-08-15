@@ -166,14 +166,14 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                   ),
                                   child: ListTile(
                                     title: Text(
-                                      booking.title.toString(),
+                                      booking.block!.title.toString(),
                                       style: TextStyle(
                                         color: AppColors.violet99,
                                       ),
                                     ),
                                     subtitle: Text('Hosted by Business'),
                                     trailing: Text(
-                                      booking.startTime.toString(),
+                                      booking.block!.startTime.toString(),
                                       style: TextStyle(
                                         color: AppColors.lightGrey,
                                       ),
@@ -182,7 +182,8 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                       context.goNamed(
                                         ClienteleRoute.bookingDetail.name,
                                         pathParameters: {
-                                          'blockId': booking.blockId.toString(),
+                                          'blockId': booking.block!.blockId
+                                              .toString(),
                                         },
                                       );
                                     },
@@ -236,14 +237,14 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                   ),
                                   child: ListTile(
                                     title: Text(
-                                      booking.title.toString(),
+                                      booking.block!.title.toString(),
                                       style: TextStyle(
                                         color: AppColors.violet99,
                                       ),
                                     ),
                                     subtitle: Text('Hosted by Business'),
                                     trailing: Text(
-                                      booking.startTime.toString(),
+                                      booking.block!.startTime.toString(),
                                       style: TextStyle(
                                         color: AppColors.lightGrey,
                                       ),
@@ -252,7 +253,8 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                       context.goNamed(
                                         ClienteleRoute.bookingDetail.name,
                                         pathParameters: {
-                                          'blockId': booking.blockId.toString(),
+                                          'blockId': booking.block!.blockId
+                                              .toString(),
                                         },
                                       );
                                     },
