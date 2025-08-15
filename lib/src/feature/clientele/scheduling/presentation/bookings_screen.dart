@@ -5,6 +5,7 @@ import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_app_user_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_memberships_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_notifier.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/m_bookings_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
@@ -33,9 +34,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
     final isMobileView = screenWidth < 600;
 
     final membershipsAsyncValue = ref.watch(membershipsListFutureProvider);
-    final upcomingBookingsAsyncValue = ref.watch(
-      upcomingBookingsListFutureProvider,
-    );
+    final upcomingBookingsAsyncValue = ref.watch(bookingsControllerProvider);
     final pastBookingsAsyncValue = ref.watch(pastBookingsListFutureProvider);
 
     if (isMobileView) {
@@ -166,14 +165,14 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                   ),
                                   child: ListTile(
                                     title: Text(
-                                      booking.title.toString(),
+                                      booking.block!.title.toString(),
                                       style: TextStyle(
                                         color: AppColors.violet99,
                                       ),
                                     ),
                                     subtitle: Text('Hosted by Business'),
                                     trailing: Text(
-                                      booking.startTime.toString(),
+                                      booking.block!.startTime.toString(),
                                       style: TextStyle(
                                         color: AppColors.lightGrey,
                                       ),
@@ -182,7 +181,8 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                       context.goNamed(
                                         ClienteleRoute.bookingDetail.name,
                                         pathParameters: {
-                                          'blockId': booking.blockId.toString(),
+                                          'blockId': booking.block!.blockId
+                                              .toString(),
                                         },
                                       );
                                     },
@@ -236,14 +236,14 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                   ),
                                   child: ListTile(
                                     title: Text(
-                                      booking.title.toString(),
+                                      booking.block!.title.toString(),
                                       style: TextStyle(
                                         color: AppColors.violet99,
                                       ),
                                     ),
                                     subtitle: Text('Hosted by Business'),
                                     trailing: Text(
-                                      booking.startTime.toString(),
+                                      booking.block!.startTime.toString(),
                                       style: TextStyle(
                                         color: AppColors.lightGrey,
                                       ),
@@ -252,7 +252,8 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                       context.goNamed(
                                         ClienteleRoute.bookingDetail.name,
                                         pathParameters: {
-                                          'blockId': booking.blockId.toString(),
+                                          'blockId': booking.block!.blockId
+                                              .toString(),
                                         },
                                       );
                                     },

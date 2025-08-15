@@ -6,7 +6,7 @@ class AppUser {
   String? email;
   String? name;
   String? createdAt;
-  String? profilePic;
+  String? image;
   String? lastBusinessId;
   String? platformRole;
   bool? notifications;
@@ -18,13 +18,43 @@ class AppUser {
     this.email,
     this.name,
     this.createdAt,
-    this.profilePic,
+    this.image,
     this.lastBusinessId,
     this.platformRole,
     this.notifications,
     this.memberships,
     this.bookings,
   });
+
+  factory AppUser.fromJson(Map<String, dynamic> json) {
+    return AppUser(
+      uid: json['uid'],
+      email: json['email'],
+      name: json['name'],
+      createdAt: json['createdAt'],
+      image: json['image'],
+      lastBusinessId: json['lastBusinessId'],
+      platformRole: json['platformRole'],
+      notifications: json['notifications'],
+      memberships: json['memberships'],
+      bookings: json['bookings'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'email': email,
+      'name': name,
+      'createdAt': createdAt,
+      'image': image,
+      'lastBusinessId': lastBusinessId,
+      'platformRole': platformRole,
+      'notifications': notifications,
+      'memberships': memberships,
+      'bookings': bookings,
+    };
+  }
 
   AppUser copyWith({
     String? uid,
@@ -42,7 +72,7 @@ class AppUser {
     email: email ?? this.email,
     name: name ?? this.name,
     createdAt: createdAt ?? this.createdAt,
-    profilePic: profilePic ?? this.profilePic,
+    image: profilePic ?? image,
     lastBusinessId: lastBusinessId ?? this.lastBusinessId,
     platformRole: platformRole ?? this.platformRole,
     notifications: notifications ?? this.notifications,

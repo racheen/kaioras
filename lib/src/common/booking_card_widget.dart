@@ -3,11 +3,15 @@ import 'package:flutter_riverpod_boilerplate/src/common/cancel_button_widget.dar
 import 'package:flutter_riverpod_boilerplate/src/common/review_button_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/mutable_bookings.dart';
 
 class ButtonLabel {
   static const book = 'Book';
   static const cancel = 'Cancel';
   static const review = 'Review';
+  static const waitlisted = 'Waitlisted';
+  static const rebook = 'Rebook';
 }
 
 class BookingCardWidget extends StatelessWidget {
@@ -20,6 +24,9 @@ class BookingCardWidget extends StatelessWidget {
   final String? description;
   final List<String> tags;
   final String? price;
+  final Function? callback;
+  final Function? cancelCallback;
+  final Block block;
 
   const BookingCardWidget({
     super.key,
@@ -32,6 +39,9 @@ class BookingCardWidget extends StatelessWidget {
     this.description,
     this.tags = const [],
     this.price,
+    this.callback,
+    this.cancelCallback,
+    required this.block,
   });
 
   @override
@@ -42,10 +52,21 @@ class BookingCardWidget extends StatelessWidget {
     final isAvatarVisible = status != BookingStatus.attended.name;
 
     String buttonLabel = ButtonLabel.book;
-    if (status == BookingStatus.cancelled.name) {
+    // todo: replace with actual uid
+    final uid = 'user001';
+    final isBooked = block.bookings!.hasBooked(uid);
+    final isCancelled = block.bookings!.hasCancelled(uid);
+    final isWaitlisted = block.bookings!.hasWaitlisted(uid);
+    final hasAttended = block.bookings!.hasAttended(uid);
+
+    if (isBooked) {
       buttonLabel = ButtonLabel.cancel;
-    } else if (status == BookingStatus.attended.name) {
+    } else if (hasAttended) {
       buttonLabel = ButtonLabel.review;
+    } else if (isWaitlisted) {
+      buttonLabel = ButtonLabel.waitlisted;
+    } else if (isCancelled) {
+      buttonLabel = ButtonLabel.rebook;
     } else {
       buttonLabel = ButtonLabel.book;
     }
@@ -82,13 +103,41 @@ class BookingCardWidget extends StatelessWidget {
                   builder: (context) {
                     switch (buttonLabel) {
                       case ButtonLabel.cancel:
-                        return CancelButtonWidget();
+                        return CancelButtonWidget(
+                          callback: () => cancelCallback!(),
+                        );
                       case ButtonLabel.review:
                         return ReviewButtonWidget();
+                      case ButtonLabel.waitlisted:
+                        return ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            enableFeedback: false,
+                            surfaceTintColor: null,
+                            overlayColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            backgroundColor: Colors.grey,
+                            foregroundColor: Colors.white,
+                            enabledMouseCursor: SystemMouseCursors.basic,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 15,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            minimumSize: Size(double.infinity, 50),
+                          ),
+                          child: Text(buttonLabel),
+                        );
                       default:
                         return ElevatedButton(
                           onPressed: () {
-                            // todo: implement book functionality
+                            if (!isBooked) {
+                              if (callback != null) {
+                                callback!();
+                              }
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.violetC2,
@@ -314,16 +363,70 @@ class BookingCardWidget extends StatelessWidget {
                         child: SizedBox(
                           width: 150,
                           height: 50,
-                          child: FloatingActionButton.extended(
-                            elevation: 1,
-                            onPressed: () {
-                              // todo: implement book functionality
-                            },
-                            label: Text(buttonLabel),
-                            backgroundColor: AppColors.violetC2,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Builder(
+                              builder: (context) {
+                                switch (buttonLabel) {
+                                  case ButtonLabel.cancel:
+                                    return CancelButtonWidget(
+                                      callback: cancelCallback!,
+                                    );
+                                  case ButtonLabel.review:
+                                    return ReviewButtonWidget();
+                                  case ButtonLabel.waitlisted:
+                                    return ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        enableFeedback: false,
+                                        surfaceTintColor: null,
+                                        overlayColor: Colors.transparent,
+                                        shadowColor: Colors.transparent,
+                                        backgroundColor: Colors.grey,
+                                        foregroundColor: Colors.white,
+                                        enabledMouseCursor:
+                                            SystemMouseCursors.basic,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        minimumSize: Size(double.infinity, 50),
+                                      ),
+                                      child: Text(buttonLabel),
+                                    );
+                                  default:
+                                    return ElevatedButton(
+                                      onPressed: () {
+                                        if (!isBooked) {
+                                          if (callback != null) {
+                                            callback!();
+                                          }
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.violetC2,
+                                        foregroundColor: Colors.white,
+                                        shadowColor: Colors.grey,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        minimumSize: Size(double.infinity, 50),
+                                      ),
+                                      child: Text(buttonLabel),
+                                    );
+                                }
+                              },
                             ),
                           ),
                         ),

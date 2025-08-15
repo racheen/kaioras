@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/booking.dart';
 
 class Block {
   String? blockId;
@@ -16,9 +16,7 @@ class Block {
   Host? host;
   String? tenant;
   Origin origin;
-  List<Block>? booked;
-  List<Block>? waitlisted;
-  List<Block>? cancelled;
+  List<Booking>? bookings;
 
   Block({
     this.blockId,
@@ -36,10 +34,50 @@ class Block {
     this.host,
     this.tenant,
     required this.origin,
-    this.booked,
-    this.waitlisted,
-    this.cancelled,
+    this.bookings = const [],
   });
+
+  factory Block.fromJson(Map<String, dynamic> json) {
+    return Block(
+      blockId: json['blockId'],
+      title: json['title'],
+      type: json['type'],
+      startTime: json['startTime'],
+      duration: json['duration'],
+      location: json['location'],
+      capacity: json['capacity'],
+      visibility: json['visibility'],
+      status: json['status'],
+      createdAt: json['createdAt'],
+      tags: json['tags'],
+      description: json['description'],
+      host: json['host'],
+      tenant: json['tenant'],
+      origin: json['origin'],
+      bookings: json['bookings'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'blockId': blockId,
+      'title': title,
+      'type': type,
+      'startTime': startTime,
+      'duration': duration,
+      'location': location,
+      'capacity': capacity,
+      'visibility': visibility,
+      'status': status,
+      'createdAt': createdAt,
+      'tags': tags,
+      'description': description,
+      'host': host,
+      'tenant': tenant,
+      'origin': origin,
+      'bookings': bookings,
+    };
+  }
 
   // Block copyWith({
   //   String? blockId,

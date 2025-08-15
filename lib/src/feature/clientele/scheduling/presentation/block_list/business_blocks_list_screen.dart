@@ -104,7 +104,7 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                                 children: [
                                   Icon(Icons.event_busy),
                                   Text(
-                                    'No event',
+                                    'No available classes at the moment',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w500,
@@ -121,7 +121,8 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                             .map(
                               (block) => GestureDetector(
                                 child: BookingCardWidget(
-                                  title: block!.title.toString(),
+                                  block: block!,
+                                  title: block.title.toString(),
                                   host: block.host!.name.toString(),
                                   startTime: block.startTime.toString(),
                                   duration: block.duration.toString(),
@@ -130,6 +131,20 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                                   description: block.description.toString(),
                                   tags: block.tags!,
                                   price: '60',
+                                  callback: () => ref
+                                      .read(
+                                        blocksListControllerProvider(
+                                          block.origin.businessId,
+                                        ).notifier,
+                                      )
+                                      .book(block, block.origin.businessId),
+                                  cancelCallback: () => ref
+                                      .read(
+                                        blocksListControllerProvider(
+                                          block.origin.businessId,
+                                        ).notifier,
+                                      )
+                                      .cancel(block, block.origin.businessId),
                                 ),
                                 onTap: () {
                                   if (isMobileView) {
