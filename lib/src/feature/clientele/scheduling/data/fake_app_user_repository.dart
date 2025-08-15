@@ -33,6 +33,12 @@ class FakeAppUserRepository {
     }).toList();
     return Future.value(pastBookings);
   }
+
+  Future<void> addBookingToUpcoming(Booking newBooking) async {
+    print(newBooking.toJson());
+    _bookings.value.add(newBooking);
+    print(_bookings.value);
+  }
 }
 
 final appUserRepositoryProvider = Provider<FakeAppUserRepository>((ref) {

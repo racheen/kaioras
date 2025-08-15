@@ -4,13 +4,14 @@ import 'package:flutter_riverpod_boilerplate/src/common/review_button_widget.dar
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/app_user.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/mutable_bookings.dart';
 
 class ButtonLabel {
   static const book = 'Book';
   static const cancel = 'Cancel';
   static const review = 'Review';
   static const waitlisted = 'Waitlisted';
+  static const rebook = 'Rebook';
 }
 
 class BookingCardWidget extends StatelessWidget {
@@ -25,7 +26,7 @@ class BookingCardWidget extends StatelessWidget {
   final String? price;
   final Function? callback;
   final Function? cancelCallback;
-  final Block? block;
+  final Block block;
 
   const BookingCardWidget({
     super.key,
@@ -40,7 +41,7 @@ class BookingCardWidget extends StatelessWidget {
     this.price,
     this.callback,
     this.cancelCallback,
-    this.block,
+    required this.block,
   });
 
   @override
@@ -51,18 +52,21 @@ class BookingCardWidget extends StatelessWidget {
     final isAvatarVisible = status != BookingStatus.attended.name;
 
     String buttonLabel = ButtonLabel.book;
+    // todo: replace with actual uid
     final uid = 'user001';
-    print(block?.isUserBooked(uid));
-    final isUserBooked = block?.isUserBooked(uid);
-    final isUserWaitlisted = block?.isUserWaitlisted(uid);
-    final isUserAttended = block?.isUserAttended(uid);
+    final isBooked = block.bookings!.hasBooked(uid);
+    final isCancelled = block.bookings!.hasCancelled(uid);
+    final isWaitlisted = block.bookings!.hasWaitlisted(uid);
+    final hasAttended = block.bookings!.hasAttended(uid);
 
-    if (isUserBooked ?? false) {
+    if (isBooked) {
       buttonLabel = ButtonLabel.cancel;
-    } else if (isUserAttended ?? false) {
+    } else if (hasAttended) {
       buttonLabel = ButtonLabel.review;
-    } else if (isUserWaitlisted ?? false) {
+    } else if (isWaitlisted) {
       buttonLabel = ButtonLabel.waitlisted;
+    } else if (isCancelled) {
+      buttonLabel = ButtonLabel.rebook;
     } else {
       buttonLabel = ButtonLabel.book;
     }
@@ -99,14 +103,37 @@ class BookingCardWidget extends StatelessWidget {
                   builder: (context) {
                     switch (buttonLabel) {
                       case ButtonLabel.cancel:
-                        return CancelButtonWidget(callback: cancelCallback!);
+                        return CancelButtonWidget(
+                          callback: () => cancelCallback!(),
+                        );
                       case ButtonLabel.review:
                         return ReviewButtonWidget();
+                      case ButtonLabel.waitlisted:
+                        return ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            enableFeedback: false,
+                            surfaceTintColor: null,
+                            overlayColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            backgroundColor: Colors.grey,
+                            foregroundColor: Colors.white,
+                            enabledMouseCursor: SystemMouseCursors.basic,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 15,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            minimumSize: Size(double.infinity, 50),
+                          ),
+                          child: Text(buttonLabel),
+                        );
                       default:
                         return ElevatedButton(
                           onPressed: () {
-                            // todo: implement book functionality
-                            if (!isUserBooked!) {
+                            if (!isBooked) {
                               if (callback != null) {
                                 callback!();
                               }
@@ -347,11 +374,35 @@ class BookingCardWidget extends StatelessWidget {
                                     );
                                   case ButtonLabel.review:
                                     return ReviewButtonWidget();
+                                  case ButtonLabel.waitlisted:
+                                    return ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        enableFeedback: false,
+                                        surfaceTintColor: null,
+                                        overlayColor: Colors.transparent,
+                                        shadowColor: Colors.transparent,
+                                        backgroundColor: Colors.grey,
+                                        foregroundColor: Colors.white,
+                                        enabledMouseCursor:
+                                            SystemMouseCursors.basic,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        minimumSize: Size(double.infinity, 50),
+                                      ),
+                                      child: Text(buttonLabel),
+                                    );
                                   default:
                                     return ElevatedButton(
                                       onPressed: () {
-                                        // todo: implement book functionality
-                                        if (!isUserBooked!) {
+                                        if (!isBooked) {
                                           if (callback != null) {
                                             callback!();
                                           }
@@ -378,23 +429,6 @@ class BookingCardWidget extends StatelessWidget {
                               },
                             ),
                           ),
-                          // FloatingActionButton.extended(
-                          //   elevation: 1,
-                          //   onPressed: () {
-                          //     // todo: implement book functionality
-                          //     if (!isUserBooked! && callback != null) {
-                          //       callback!();
-                          //     } else {
-                          //       print('cancel');
-                          //     }
-                          //   },
-                          //   label: Text(buttonLabel),
-                          //   backgroundColor: AppColors.violetC2,
-                          //   foregroundColor: Colors.white,
-                          //   shape: RoundedRectangleBorder(
-                          //     borderRadius: BorderRadius.circular(15),
-                          //   ),
-                          // ),
                         ),
                       ),
                     ],
