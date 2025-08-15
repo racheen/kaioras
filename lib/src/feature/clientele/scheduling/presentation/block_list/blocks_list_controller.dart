@@ -7,7 +7,8 @@ import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/do
 
 DateTime now = DateTime.now();
 
-class BlocksListController extends FamilyAsyncNotifier<List<Block?>, String?> {
+class BlocksListController
+    extends AutoDisposeFamilyAsyncNotifier<List<Block?>, String?> {
   DateTime selectedDate = DateTime(now.year, now.month, now.day);
 
   Future<List<Block?>> fetchBlocks(businessId) async {
@@ -30,7 +31,6 @@ class BlocksListController extends FamilyAsyncNotifier<List<Block?>, String?> {
   }
 
   Future<void> book(Block block, String businessId) async {
-    print('book');
     state = AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       ref.read(bookingsServiceProvider).book(block);
@@ -39,7 +39,6 @@ class BlocksListController extends FamilyAsyncNotifier<List<Block?>, String?> {
   }
 
   Future<void> cancel(Block block, String businessId) async {
-    print('cancel');
     state = AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       ref.read(bookingsServiceProvider).cancel(block);
@@ -49,6 +48,8 @@ class BlocksListController extends FamilyAsyncNotifier<List<Block?>, String?> {
 }
 
 final blocksListControllerProvider =
-    AsyncNotifierProviderFamily<BlocksListController, List<Block?>, String?>(
-      BlocksListController.new,
-    );
+    AutoDisposeAsyncNotifierProviderFamily<
+      BlocksListController,
+      List<Block?>,
+      String?
+    >(BlocksListController.new);

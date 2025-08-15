@@ -7,7 +7,7 @@ class Booking {
   String? status;
   DateTime bookedAt;
   Block? block;
-  AppUser? user;
+  AppUser user;
 
   Booking({
     required this.bookingId,
@@ -15,7 +15,7 @@ class Booking {
     this.status = 'waitlisted',
     required this.bookedAt,
     this.block,
-    this.user,
+    required this.user,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -36,11 +36,7 @@ class Booking {
       'status': status,
       'bookedAt': bookedAt,
       'block': block?.toJson() ?? {},
-      'user': user?.toJson() ?? {},
+      'user': user.toJson(),
     };
   }
-
-  // bool contains(String uid) {
-  //   return
-  // }
 }

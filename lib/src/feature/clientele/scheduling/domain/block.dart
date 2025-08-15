@@ -16,9 +16,6 @@ class Block {
   Host? host;
   String? tenant;
   Origin origin;
-  List<Booking>? booked;
-  List<Booking>? waitlisted;
-  List<Booking>? cancelled;
   List<Booking>? bookings;
 
   Block({
@@ -37,9 +34,6 @@ class Block {
     this.host,
     this.tenant,
     required this.origin,
-    this.booked,
-    this.waitlisted,
-    this.cancelled,
     this.bookings = const [],
   });
 
@@ -60,9 +54,6 @@ class Block {
       host: json['host'],
       tenant: json['tenant'],
       origin: json['origin'],
-      booked: json['booked'],
-      waitlisted: json['waitlisted'],
-      cancelled: json['cancelled'],
       bookings: json['bookings'],
     );
   }
@@ -84,41 +75,8 @@ class Block {
       'host': host,
       'tenant': tenant,
       'origin': origin,
-      'booked': booked,
-      'waitlisted': waitlisted,
-      'cancelled': cancelled,
       'bookings': bookings,
     };
-  }
-
-  bool isUserBooked(String uid) {
-    final list = booked ?? [];
-    for (Booking booking in list) {
-      if (booking.user!.uid == uid) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool isUserWaitlisted(String uid) {
-    final list = waitlisted ?? [];
-    for (Booking booking in list) {
-      if (booking.user!.uid == uid) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool isUserAttended(String uid) {
-    final list = waitlisted ?? [];
-    for (Booking booking in list) {
-      if (booking.status == 'attended' && booking.user!.uid == uid) {
-        return true;
-      }
-    }
-    return false;
   }
 
   // Block copyWith({

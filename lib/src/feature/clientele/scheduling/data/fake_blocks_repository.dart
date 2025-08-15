@@ -47,47 +47,14 @@ class FakeBlocksRepository {
     return Future.value(blocks);
   }
 
-  Future<void> createBooking(Block block, Booking currentBooking) async {
-    block.booked ??= [];
-    block.waitlisted ??= [];
-    final capacityLimit = block.capacity ?? 1;
+  Future<void> makeBooking(Block block, Booking currentBooking) async {
+    /// update bookings collection in block
+    block.bookings!.add(currentBooking);
 
-    final hasAvailableSlot = block.booked!.length < capacityLimit;
-    // final isFullyBooked = block.booked!.length == capacityLimit;
-    block.cancelled!.removeWhere(
-      (booking) => booking.user!.uid == currentBooking.user!.uid,
-    );
-    // check if there is available slot
-    if (hasAvailableSlot) {
-      currentBooking.status = 'booked';
-      block.booked!.add(currentBooking);
-      print('booked');
-    } else {
-      print('full');
-    }
-    print(block.booked!.length);
-    for (Booking booking in block.booked!) {
-      print('[booked]: ${booking.toJson()}');
-    }
-  }
-
-  Future<void> cancelBooking(Block block, Booking currentBooking) async {
-    block.cancelled ??= [];
-
-    block.booked!.removeWhere(
-      (booking) => booking.user!.uid == currentBooking.user!.uid,
-    );
-    currentBooking.status = 'cancelled';
-    block.cancelled!.add(currentBooking);
-    print('cancelled');
-
-    print(block.cancelled!.length);
-    for (Booking booking in block.booked!) {
-      print('[booked]: ${booking.toJson()}');
-    }
-    for (Booking booking in block.cancelled!) {
-      print('[cancelled]: ${booking.toJson()}');
-    }
+    // print(block.booked!.length);
+    // for (Booking booking in block.booked!) {
+    //   print('[booked]: ${booking.toJson()}');
+    // }
   }
 }
 

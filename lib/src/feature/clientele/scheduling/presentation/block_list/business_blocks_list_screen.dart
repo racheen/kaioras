@@ -104,7 +104,7 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                                 children: [
                                   Icon(Icons.event_busy),
                                   Text(
-                                    'No event',
+                                    'No available classes at the moment',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w500,
@@ -121,8 +121,8 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                             .map(
                               (block) => GestureDetector(
                                 child: BookingCardWidget(
-                                  block: block,
-                                  title: block!.title.toString(),
+                                  block: block!,
+                                  title: block.title.toString(),
                                   host: block.host!.name.toString(),
                                   startTime: block.startTime.toString(),
                                   duration: block.duration.toString(),

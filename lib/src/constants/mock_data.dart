@@ -5,7 +5,7 @@ import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/do
 
 enum MembershipStatus { active, expired, cancelled }
 
-enum BookingStatus { booked, cancelled, attended }
+enum BookingStatus { booked, cancelled, attended, waitlisted }
 
 enum BlockStatus { active, cancelled, completed }
 
@@ -47,6 +47,12 @@ final AppUser mockAppUser = AppUser(
           status: BookingStatus.booked.name,
           bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
           block: Block(
             blockId: 'block001',
             title: 'Test',
@@ -62,6 +68,12 @@ final AppUser mockAppUser = AppUser(
           status: BookingStatus.attended.name,
           bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
           block: Block(
             blockId: 'block001',
             title: 'Test',
@@ -77,6 +89,12 @@ final AppUser mockAppUser = AppUser(
           status: BookingStatus.attended.name,
           bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
           block: Block(
             blockId: 'block001',
             title: 'Test',
@@ -107,11 +125,23 @@ final AppUser mockAppUser = AppUser(
           status: BookingStatus.booked.name,
           bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
         ),
         Booking(
           status: BookingStatus.attended.name,
           bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
         ),
       ],
     ),
@@ -132,11 +162,23 @@ final AppUser mockAppUser = AppUser(
           status: BookingStatus.booked.name,
           bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
         ),
         Booking(
           status: BookingStatus.attended.name,
           bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
         ),
       ],
     ),
@@ -146,6 +188,12 @@ final AppUser mockAppUser = AppUser(
       bookingId: '1',
       bookedAt: DateTime(2025, 8, 1),
       status: BookingStatus.booked.name,
+      user: AppUser(
+        uid: 'user002',
+        email: 'user002@email.com',
+        name: 'user002',
+        image: '',
+      ),
       block: Block(
         blockId: '1',
         origin: Origin(
@@ -177,6 +225,12 @@ final AppUser mockAppUser = AppUser(
       bookedAt: DateTime(2025, 8, 1),
       bookingId: '1',
       status: BookingStatus.attended.name,
+      user: AppUser(
+        uid: 'user002',
+        email: 'user002@email.com',
+        name: 'user002',
+        image: '',
+      ),
       block: Block(
         blockId: '2',
         origin: Origin(
@@ -208,6 +262,12 @@ final AppUser mockAppUser = AppUser(
       bookingId: '1',
       bookedAt: DateTime(2025, 8, 1),
       status: BookingStatus.attended.name,
+      user: AppUser(
+        uid: 'user002',
+        email: 'user002@email.com',
+        name: 'user002',
+        image: '',
+      ),
       block: Block(
         blockId: '3',
         origin: Origin(
@@ -265,7 +325,7 @@ final mockBlocks = [
       about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    booked: [
+    bookings: [
       Booking(
         bookingId: 'booking001',
         status: 'booked',
@@ -273,32 +333,6 @@ final mockBlocks = [
         user: AppUser(
           uid: 'user005',
           name: 'Emiliy Tresk',
-          email: 'email@example.com',
-          image: '',
-        ),
-      ),
-    ],
-    waitlisted: [
-      Booking(
-        bookingId: 'booking002',
-        status: 'waitlisted',
-        bookedAt: DateTime(2025, 8, 10),
-        user: AppUser(
-          uid: 'user006',
-          name: 'Emily Trusk',
-          email: 'email@example.com',
-          image: '',
-        ),
-      ),
-    ],
-    cancelled: [
-      Booking(
-        bookingId: 'booking003',
-        status: 'cancelled',
-        bookedAt: DateTime(2025, 8, 10),
-        user: AppUser(
-          uid: 'user007',
-          name: 'Dennise King',
           email: 'email@example.com',
           image: '',
         ),
@@ -331,22 +365,7 @@ final mockBlocks = [
       about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    booked: [
-      Booking(
-        bookingId: 'booking001',
-        status: 'booked',
-        bookedAt: DateTime(2025, 8, 10),
-        user: AppUser(
-          uid: 'user002',
-          name: 'Emily Tresk',
-          email: 'email@example.com',
-          image: '',
-        ),
-        membershipId: 'membership002',
-      ),
-    ],
-    waitlisted: [],
-    cancelled: [],
+    bookings: [],
   ),
   Block(
     blockId: '3',
@@ -374,9 +393,7 @@ final mockBlocks = [
       about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    booked: [],
-    waitlisted: [],
-    cancelled: [],
+    bookings: [],
   ),
   Block(
     blockId: '4',
@@ -404,9 +421,7 @@ final mockBlocks = [
       about: longText,
       image: '',
     ),
-    booked: [],
-    waitlisted: [],
-    cancelled: [],
+    bookings: [],
   ),
   Block(
     blockId: '5',
@@ -434,8 +449,6 @@ final mockBlocks = [
       about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    booked: [],
-    waitlisted: [],
-    cancelled: [],
+    bookings: [],
   ),
 ];
