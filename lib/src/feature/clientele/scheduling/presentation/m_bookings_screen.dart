@@ -110,13 +110,13 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
                             context.goNamed(
                               ClienteleRoute.bookingDetail.name,
                               pathParameters: {
-                                'blockId': booking.blockId.toString(),
+                                'blockId': booking.block!.blockId.toString(),
                               },
                             );
                           },
                           child: BookingCardWidget(
-                            title: booking.title.toString(),
-                            startTime: booking.startTime.toString(),
+                            title: booking.block!.title.toString(),
+                            startTime: booking.block!.startTime.toString(),
                             location: booking.block?.location.toString() ?? '',
                             status: booking.status.toString(),
                           ),
@@ -145,13 +145,13 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
                             context.goNamed(
                               ClienteleRoute.bookingDetail.name,
                               pathParameters: {
-                                'blockId': booking.blockId.toString(),
+                                'blockId': booking.block!.blockId.toString(),
                               },
                             );
                           },
                           child: BookingCardWidget(
-                            title: booking.title.toString(),
-                            startTime: booking.startTime.toString(),
+                            title: booking.block!.title.toString(),
+                            startTime: booking.block!.startTime.toString(),
                             location:
                                 booking.block?.location.toString() ??
                                 'no location',
