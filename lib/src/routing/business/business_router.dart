@@ -41,6 +41,86 @@ enum AppRoute {
   calendarDetail,
 }
 
+final businessRoutes = [
+  GoRoute(
+    path: '/sign-in',
+    name: AppRoute.signIn.name,
+    pageBuilder: (context, state) => const NoTransitionPage(child: AuthGate()),
+  ),
+  GoRoute(
+    path: '/tenant-sign-up',
+    name: AppRoute.tenantSignUp.name,
+    pageBuilder: (context, state) =>
+        const NoTransitionPage(child: TenantSignUp()),
+  ),
+  StatefulShellRoute.indexedStack(
+    branches: [
+      // StatefulShellBranch(
+      //   navigatorKey: _shellNavigatorHomeKey,
+      //   routes: [
+      //     GoRoute(
+      //       path: '/',
+      //       name: AppRoute.home.name,
+      //       pageBuilder: (context, state) =>
+      //           const NoTransitionPage(child: AuthGate()),
+      //     ),
+      //   ],
+      // ),
+      // StatefulShellBranch(
+      //   navigatorKey: _shellNavigatorBusinessProfileKey,
+      //   routes: [
+      //     GoRoute(
+      //       path: '/business-profile',
+      //       name: AppRoute.businessProfile.name,
+      //       pageBuilder: (context, state) =>
+      //           const NoTransitionPage(child: BusinessProfilePage()),
+      //       routes: [
+      //         GoRoute(
+      //           path: 'edit',
+      //           pageBuilder: (context, state) =>
+      //               const NoTransitionPage(child: EditBusinessProfilePage()),
+      //         ),
+      //       ],
+      //     ),
+      //   ],
+      // ),
+      // StatefulShellBranch(
+      //   navigatorKey: _shellNavigatorProfileKey,
+      //   routes: [
+      //     GoRoute(
+      //       path: '/profile',
+      //       name: AppRoute.profile.name,
+      //       pageBuilder: (context, state) =>
+      //           const NoTransitionPage(child: GridWidget()),
+      //     ),
+      //   ],
+      // ),
+      StatefulShellBranch(
+        navigatorKey: _shellNavigatorScheduleKey,
+        routes: [
+          GoRoute(
+            path: '/schedule',
+            name: AppRoute.schedule.name,
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: ScheduleListPage()),
+          ),
+        ],
+      ),
+      StatefulShellBranch(
+        navigatorKey: _shellNavigatorDataTableKey,
+        routes: [
+          GoRoute(
+            path: '/dataTable',
+            name: AppRoute.dataTable.name,
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: MyDataTable()),
+          ),
+        ],
+      ),
+    ],
+  ),
+];
+
 final goRouterBusinessProvider = Provider((ref) {
   final authState = ref.watch(authStateProvider);
 
@@ -69,90 +149,7 @@ final goRouterBusinessProvider = Provider((ref) {
       // check loggedIn state here then redirect to proper path
       return null;
     },
-    routes: [
-      GoRoute(
-        path: '/sign-in',
-        name: AppRoute.signIn.name,
-        pageBuilder: (context, state) =>
-            const NoTransitionPage(child: AuthGate()),
-      ),
-      GoRoute(
-        path: '/tenant-sign-up',
-        name: AppRoute.tenantSignUp.name,
-        pageBuilder: (context, state) =>
-            const NoTransitionPage(child: TenantSignUp()),
-      ),
-      StatefulShellRoute.indexedStack(
-        pageBuilder: (context, state, navigationShell) => NoTransitionPage(
-          child: AppNavigationWidget(navigationShell: navigationShell),
-        ),
-        branches: [
-          StatefulShellBranch(
-            navigatorKey: _shellNavigatorHomeKey,
-            routes: [
-              GoRoute(
-                path: '/',
-                name: AppRoute.home.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: AuthGate()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _shellNavigatorBusinessProfileKey,
-            routes: [
-              GoRoute(
-                path: '/business-profile',
-                name: AppRoute.businessProfile.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: BusinessProfilePage()),
-                routes: [
-                  GoRoute(
-                    path: 'edit',
-                    pageBuilder: (context, state) => const NoTransitionPage(
-                      child: EditBusinessProfilePage(),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _shellNavigatorProfileKey,
-            routes: [
-              GoRoute(
-                path: '/profile',
-                name: AppRoute.profile.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: GridWidget()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _shellNavigatorScheduleKey,
-            routes: [
-              GoRoute(
-                path: '/schedule',
-                name: AppRoute.schedule.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: ScheduleListPage()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _shellNavigatorDataTableKey,
-            routes: [
-              GoRoute(
-                path: '/dataTable',
-                name: AppRoute.dataTable.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: MyDataTable()),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
+    routes: businessRoutes,
     errorPageBuilder: (context, state) => NoTransitionPage(
       child: Scaffold(
         body: Center(

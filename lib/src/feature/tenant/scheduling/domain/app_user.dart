@@ -6,7 +6,7 @@ class AppUser {
   final String email;
   final String name;
   final DateTime createdAt;
-  final String? profilePic;
+  final String? image;
   final String? lastBusinessId;
   final String? platformRole;
   final bool notifications;
@@ -20,7 +20,7 @@ class AppUser {
     required this.email,
     required this.name,
     required this.createdAt,
-    this.profilePic,
+    this.image,
     this.lastBusinessId,
     this.platformRole,
     required this.notifications,
@@ -37,7 +37,7 @@ class AppUser {
       email: data['email'],
       name: data['name'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      profilePic: data['profilePic'],
+      image: data['image'],
       lastBusinessId: data['lastBusinessId'],
       platformRole: data['platformRole'],
       notifications: data['notifications'],
@@ -55,7 +55,7 @@ class AppUser {
       'email': email,
       'name': name,
       'createdAt': Timestamp.fromDate(createdAt),
-      'profilePic': profilePic,
+      'image': image,
       'lastBusinessId': lastBusinessId,
       'platformRole': platformRole,
       'notifications': notifications,

@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/data/user_repository_provider.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/sign_in_form.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/app_router.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthGate extends ConsumerWidget {
@@ -10,16 +15,31 @@ class AuthGate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
+    final appUserAsync = ref.watch(currentAppUserProvider);
 
-    return authState.when(
+    return appUserAsync.when(
       data: (user) {
         if (user != null) {
           // User is signed in, navigate to the schedules page
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.goNamed(AppRoute.schedule.name);
+            switch ((user).getPrimaryRole()) {
+              case UserRoleType.tenant:
+                final businessId = (user).getBusinessIdForRole(
+                  UserRoleType.tenant,
+                );
+                context.goNamed(
+                  AppRoute.home.name,
+                  // pathParameters: {'businessId': businessId ?? ''},
+                );
+                break;
+              case UserRoleType.customer:
+                context.goNamed(ClienteleRoute.clienteleBookings.name);
+                break;
+            }
           });
-          return const SizedBox.shrink(); // or a loading indicator
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         } else {
           // User is not signed in, show the login form
           return Scaffold(body: SignInForm());
@@ -27,8 +47,14 @@ class AuthGate extends ConsumerWidget {
       },
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (_, __) =>
-          const Scaffold(body: Center(child: Text('An error occurred'))),
+      error: (error, stackTrace) {
+        // Log the error and stack trace
+        print('Error: $error');
+        print('Stack trace: $stackTrace');
+
+        // Return a Scaffold that displays the error message
+        return Scaffold(body: Center(child: Text('An error occurred: $error')));
+      },
     );
   }
 }

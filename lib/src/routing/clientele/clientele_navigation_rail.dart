@@ -71,9 +71,7 @@ class _ScaffoldWithNavigationRailState
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: FloatingActionButton(
                     onPressed: () {
-                      ref
-                          .read(privilegeControllerProvider.notifier)
-                          .togglePrivilage();
+                      ref.read(privilegeControllerProvider.notifier);
                     },
                     child: const Icon(Icons.work),
                   ),

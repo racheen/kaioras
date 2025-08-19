@@ -1,55 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/fake_user_role.dart';
+import 'package:flutter_riverpod_boilerplate/src/constants/mock_data2.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/mock_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/auth_gate.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/tenant_sign_up.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/memberships_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_detail/block_detail_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_blocks_list_screen.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/home/grid.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellClienteleBookingsKey = GlobalKey<NavigatorState>(
-  debugLabel: 'shellClienteleBookings',
-);
-final _shellClienteleMembershipKey = GlobalKey<NavigatorState>(
-  debugLabel: 'shellClienteleMembership',
-);
-final _shellClienteleProfileKey = GlobalKey<NavigatorState>(
-  debugLabel: 'shellClienteleProfile',
-);
-final _shellBusinessKey = GlobalKey<NavigatorState>(
-  debugLabel: 'shellBusiness',
-);
 
-enum ClienteleRoute {
-  signIn,
-  clienteleBookings,
-  tenantCalendar,
-  clienteleMemberships,
-  clienteleProfile,
-  bookingDetail,
-  block,
-  business,
-  tenantSignUp,
-}
-
-final goRouterClienteleProvider = Provider((ref) {
-  final authState = ref.watch(authStateProvider);
+final goRouterProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(currentAppUserProvider);
 
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/sign-in',
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: false,
     redirect: (context, state) {
-      final path = state.uri.path;
-      final userRole = FakeUserRole.tenant;
-      final isLoggedIn = authState.value != null;
+      final user = authState.value;
+      final isLoggedIn = user != null;
       final isLoggingIn = state.uri.toString() == '/sign-in';
       final isSigningUp = state.uri.toString() == '/tenant-sign-up';
 
@@ -57,147 +36,39 @@ final goRouterClienteleProvider = Provider((ref) {
         return '/sign-in';
       }
 
-      if (path.startsWith('/profile') ||
-          path.startsWith('/schedule') && userRole == UserRoles.clientele) {
-        return '/bookings';
+      if (isLoggedIn && (isLoggingIn || isSigningUp)) {
+        if (user.hasRole(UserRoleType.tenant) &&
+            user.hasRole(UserRoleType.customer)) {
+          return '/role-selection';
+        } else if (user.hasRole(UserRoleType.tenant)) {
+          return '/';
+        } else if (user.hasRole(UserRoleType.customer)) {
+          return '/';
+        }
       }
-      // check loggedIn state here then redirect to proper path
+
       return null;
     },
     routes: [
       GoRoute(
         path: '/sign-in',
-        name: ClienteleRoute.signIn.name,
         pageBuilder: (context, state) =>
             const NoTransitionPage(child: AuthGate()),
       ),
       GoRoute(
         path: '/tenant-sign-up',
-        name: ClienteleRoute.tenantSignUp.name,
         pageBuilder: (context, state) =>
             const NoTransitionPage(child: TenantSignUp()),
       ),
-      StatefulShellRoute.indexedStack(
-        pageBuilder: (context, state, navigationShell) => NoTransitionPage(
-          child: AppNavigationWidget(navigationShell: navigationShell),
-        ),
-        branches: [
-          StatefulShellBranch(
-            navigatorKey: _shellClienteleBookingsKey,
-            routes: [
-              GoRoute(
-                path: '/bookings',
-                name: ClienteleRoute.clienteleBookings.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: BookingsScreen()),
-                routes: [
-                  GoRoute(
-                    path: '/business/:businessId',
-                    name: ClienteleRoute.tenantCalendar.name,
-                    pageBuilder: (context, state) {
-                      final businessId = state.pathParameters['businessId'];
-                      if (businessId != null) {
-                        return NoTransitionPage(
-                          child: BusinessBlocksList(businessId: businessId),
-                        );
-                      }
-                      return NoTransitionPage(
-                        child: BusinessBlocksList(businessId: businessId),
-                      );
-                    },
-                    routes: [
-                      GoRoute(
-                        path: '/block/:blockId',
-                        name: ClienteleRoute.block.name,
-                        pageBuilder: (context, state) {
-                          final blockId = state.pathParameters['blockId'];
-                          final businessId = state.pathParameters['businessId'];
-                          if (blockId != null) {
-                            return NoTransitionPage(
-                              child: BlockDetail(
-                                blockId: blockId,
-                                businessId: businessId,
-                              ),
-                            );
-                          }
-                          return NoTransitionPage(child: Text('data'));
-                        },
-                      ),
-                    ],
-                  ),
-                  GoRoute(
-                    path: '/block/:blockId',
-                    name: ClienteleRoute.bookingDetail.name,
-                    pageBuilder: (context, state) {
-                      final blockId = state.pathParameters['blockId'];
-                      if (blockId != null) {
-                        return NoTransitionPage(
-                          child: BlockDetail(blockId: blockId),
-                        );
-                      }
-                      return NoTransitionPage(child: Text('data'));
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _shellClienteleMembershipKey,
-            routes: [
-              GoRoute(
-                path: '/memberships',
-                name: ClienteleRoute.clienteleMemberships.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: MembershipsScreen()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _shellClienteleProfileKey,
-            routes: [
-              GoRoute(
-                path: '/clientele/profile',
-                name: ClienteleRoute.clienteleProfile.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: Placeholder()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _shellBusinessKey,
-            routes: [
-              GoRoute(
-                path: '/manage',
-                name: ClienteleRoute.business.name,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: Placeholder()),
-              ),
-            ],
-          ),
-        ],
+      GoRoute(
+        path: '/',
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: GridWidget()),
       ),
+      ...clienteleRoutes,
+      // ...businessRoutes,
     ],
-    errorPageBuilder: (context, state) => NoTransitionPage(
-      child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Page Not Found',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.goNamed(ClienteleRoute.clienteleBookings.name);
-                },
-                child: const Text('Back to home'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
+    errorBuilder: (context, state) =>
+        Scaffold(body: Center(child: Text('Page not found: ${state.uri}'))),
   );
 });

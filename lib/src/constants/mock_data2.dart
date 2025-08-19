@@ -1,4 +1,6 @@
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/app_user.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/app_user.dart'
+    hide AppUser, UserRole;
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 
 enum MembershipStatus { active, expired, cancelled }
@@ -21,7 +23,7 @@ final mockUsers = {
     email: 'customer1@example.com',
     name: 'Jane Doe',
     createdAt: DateTime.now(),
-    profilePic: 'https://example.com/profile_pics/user009.jpg',
+    image: 'https://example.com/profile_pics/user009.jpg',
     lastBusinessId: '',
     platformRole: null,
     notifications: false,
@@ -38,7 +40,7 @@ final mockUsers = {
     email: 'customer2@example.com',
     name: 'Janine Smith',
     createdAt: DateTime.now(),
-    profilePic: 'https://example.com/profile_pics/user009.jpg',
+    image: 'https://example.com/profile_pics/user009.jpg',
     lastBusinessId: 'business001',
     platformRole: null,
     notifications: false,
@@ -100,7 +102,6 @@ final mockUsers = {
         ),
       ),
     },
-    subscriptions: {},
   ),
 };
 

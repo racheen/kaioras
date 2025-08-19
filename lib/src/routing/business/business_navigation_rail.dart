@@ -102,7 +102,7 @@ class _BusinessNavigationRailState
                         onPressed: () {
                           ref
                               .read(privilegeControllerProvider.notifier)
-                              .togglePrivilage();
+                              .togglePrivilege();
                         },
                         child: const Icon(Icons.public),
                       ),

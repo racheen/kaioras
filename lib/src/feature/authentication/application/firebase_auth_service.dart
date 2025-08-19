@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -106,4 +107,25 @@ final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 final authStateProvider = StreamProvider<User?>((ref) {
   final authService = ref.watch(authServiceProvider);
   return authService.authStateChanges();
+});
+
+final currentAppUserProvider = StreamProvider<AppUser?>((ref) async* {
+  final authState = ref.watch(authStateProvider);
+
+  if (authState.value == null) {
+    yield null;
+  } else {
+    // Fetch the user document from Firestore
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(authState.value!.uid)
+        .get();
+
+    if (userDoc.exists) {
+      // Convert the Firestore document to your AppUser
+      yield AppUser.fromMap(userDoc.data()!);
+    } else {
+      yield null;
+    }
+  }
 });
