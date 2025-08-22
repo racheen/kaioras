@@ -47,9 +47,9 @@ class FakeBlocksRepository {
     return Future.value(blocks);
   }
 
-  Future<void> makeBooking(Block block, Booking currentBooking) async {
+  Future<void> addBooking(String businessId, Booking newBooking) async {
     /// update bookings collection in block
-    block.bookings!.add(currentBooking);
+    // block.bookings!.add(currentBooking);
 
     // print(block.booked!.length);
     // for (Booking booking in block.booked!) {

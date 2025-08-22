@@ -1,12 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/application/booking_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_app_user_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/firebase_bookings_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/booking.dart';
 
 class BookingsController extends AutoDisposeAsyncNotifier<List<Booking>> {
   Future<List<Booking>> fetchBookings() async {
-    return ref.read(upcomingBookingsListFutureProvider.future);
+    final currentUser = await ref.read(appUserRepositoryProvider).currentUser();
+    return await ref
+        .read(bookingsRepositoryProvider)
+        .fetchUserBookings(currentUser);
   }
 
   @override
@@ -14,10 +20,32 @@ class BookingsController extends AutoDisposeAsyncNotifier<List<Booking>> {
     return fetchBookings();
   }
 
+  // add to users bookings collection
   Future<void> addToUpcoming(Booking newBooking) async {
     state = AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       ref.read(appUserRepositoryProvider).addBookingToUpcoming(newBooking);
+      return fetchBookings();
+    });
+  }
+
+  Future<void> book({required businessId, required block}) async {
+    state = await AsyncValue.guard(() async {
+      await ref.read(bookingsServiceProvider).book(businessId, block);
+      return fetchBookings();
+    });
+  }
+
+  Future<void> cancel(Block block, String businessId) async {
+    state = await AsyncValue.guard(() async {
+      await ref.read(bookingsServiceProvider).cancel(businessId, block);
+      return fetchBookings();
+    });
+  }
+
+  Future<void> fetchUserBookings() async {
+    state = AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
       return fetchBookings();
     });
   }

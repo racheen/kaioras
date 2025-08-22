@@ -12,6 +12,10 @@ class FakeAppUserRepository {
   final _appUser = InMemoryStore<AppUser>(mockAppUser);
   final _bookings = InMemoryStore<List<Booking>>(mockAppUser.bookings!);
 
+  Future<String> currentUser() async {
+    return Future.value(_appUser.value.uid);
+  }
+
   Future<AppUser> fetchAppUser() async {
     return Future.value(_appUser.value);
   }

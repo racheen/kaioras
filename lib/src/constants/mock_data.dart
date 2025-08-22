@@ -23,6 +23,7 @@ final longText =
 /// Blocks
 ///
 final AppUser mockAppUser = AppUser(
+  uid: 'user000',
   name: 'Test User',
   email: 'test@email.com',
   createdAt: '',
@@ -45,7 +46,7 @@ final AppUser mockAppUser = AppUser(
       bookings: [
         Booking(
           status: BookingStatus.booked.name,
-          bookingId: '',
+          // bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
           user: AppUser(
             uid: 'user002',
@@ -66,7 +67,7 @@ final AppUser mockAppUser = AppUser(
         ),
         Booking(
           status: BookingStatus.attended.name,
-          bookingId: '',
+          // bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
           user: AppUser(
             uid: 'user002',
@@ -87,7 +88,7 @@ final AppUser mockAppUser = AppUser(
         ),
         Booking(
           status: BookingStatus.attended.name,
-          bookingId: '',
+          // bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
           user: AppUser(
             uid: 'user002',
@@ -123,7 +124,7 @@ final AppUser mockAppUser = AppUser(
       bookings: [
         Booking(
           status: BookingStatus.booked.name,
-          bookingId: '',
+          // bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
           user: AppUser(
             uid: 'user002',
@@ -134,7 +135,7 @@ final AppUser mockAppUser = AppUser(
         ),
         Booking(
           status: BookingStatus.attended.name,
-          bookingId: '',
+          // bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
           user: AppUser(
             uid: 'user002',
@@ -160,7 +161,7 @@ final AppUser mockAppUser = AppUser(
       bookings: [
         Booking(
           status: BookingStatus.booked.name,
-          bookingId: '',
+          // bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
           user: AppUser(
             uid: 'user002',
@@ -171,7 +172,7 @@ final AppUser mockAppUser = AppUser(
         ),
         Booking(
           status: BookingStatus.attended.name,
-          bookingId: '',
+          // bookingId: '',
           bookedAt: DateTime(2025, 8, 1),
           user: AppUser(
             uid: 'user002',
@@ -185,7 +186,7 @@ final AppUser mockAppUser = AppUser(
   ],
   bookings: [
     Booking(
-      bookingId: '1',
+      // bookingId: '1',
       bookedAt: DateTime(2025, 8, 1),
       status: BookingStatus.booked.name,
       user: AppUser(
@@ -223,7 +224,7 @@ final AppUser mockAppUser = AppUser(
     ),
     Booking(
       bookedAt: DateTime(2025, 8, 1),
-      bookingId: '1',
+      // bookingId: '1',
       status: BookingStatus.attended.name,
       user: AppUser(
         uid: 'user002',
@@ -259,7 +260,7 @@ final AppUser mockAppUser = AppUser(
       ),
     ),
     Booking(
-      bookingId: '1',
+      // bookingId: '1',
       bookedAt: DateTime(2025, 8, 1),
       status: BookingStatus.attended.name,
       user: AppUser(
@@ -325,19 +326,19 @@ final mockBlocks = [
       about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    bookings: [
-      Booking(
-        bookingId: 'booking001',
-        status: 'booked',
-        bookedAt: DateTime(2025, 8, 10),
-        user: AppUser(
-          uid: 'user005',
-          name: 'Emiliy Tresk',
-          email: 'email@example.com',
-          image: '',
-        ),
-      ),
-    ],
+    // bookings: [
+    //   Booking(
+    //     bookingId: 'booking001',
+    //     status: 'booked',
+    //     bookedAt: DateTime(2025, 8, 10),
+    //     user: AppUser(
+    //       uid: 'user005',
+    //       name: 'Emiliy Tresk',
+    //       email: 'email@example.com',
+    //       image: '',
+    //     ),
+    //   ),
+    // ],
   ),
   Block(
     blockId: '2',
@@ -365,7 +366,7 @@ final mockBlocks = [
       about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    bookings: [],
+    // bookings: [],
   ),
   Block(
     blockId: '3',
@@ -393,7 +394,7 @@ final mockBlocks = [
       about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    bookings: [],
+    // bookings: [],
   ),
   Block(
     blockId: '4',
@@ -421,7 +422,7 @@ final mockBlocks = [
       about: longText,
       image: '',
     ),
-    bookings: [],
+    // bookings: [],
   ),
   Block(
     blockId: '5',
@@ -449,6 +450,6 @@ final mockBlocks = [
       about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    bookings: [],
+    // bookings: [],
   ),
 ];
