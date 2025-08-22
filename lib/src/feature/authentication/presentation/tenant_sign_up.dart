@@ -3,7 +3,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 
 class TenantSignUp extends ConsumerWidget {
   const TenantSignUp({Key? key}) : super(key: key);
@@ -15,6 +17,11 @@ class TenantSignUp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final signUpFormKey = GlobalKey<FormBuilderState>();
+
+    void backToSignIn() {
+      print('Back to Sign In');
+      context.goNamed(AppRoute.signIn.name);
+    }
 
     void signUp() async {
       if (signUpFormKey.currentState?.saveAndValidate() ?? false) {
@@ -82,7 +89,7 @@ class TenantSignUp extends ConsumerWidget {
                   backgroundColor: AppColors.whiteSmoke,
                   foregroundColor: AppColors.violetE3,
                 ),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: backToSignIn,
                 child: const Text('Cancel'),
               ),
             ),

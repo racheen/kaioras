@@ -14,7 +14,7 @@ class SignInForm extends ConsumerWidget {
   final _loginFormKey = GlobalKey<FormBuilderState>();
   final _emailFieldKey = GlobalKey<FormBuilderFieldState>();
 
-  final String appName = 'Pilagenda';
+  final String appName = 'Kaioras';
   final double _minWidth = 400.0;
   final String _welcomeText = 'Welcome Back~';
   final String _signInText = 'Sign in';

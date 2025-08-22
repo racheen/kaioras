@@ -52,11 +52,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/sign-in',
+        name: AppRoute.signIn.name,
         pageBuilder: (context, state) =>
             const NoTransitionPage(child: AuthGate()),
       ),
       GoRoute(
         path: '/tenant-sign-up',
+        name: AppRoute.tenantSignUp.name,
         pageBuilder: (context, state) =>
             const NoTransitionPage(child: TenantSignUp()),
       ),
