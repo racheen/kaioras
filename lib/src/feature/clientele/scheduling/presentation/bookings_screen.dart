@@ -154,41 +154,55 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                   );
                                 },
                             body: Column(
-                              children: bookings.map((booking) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    border: BoxBorder.fromLTRB(
-                                      top: BorderSide(
-                                        color: AppColors.lightGrey,
+                              children: bookings.isEmpty
+                                  ? [
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text('No upcoming bookings'),
                                       ),
-                                    ),
-                                  ),
-                                  child: ListTile(
-                                    title: Text(
-                                      booking.block!.title.toString(),
-                                      style: TextStyle(
-                                        color: AppColors.violet99,
-                                      ),
-                                    ),
-                                    subtitle: Text('Hosted by Business'),
-                                    trailing: Text(
-                                      booking.block!.startTime.toString(),
-                                      style: TextStyle(
-                                        color: AppColors.lightGrey,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      context.goNamed(
-                                        ClienteleRoute.bookingDetail.name,
-                                        pathParameters: {
-                                          'blockId': booking.block!.blockId
-                                              .toString(),
-                                        },
+                                    ]
+                                  : bookings.map((booking) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          border: BoxBorder.fromLTRB(
+                                            top: BorderSide(
+                                              color: AppColors.lightGrey,
+                                            ),
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          title: Text(
+                                            // booking.block!.title.toString(),
+                                            booking.name!,
+                                            style: TextStyle(
+                                              color: AppColors.violet99,
+                                            ),
+                                          ),
+                                          subtitle: Text('Hosted by Business'),
+                                          trailing: Text(
+                                            // booking.block!.startTime.toString(),
+                                            booking.name!,
+                                            style: TextStyle(
+                                              color: AppColors.lightGrey,
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            context.goNamed(
+                                              ClienteleRoute.bookingDetail.name,
+                                              // ClienteleRoute.block.name,
+                                              pathParameters: {
+                                                'blockId': booking.blockId
+                                                    .toString(),
+                                                // 'businessId': booking.businessId
+                                                //     .toString(),
+                                                // 'blockId': booking.block!.blockId
+                                                //     .toString(),
+                                              },
+                                            );
+                                          },
+                                        ),
                                       );
-                                    },
-                                  ),
-                                );
-                              }).toList(),
+                                    }).toList(),
                             ),
                             isExpanded: upcomingBookingsIsExpanded,
                           ),

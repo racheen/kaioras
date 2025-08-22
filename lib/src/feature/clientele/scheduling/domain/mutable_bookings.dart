@@ -8,7 +8,7 @@ extension MutableBookings on List<Booking> {
 
   bool exists(String uid) {
     for (Booking booking in this) {
-      if (booking.user.uid == uid) {
+      if (booking.user?.uid == uid) {
         return true;
       }
     }

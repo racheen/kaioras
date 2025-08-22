@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/cancel_button_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/review_button_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/mutable_bookings.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_notifier.dart';
 
 class ButtonLabel {
   static const book = 'Book';
@@ -14,7 +15,7 @@ class ButtonLabel {
   static const rebook = 'Rebook';
 }
 
-class BookingCardWidget extends StatelessWidget {
+class BookingCardWidget extends ConsumerWidget {
   final String title;
   final String? host;
   final String startTime;
@@ -45,19 +46,30 @@ class BookingCardWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobileView = screenWidth < 800;
 
     final isAvatarVisible = status != BookingStatus.attended.name;
 
     String buttonLabel = ButtonLabel.book;
-    // todo: replace with actual uid
-    final uid = 'user001';
-    final isBooked = block.bookings!.hasBooked(uid);
-    final isCancelled = block.bookings!.hasCancelled(uid);
-    final isWaitlisted = block.bookings!.hasWaitlisted(uid);
-    final hasAttended = block.bookings!.hasAttended(uid);
+
+    final userBookings = ref.watch(bookingsNotifierProvider);
+
+    bool checkStatus(bookingStatus) {
+      for (var booking in userBookings) {
+        if (booking.containsKey(block.blockId) &&
+            booking.containsValue(bookingStatus)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    final isBooked = checkStatus(BookingStatus.booked.name);
+    final isCancelled = checkStatus(BookingStatus.cancelled.name);
+    final isWaitlisted = checkStatus(BookingStatus.waitlisted.name);
+    final hasAttended = checkStatus(BookingStatus.attended.name);
 
     if (isBooked) {
       buttonLabel = ButtonLabel.cancel;
