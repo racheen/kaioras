@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CancelButtonWidget extends StatelessWidget {
-  const CancelButtonWidget({super.key});
+  final Function callback;
+
+  const CancelButtonWidget({super.key, required this.callback});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => {},
+      onPressed: () => callback(),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red.shade100, // Background color of the button
         foregroundColor: Colors.redAccent, // Color of the text and icon

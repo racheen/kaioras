@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/booking.dart';
 import 'package:flutter_riverpod_boilerplate/src/utils/in_memory_store.dart';
 
 class FakeBlocksRepository {
@@ -44,6 +45,16 @@ class FakeBlocksRepository {
           block.startTime == selectedDate;
     }).toList();
     return Future.value(blocks);
+  }
+
+  Future<void> addBooking(String businessId, Booking newBooking) async {
+    /// update bookings collection in block
+    // block.bookings!.add(currentBooking);
+
+    // print(block.booked!.length);
+    // for (Booking booking in block.booked!) {
+    //   print('[booked]: ${booking.toJson()}');
+    // }
   }
 }
 
