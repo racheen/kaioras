@@ -108,6 +108,74 @@ final mockUsers = {
       ),
     },
   ),
+  'user003': AppUser(
+    uid: 'user003',
+    email: 'customer3@example.com',
+    name: 'Agatha Minis',
+    createdAt: DateTime.now(),
+    image: 'https://example.com/profile_pics/user009.jpg',
+    lastBusinessId: 'business001',
+    platformRole: null,
+    notifications: false,
+    roles: {
+      'business001': UserRole(
+        role: RoleType.customer.name,
+        status: 'active',
+        createdAt: DateTime.now(),
+      ),
+    },
+    memberships: {
+      'membership001': Membership(
+        membershipId: 'membership001',
+        businessDetails: BusinessDetails(
+          businessId: 'business001',
+          name: 'Pilates Studio',
+          picture: 'https://example.com/logos/pilates.png',
+        ),
+        offerSnapshot: OfferSnapshot(
+          name: 'Monthly Unlimited',
+          type: OfferType.recurring.name,
+          description: 'Unlimited classes for one month',
+        ),
+        status: MembershipStatus.active.name,
+        name: 'Monthly Unlimited',
+        credits: 999999,
+        creditsUsed: 0,
+        expiration: DateTime(2025, 6, 2, 9, 0),
+        createdAt: DateTime(2025, 6, 1, 9, 0),
+        bookings: {
+          'booking001': BookingSnapshot(
+            blockId: 'block001',
+            title: 'Morning Pilates',
+            startTime: DateTime(2025, 6, 1, 9, 0),
+            status: BookingStatus.booked.name,
+          ),
+        },
+      ),
+    },
+    bookings: {
+      'booking001': Booking(
+        bookingId: 'booking001',
+        membershipId: 'membership001',
+        businessDetails: BusinessDetails(
+          businessId: 'business001',
+          name: 'Pilates Studio',
+          picture: 'https://example.com/logos/pilates.png',
+        ),
+        status: BookingStatus.booked.name,
+        bookedAt: DateTime.now(),
+        notes: "first booking",
+        blockDetails: BlockDetails(
+          title: 'Morning Pilates',
+          startTime: DateTime(2025, 6, 1, 9, 0),
+          location: 'Main Studio',
+          hostName: 'Emily Trusk',
+          hostDetails:
+              'Experienced instructor specializing in beginner and intermediate Pilates',
+        ),
+      ),
+    },
+  ),
 };
 
 final mockBusinesses = {

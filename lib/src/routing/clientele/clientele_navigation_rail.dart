@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/privilege_controller.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/mock_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -41,7 +41,7 @@ class _ScaffoldWithNavigationRailState
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size.width;
     final isMobile = screenSize < 600;
-    final hasAdminPrivilege = ref.watch(privilegeControllerProvider);
+    final user = ref.watch(currentAppUserProvider).value;
 
     return Scaffold(
       body: Row(
@@ -80,35 +80,31 @@ class _ScaffoldWithNavigationRailState
                 icon: Icon(Icons.person, color: Colors.white70),
               ),
             ],
-            trailing: hasAdminPrivilege
-                ? Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.logout,
-                              color: Colors.white70,
-                            ),
-                            onPressed: _handleLogout,
-                            tooltip: 'Logout',
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: FloatingActionButton(
-                              onPressed: () {
-                                context.go('/tenant/schedule');
-                              },
-                              child: const Icon(Icons.work),
-                            ),
-                          ),
-                        ],
-                      ),
+            trailing: Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.logout, color: Colors.white70),
+                      onPressed: _handleLogout,
+                      tooltip: 'Logout',
                     ),
-                  )
-                : null,
+                    if (user!.hasRole(UserRoleType.tenant))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            context.go('/tenant/schedule');
+                          },
+                          child: const Icon(Icons.work),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           ),
           const VerticalDivider(thickness: 1, width: 1),
           Expanded(child: widget.body),

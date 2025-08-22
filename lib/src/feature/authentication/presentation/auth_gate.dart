@@ -20,25 +20,18 @@ class AuthGate extends ConsumerWidget {
     return appUserAsync.when(
       data: (user) {
         if (user != null) {
-          // User is signed in, navigate to the schedules page
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            switch ((user).getPrimaryRole()) {
+            switch (user.getPrimaryRole()) {
               case UserRoleType.tenant:
-                final businessId = (user).getBusinessIdForRole(
-                  UserRoleType.tenant,
-                );
-                context.goNamed(
-                  AppRoute.home.name,
-                  // pathParameters: {'businessId': businessId ?? ''},
-                );
+                context.go('/tenant/schedule');
                 break;
               case UserRoleType.customer:
-                context.goNamed(ClienteleRoute.clienteleBookings.name);
+                context.go('/clientele/bookings');
                 break;
             }
           });
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(child: Text('user was found but error')),
           );
         } else {
           // User is not signed in, show the login form
@@ -48,10 +41,6 @@ class AuthGate extends ConsumerWidget {
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stackTrace) {
-        // Log the error and stack trace
-        print('Error: $error');
-        print('Stack trace: $stackTrace');
-
         // Return a Scaffold that displays the error message
         return Scaffold(body: Center(child: Text('An error occurred: $error')));
       },

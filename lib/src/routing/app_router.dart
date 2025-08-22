@@ -41,7 +41,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             user.hasRole(UserRoleType.customer)) {
           return '/role-selection';
         } else if (user.hasRole(UserRoleType.tenant)) {
-          return '/tenant';
+          return '/tenant/schedule';
         } else if (user.hasRole(UserRoleType.customer)) {
           return '/clientele/bookings';
         }
