@@ -50,6 +50,11 @@ final mockUsers = {
         status: 'active',
         createdAt: DateTime.now(),
       ),
+      'business003': UserRole(
+        role: RoleType.tenant.name,
+        status: 'active',
+        createdAt: DateTime.now(),
+      ),
     },
     memberships: {
       'membership001': Membership(
@@ -109,6 +114,130 @@ final mockBusinesses = {
   'business001': {
     'businessId': 'business001',
     'name': 'Pilates Studio',
+    'ownerUid': 'user001',
+    'createdAt': DateTime.now().toIso8601String(),
+    'industry': 'pilates',
+    'branding': {
+      'primaryColor': '#4A90E2',
+      'logoUrl': 'https://example.com/logos/pilates.png',
+    },
+    'plan': 'pro',
+    'stripeAccountId': 'acct_123456',
+    'offers': [
+      {
+        'name': 'Monthly Unlimited',
+        'type': 'recurring',
+        'credits': 999999,
+        'price': 9900,
+        'currency': 'USD',
+        'durationInDays': 30,
+        'description': 'Unlimited classes for one month',
+        'active': true,
+        'createdAt': DateTime.now().toIso8601String(),
+      },
+    ],
+
+    'roles': {
+      'user001': {
+        'uid': 'user001',
+        'role': RoleType.tenant.name,
+        'status': 'active',
+        'createdAt': DateTime.now().toIso8601String(),
+        'displayName': 'Jane Doe',
+      },
+      'user002': {
+        'uid': 'user002',
+        'role': RoleType.customer.name,
+        'status': 'active',
+        'createdAt': DateTime.now().toIso8601String(),
+        'displayName': 'Janine Smith',
+      },
+    },
+    'settings': {
+      'availability': {
+        'defaultHours': [
+          {'day': 'monday', 'start': '08:00', 'end': '18:00'},
+          {'day': 'tuesday', 'start': '08:00', 'end': '18:00'},
+          {'day': 'wednesday', 'start': '08:00', 'end': '18:00'},
+          {'day': 'thursday', 'start': '08:00', 'end': '18:00'},
+          {'day': 'friday', 'start': '08:00', 'end': '18:00'},
+        ],
+        'timeZone': 'America/New_York',
+      },
+      'holidays': [
+        {
+          'date': DateTime(2023, 12, 25).toIso8601String(),
+          'reason': 'Christmas',
+        },
+      ],
+      'closedDays': ['sunday', 'saturday'],
+    },
+  },
+  'business002': {
+    'businessId': 'business002',
+    'name': 'Yoga Center Studio',
+    'ownerUid': 'user001',
+    'createdAt': DateTime.now().toIso8601String(),
+    'industry': 'pilates',
+    'branding': {
+      'primaryColor': '#4A90E2',
+      'logoUrl': 'https://example.com/logos/pilates.png',
+    },
+    'plan': 'pro',
+    'stripeAccountId': 'acct_123456',
+    'offers': [
+      {
+        'name': 'Monthly Unlimited',
+        'type': 'recurring',
+        'credits': 999999,
+        'price': 9900,
+        'currency': 'USD',
+        'durationInDays': 30,
+        'description': 'Unlimited classes for one month',
+        'active': true,
+        'createdAt': DateTime.now().toIso8601String(),
+      },
+    ],
+
+    'roles': {
+      'user001': {
+        'uid': 'user001',
+        'role': RoleType.tenant.name,
+        'status': 'active',
+        'createdAt': DateTime.now().toIso8601String(),
+        'displayName': 'Jane Doe',
+      },
+      'user002': {
+        'uid': 'user002',
+        'role': RoleType.customer.name,
+        'status': 'active',
+        'createdAt': DateTime.now().toIso8601String(),
+        'displayName': 'Janine Smith',
+      },
+    },
+    'settings': {
+      'availability': {
+        'defaultHours': [
+          {'day': 'monday', 'start': '08:00', 'end': '18:00'},
+          {'day': 'tuesday', 'start': '08:00', 'end': '18:00'},
+          {'day': 'wednesday', 'start': '08:00', 'end': '18:00'},
+          {'day': 'thursday', 'start': '08:00', 'end': '18:00'},
+          {'day': 'friday', 'start': '08:00', 'end': '18:00'},
+        ],
+        'timeZone': 'America/New_York',
+      },
+      'holidays': [
+        {
+          'date': DateTime(2023, 12, 25).toIso8601String(),
+          'reason': 'Christmas',
+        },
+      ],
+      'closedDays': ['sunday', 'saturday'],
+    },
+  },
+  'business003': {
+    'businessId': 'business003',
+    'name': 'Gym Studio',
     'ownerUid': 'user001',
     'createdAt': DateTime.now().toIso8601String(),
     'industry': 'pilates',

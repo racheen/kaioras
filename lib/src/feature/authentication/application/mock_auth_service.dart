@@ -120,7 +120,21 @@ final currentAppUserProvider = StreamProvider<AppUser?>((ref) async* {
   final authState = ref.watch(authStateProvider);
 
   if (authState.value == null) {
-    yield null;
+    // yield null;
+    final mockUser = mockUsers['user002'];
+    if (mockUser != null) {
+      yield AppUser(
+        uid: mockUser.uid,
+        email: mockUser.email,
+        name: mockUser.name,
+        createdAt: mockUser.createdAt,
+        image: mockUser.image,
+        lastBusinessId: mockUser.lastBusinessId,
+        platformRole: mockUser.platformRole,
+        notifications: mockUser.notifications,
+        roles: Map<String, UserRole>.from(mockUser.roles),
+      );
+    }
   } else {
     // Simulate fetching user document from Firestore
     await Future.delayed(Duration(seconds: 1));

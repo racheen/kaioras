@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/privilege_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
+import 'package:go_router/go_router.dart';
 
 class ClienteleNavigationRail extends ConsumerStatefulWidget {
   const ClienteleNavigationRail({
@@ -23,15 +26,28 @@ class _ScaffoldWithNavigationRailState
     extends ConsumerState<ClienteleNavigationRail> {
   bool isExtended = false;
 
+  void _handleLogout() async {
+    try {
+      await ref.read(authServiceProvider).signOut();
+      context.goNamed('sign-in');
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error signing out: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size.width;
     final isMobile = screenSize < 600;
+    final hasAdminPrivilege = ref.watch(privilegeControllerProvider);
 
     return Scaffold(
       body: Row(
         children: [
           NavigationRail(
+            backgroundColor: AppColors.violetC2,
             indicatorShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),
@@ -64,20 +80,35 @@ class _ScaffoldWithNavigationRailState
                 icon: Icon(Icons.person, color: Colors.white70),
               ),
             ],
-            trailing: Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      ref.read(privilegeControllerProvider.notifier);
-                    },
-                    child: const Icon(Icons.work),
-                  ),
-                ),
-              ),
-            ),
+            trailing: hasAdminPrivilege
+                ? Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.logout,
+                              color: Colors.white70,
+                            ),
+                            onPressed: _handleLogout,
+                            tooltip: 'Logout',
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                context.go('/tenant/schedule');
+                              },
+                              child: const Icon(Icons.work),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : null,
           ),
           const VerticalDivider(thickness: 1, width: 1),
           Expanded(child: widget.body),

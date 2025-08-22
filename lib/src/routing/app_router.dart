@@ -41,9 +41,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             user.hasRole(UserRoleType.customer)) {
           return '/role-selection';
         } else if (user.hasRole(UserRoleType.tenant)) {
-          return '/';
+          return '/tenant';
         } else if (user.hasRole(UserRoleType.customer)) {
-          return '/';
+          return '/clientele/bookings';
         }
       }
 
@@ -61,14 +61,87 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             const NoTransitionPage(child: TenantSignUp()),
       ),
       GoRoute(
-        path: '/',
+        path: '/role-selection',
         pageBuilder: (context, state) =>
-            const NoTransitionPage(child: GridWidget()),
+            const NoTransitionPage(child: RoleSelectionScreen()),
       ),
-      ...clienteleRoutes,
-      // ...businessRoutes,
+
+      //   StatefulShellRoute.indexedStack(
+      //     builder: (context, state, navigationShell) {
+      //       return AppNavigationWidget(navigationShell: navigationShell);
+      //     },
+      //     branches: [
+      //       // Business routes
+      //       StatefulShellBranch(
+      //         routes: [
+      //           GoRoute(
+      //             path: '/tenant',
+      //             builder: (context, state) => const AuthGate(),
+      //             routes: businessRoutes,
+      //           ),
+      //         ],
+      //       ),
+      //       // Clientele routes
+      //       StatefulShellBranch(
+      //         routes: [
+      //           GoRoute(
+      //             path: '/clientele',
+      //             builder: (context, state) => const AuthGate(),
+      //             routes: clienteleRoutes,
+      //           ),
+      //         ],
+      //       ),
+      //     ],
+      //   ),
+      // ],
+      ShellRoute(
+        builder: (context, state, child) {
+          return MaterialApp(home: child);
+        },
+        routes: [
+          GoRoute(
+            path: '/clientele',
+            builder: (context, state) => const SizedBox(),
+            routes: clienteleRoutes,
+          ),
+          GoRoute(
+            path: '/tenant',
+            builder: (context, state) => const SizedBox(),
+            routes: businessRoutes,
+          ),
+        ],
+      ),
     ],
-    errorBuilder: (context, state) =>
-        Scaffold(body: Center(child: Text('Page not found: ${state.uri}'))),
+    errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(title: const Text('Error')),
+      body: Center(child: Text('Main Error: Page not found - ${state.uri}')),
+    ),
   );
 });
+
+class RoleSelectionScreen extends StatelessWidget {
+  const RoleSelectionScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Select Role')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () => context.go('/tenant/schedule'),
+              child: Text('Continue as Tenant'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => context.go('/clientele/bookings'),
+              child: Text('Continue as Client'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

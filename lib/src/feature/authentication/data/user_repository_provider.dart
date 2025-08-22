@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/data/firebase_user_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/data/mock_user_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/data/user_repository_base.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 

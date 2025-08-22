@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/fake_user_role.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/auth_gate.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/memberships_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_screen.dart';
@@ -33,12 +35,10 @@ enum ClienteleRoute {
 }
 
 final clienteleRoutes = [
-  GoRoute(
-    path: '/sign-in',
-    name: ClienteleRoute.signIn.name,
-    pageBuilder: (context, state) => const NoTransitionPage(child: AuthGate()),
-  ),
   StatefulShellRoute.indexedStack(
+    builder: (context, state, navigationShell) {
+      return AppNavigationWidget(navigationShell: navigationShell);
+    },
     branches: [
       StatefulShellBranch(
         navigatorKey: _shellClienteleBookingsKey,
@@ -55,7 +55,7 @@ final clienteleRoutes = [
                 pageBuilder: (context, state) {
                   final businessId = state.pathParameters['businessId'];
                   return NoTransitionPage(
-                    child: BusinessBlocksList(businessId: businessId),
+                    child: BusinessBlocksList(businessId: businessId!),
                   );
                 },
                 routes: [
@@ -74,16 +74,6 @@ final clienteleRoutes = [
                     },
                   ),
                 ],
-              ),
-              GoRoute(
-                path: 'block/:blockId',
-                name: ClienteleRoute.bookingDetail.name,
-                pageBuilder: (context, state) {
-                  final blockId = state.pathParameters['blockId'];
-                  return NoTransitionPage(
-                    child: BlockDetail(blockId: blockId!),
-                  );
-                },
               ),
             ],
           ),
@@ -115,49 +105,25 @@ final clienteleRoutes = [
   ),
 ];
 
-final clienteleRedirect = (BuildContext context, GoRouterState state) {
-  final path = state.uri.path;
-  if (path == '/') {
-    return '/bookings';
-  }
-  return null;
-};
-
 final goRouterClienteleProvider = Provider((ref) {
+  final authState = ref.watch(currentAppUserProvider);
+
   return GoRouter(
     initialLocation: '/bookings',
     navigatorKey: _rootClienteleNavigatorKey,
-    debugLogDiagnostics: false,
+    debugLogDiagnostics: true,
     redirect: (context, state) {
-      final path = state.uri.path;
-      final userRole = FakeUserRole.tenant;
-      if (path.startsWith('/profile') ||
-          path.startsWith('/schedule') && userRole == UserRoles.clientele) {
-        return '/bookings';
+      final user = authState.value;
+      if (user == null || !user.hasRole(UserRoleType.customer)) {
+        return '/sign-in';
       }
-      // check loggedIn state here then redirect to proper path
-      return clienteleRedirect(context, state);
+      return null;
     },
     routes: clienteleRoutes,
-    errorPageBuilder: (context, state) => NoTransitionPage(
-      child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Page Not Found',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.goNamed(ClienteleRoute.clienteleBookings.name);
-                },
-                child: const Text('Back to home'),
-              ),
-            ],
-          ),
-        ),
+    errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(title: const Text('Error')),
+      body: Center(
+        child: Text('Clientele Error: Page not found - ${state.uri}'),
       ),
     ),
   );
