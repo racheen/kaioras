@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/common/cancel_button_widget.dart';
-import 'package:flutter_riverpod_boilerplate/src/common/review_button_widget.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/booking_button_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_notifier.dart';
 
 class ButtonLabel {
   static const book = 'Book';
@@ -25,8 +23,6 @@ class BookingCardWidget extends ConsumerWidget {
   final String? description;
   final List<String> tags;
   final String? price;
-  final Function? callback;
-  final Function? cancelCallback;
   final Block block;
 
   const BookingCardWidget({
@@ -40,8 +36,6 @@ class BookingCardWidget extends ConsumerWidget {
     this.description,
     this.tags = const [],
     this.price,
-    this.callback,
-    this.cancelCallback,
     required this.block,
   });
 
@@ -51,37 +45,6 @@ class BookingCardWidget extends ConsumerWidget {
     final isMobileView = screenWidth < 800;
 
     final isAvatarVisible = status != BookingStatus.attended.name;
-
-    String buttonLabel = ButtonLabel.book;
-
-    final userBookings = ref.watch(bookingsNotifierProvider);
-
-    bool checkStatus(bookingStatus) {
-      for (var booking in userBookings) {
-        if (booking.containsKey(block.blockId) &&
-            booking.containsValue(bookingStatus)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    final isBooked = checkStatus(BookingStatus.booked.name);
-    final isCancelled = checkStatus(BookingStatus.cancelled.name);
-    final isWaitlisted = checkStatus(BookingStatus.waitlisted.name);
-    final hasAttended = checkStatus(BookingStatus.attended.name);
-
-    if (isBooked) {
-      buttonLabel = ButtonLabel.cancel;
-    } else if (hasAttended) {
-      buttonLabel = ButtonLabel.review;
-    } else if (isWaitlisted) {
-      buttonLabel = ButtonLabel.waitlisted;
-    } else if (isCancelled) {
-      buttonLabel = ButtonLabel.rebook;
-    } else {
-      buttonLabel = ButtonLabel.book;
-    }
 
     if (isMobileView) {
       return Card(
@@ -109,67 +72,7 @@ class BookingCardWidget extends ConsumerWidget {
                 title: Text(startTime, style: TextStyle(color: AppColors.grey)),
               ),
               Divider(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Builder(
-                  builder: (context) {
-                    switch (buttonLabel) {
-                      case ButtonLabel.cancel:
-                        return CancelButtonWidget(
-                          callback: () => cancelCallback!(),
-                        );
-                      case ButtonLabel.review:
-                        return ReviewButtonWidget();
-                      case ButtonLabel.waitlisted:
-                        return ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            enableFeedback: false,
-                            surfaceTintColor: null,
-                            overlayColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            backgroundColor: Colors.grey,
-                            foregroundColor: Colors.white,
-                            enabledMouseCursor: SystemMouseCursors.basic,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 15,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            minimumSize: Size(double.infinity, 50),
-                          ),
-                          child: Text(buttonLabel),
-                        );
-                      default:
-                        return ElevatedButton(
-                          onPressed: () {
-                            if (!isBooked) {
-                              if (callback != null) {
-                                callback!();
-                              }
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.violetC2,
-                            foregroundColor: Colors.white,
-                            shadowColor: Colors.grey,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 15,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            minimumSize: Size(double.infinity, 50),
-                          ),
-                          child: Text(buttonLabel),
-                        );
-                    }
-                  },
-                ),
-              ),
+              BookingButtonWidget(block: block),
             ],
           ),
         ),
@@ -370,79 +273,7 @@ class BookingCardWidget extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: SizedBox(
-                          width: 150,
-                          height: 50,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Builder(
-                              builder: (context) {
-                                switch (buttonLabel) {
-                                  case ButtonLabel.cancel:
-                                    return CancelButtonWidget(
-                                      callback: cancelCallback!,
-                                    );
-                                  case ButtonLabel.review:
-                                    return ReviewButtonWidget();
-                                  case ButtonLabel.waitlisted:
-                                    return ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                        enableFeedback: false,
-                                        surfaceTintColor: null,
-                                        overlayColor: Colors.transparent,
-                                        shadowColor: Colors.transparent,
-                                        backgroundColor: Colors.grey,
-                                        foregroundColor: Colors.white,
-                                        enabledMouseCursor:
-                                            SystemMouseCursors.basic,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 15,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            15,
-                                          ),
-                                        ),
-                                        minimumSize: Size(double.infinity, 50),
-                                      ),
-                                      child: Text(buttonLabel),
-                                    );
-                                  default:
-                                    return ElevatedButton(
-                                      onPressed: () {
-                                        if (!isBooked) {
-                                          if (callback != null) {
-                                            callback!();
-                                          }
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.violetC2,
-                                        foregroundColor: Colors.white,
-                                        shadowColor: Colors.grey,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 15,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            15,
-                                          ),
-                                        ),
-                                        minimumSize: Size(double.infinity, 50),
-                                      ),
-                                      child: Text(buttonLabel),
-                                    );
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
+                      BookingButtonWidget(block: block),
                     ],
                   ),
                 ),
