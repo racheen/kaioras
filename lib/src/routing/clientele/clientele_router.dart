@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/global_loading_indicator.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/memberships_screen.dart';
@@ -33,8 +34,12 @@ enum ClienteleRoute {
 
 final clienteleRoutes = [
   StatefulShellRoute.indexedStack(
-    builder: (context, state, navigationShell) {
-      return AppNavigationWidget(navigationShell: navigationShell);
+    pageBuilder: (context, state, navigationShell) {
+      return NoTransitionPage(
+        child: GlobalLoadingIndicator(
+          child: AppNavigationWidget(navigationShell: navigationShell),
+        ),
+      );
     },
     branches: [
       StatefulShellBranch(
