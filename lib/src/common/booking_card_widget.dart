@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod_boilerplate/src/common/cancel_button_widget.dart';
-import 'package:flutter_riverpod_boilerplate/src/common/review_button_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/booking_button_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 
 class ButtonLabel {
   static const book = 'Book';
   static const cancel = 'Cancel';
   static const review = 'Review';
+  static const waitlisted = 'Waitlisted';
+  static const rebook = 'Rebook';
 }
 
-class BookingCardWidget extends StatelessWidget {
+class BookingCardWidget extends ConsumerWidget {
   final String title;
   final String? host;
   final String startTime;
@@ -20,6 +23,7 @@ class BookingCardWidget extends StatelessWidget {
   final String? description;
   final List<String> tags;
   final String? price;
+  final Block block;
 
   const BookingCardWidget({
     super.key,
@@ -32,23 +36,15 @@ class BookingCardWidget extends StatelessWidget {
     this.description,
     this.tags = const [],
     this.price,
+    required this.block,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobileView = screenWidth < 800;
 
     final isAvatarVisible = status != BookingStatus.attended.name;
-
-    String buttonLabel = ButtonLabel.book;
-    if (status == BookingStatus.cancelled.name) {
-      buttonLabel = ButtonLabel.cancel;
-    } else if (status == BookingStatus.attended.name) {
-      buttonLabel = ButtonLabel.review;
-    } else {
-      buttonLabel = ButtonLabel.book;
-    }
 
     if (isMobileView) {
       return Card(
@@ -76,39 +72,7 @@ class BookingCardWidget extends StatelessWidget {
                 title: Text(startTime, style: TextStyle(color: AppColors.grey)),
               ),
               Divider(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Builder(
-                  builder: (context) {
-                    switch (buttonLabel) {
-                      case ButtonLabel.cancel:
-                        return CancelButtonWidget();
-                      case ButtonLabel.review:
-                        return ReviewButtonWidget();
-                      default:
-                        return ElevatedButton(
-                          onPressed: () {
-                            // todo: implement book functionality
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.violetC2,
-                            foregroundColor: Colors.white,
-                            shadowColor: Colors.grey,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 15,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            minimumSize: Size(double.infinity, 50),
-                          ),
-                          child: Text(buttonLabel),
-                        );
-                    }
-                  },
-                ),
-              ),
+              BookingButtonWidget(block: block),
             ],
           ),
         ),
@@ -309,25 +273,7 @@ class BookingCardWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: SizedBox(
-                          width: 150,
-                          height: 50,
-                          child: FloatingActionButton.extended(
-                            elevation: 1,
-                            onPressed: () {
-                              // todo: implement book functionality
-                            },
-                            label: Text(buttonLabel),
-                            backgroundColor: AppColors.violetC2,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                        ),
-                      ),
+                      BookingButtonWidget(block: block),
                     ],
                   ),
                 ),

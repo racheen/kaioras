@@ -12,6 +12,10 @@ class FakeAppUserRepository {
   final _appUser = InMemoryStore<AppUser>(mockAppUser);
   final _bookings = InMemoryStore<List<Booking>>(mockAppUser.bookings!);
 
+  Future<String> currentUser() async {
+    return Future.value(_appUser.value.uid);
+  }
+
   Future<AppUser> fetchAppUser() async {
     return Future.value(_appUser.value);
   }
@@ -32,6 +36,12 @@ class FakeAppUserRepository {
       return booking.status == BookingStatus.attended.name;
     }).toList();
     return Future.value(pastBookings);
+  }
+
+  Future<void> addBookingToUpcoming(Booking newBooking) async {
+    print(newBooking.toJson());
+    _bookings.value.add(newBooking);
+    print(_bookings.value);
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/global_loading_indicator.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/fake_user_role.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/auth_gate.dart';
@@ -59,7 +60,9 @@ final goRouterClienteleProvider = Provider((ref) {
       ),
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, navigationShell) => NoTransitionPage(
-          child: AppNavigationWidget(navigationShell: navigationShell),
+          child: GlobalLoadingIndicator(
+            child: AppNavigationWidget(navigationShell: navigationShell),
+          ),
         ),
         branches: [
           StatefulShellBranch(
