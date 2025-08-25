@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/async_value_widget.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/booking_button_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_detail/block_controller.dart';
@@ -247,14 +248,14 @@ class _BlockDetailState extends ConsumerState<BlockDetail> {
                             ],
                           ),
                         ),
-                        Center(
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8.0),
-                            width: 400,
-                            height: 200,
-                            decoration: BoxDecoration(border: Border.all()),
-                          ),
-                        ),
+                        // Center(
+                        //   child: Container(
+                        //     margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        //     width: 400,
+                        //     height: 200,
+                        //     decoration: BoxDecoration(border: Border.all()),
+                        //   ),
+                        // ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -290,25 +291,7 @@ class _BlockDetailState extends ConsumerState<BlockDetail> {
                             ),
                             Container(
                               padding: const EdgeInsets.fromLTRB(0, 15, 0, 30),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // todo: implement booking functionality
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.violetC2,
-                                  foregroundColor: Colors.white,
-                                  shadowColor: Colors.grey,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 15,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  minimumSize: Size(double.infinity, 50),
-                                ),
-                                child: Text('Book'),
-                              ),
+                              child: BookingButtonWidget(block: block),
                             ),
                           ],
                         ),
