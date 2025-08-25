@@ -48,7 +48,6 @@ class _BlockDetailState extends ConsumerState<BlockDetail> {
 
   @override
   Widget build(BuildContext context) {
-    // todo: fetch block data using blockId of blockDetails is null
     final asyncValue = ref.watch(blockControllerProvider(widget.blockId));
 
     Size screenSize = MediaQuery.of(context).size;
