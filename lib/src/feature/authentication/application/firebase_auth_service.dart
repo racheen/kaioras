@@ -1,131 +1,94 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/data/firebase_user_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  Stream<User?> authStateChanges() => _auth.authStateChanges();
+  final UserRepository _userRepository;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final _authStateController = StreamController<AppUser?>.broadcast();
 
-  Future<UserCredential> signIn(String email, String password) async {
-    return await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  AuthService(this._userRepository) {
+    // Listen to Firebase Auth state changes and update the controller
+    _firebaseAuth.authStateChanges().listen((firebaseUser) async {
+      if (firebaseUser == null) {
+        _authStateController.add(null);
+      } else {
+        final appUser = await _userRepository.getCurrentUser();
+        _authStateController.add(appUser);
+      }
+    });
+  }
+
+  Stream<AppUser?> authStateChanges() {
+    return _firebaseAuth.authStateChanges().asyncMap((firebaseUser) async {
+      if (firebaseUser == null) {
+        print('AuthService: No authenticated user');
+        return null;
+      }
+      print('AuthService: User authenticated - ${firebaseUser.uid}');
+      return await _userRepository.getCurrentUser();
+    });
+  }
+
+  Future<AppUser?> signIn(String email, String password) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return await _userRepository.getCurrentUser();
+    } catch (e) {
+      print('Error signing in: $e');
+      return null;
+    }
   }
 
   Future<void> signOut() async {
-    await _auth.signOut();
+    await _firebaseAuth.signOut();
+    // The authStateChanges listener will handle updating the controller
   }
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Future<AppUser?> signUpUser(Map<String, dynamic> userData) async {
+    final user = await _userRepository.signUpWithEmailAndPassword(userData);
+    _authStateController.add(user);
+    return user;
+  }
 
-  Future<void> signUpTenant(
+  Future<AppUser?> signUpTenant(
     Map<String, dynamic> userData,
     Map<String, dynamic> businessData,
   ) async {
     try {
-      // Create the user with Firebase Authentication
-      UserCredential
-      userCredential = await _auth.createUserWithEmailAndPassword(
-        email: userData['email'],
-        password:
-            userData['password'], // Make sure to pass the password from the form
+      final user = await _userRepository.signUpTenantWithEmailAndPassword(
+        userData,
+        businessData,
       );
-
-      final String userId = userCredential.user!.uid;
-      final String businessId = _firestore
-          .collection('businesses')
-          .doc()
-          .id; // Generate a new business ID
-
-      // Create user document
-      await _firestore.collection('users').doc(userId).set({
-        'uid': userId,
-        'email': userData['email'],
-        'name': userData['name'],
-        'createdAt': FieldValue.serverTimestamp(),
-        'profilePic': '', // You might want to add this field to your form
-        'lastBusinessId': businessId,
-        'platformRole': null,
-        'notifications': false,
-        'roles': {
-          businessId: {
-            'role': 'tenant',
-            'status': 'active',
-            'createdAt': FieldValue.serverTimestamp(),
-          },
-        },
-      });
-
-      // Create business document
-      await _firestore.collection('businesses').doc(businessId).set({
-        'businessId': businessId,
-        'name': businessData['businessName'],
-        'ownerUid': userId,
-        'createdAt': FieldValue.serverTimestamp(),
-        'industry': businessData['industry'],
-        'branding': {
-          'primaryColor': businessData['primaryColor'],
-          'logoUrl': businessData['logoUrl'],
-        },
-        'plan': 'pro', // You might want to add a plan selection to your form
-        'stripeAccountId': '', // This would typically be set up separately
-        'roles': {
-          userId: {
-            'uid': userId,
-            'role': 'tenant',
-            'status': 'active',
-            'createdAt': FieldValue.serverTimestamp(),
-            'displayName': userData['name'],
-          },
-        },
-        'settings': {
-          'availability': {
-            'defaultHours': [
-              {'day': 'monday', 'start': '08:00', 'end': '18:00'},
-              {'day': 'tuesday', 'start': '08:00', 'end': '18:00'},
-              {'day': 'wednesday', 'start': '08:00', 'end': '18:00'},
-              {'day': 'thursday', 'start': '08:00', 'end': '18:00'},
-              {'day': 'friday', 'start': '08:00', 'end': '18:00'},
-            ],
-            'timeZone': 'America/New_York',
-          },
-          'holidays': [],
-          'closedDays': ['sunday', 'saturday'],
-        },
-      });
+      _authStateController.add(user);
+      return user;
     } catch (e) {
-      print('Error during signup: $e');
-      throw e;
+      print('Error signing up tenant: $e');
+      return null;
     }
+  }
+
+  void dispose() {
+    _authStateController.close();
   }
 }
 
-final authServiceProvider = Provider<AuthService>((ref) => AuthService());
+final authServiceProvider = Provider<AuthService>((ref) {
+  final userRepository = ref.watch(userRepositoryProvider);
+  return AuthService(userRepository);
+});
 
-final authStateProvider = StreamProvider<User?>((ref) {
+final authStateProvider = StreamProvider<AppUser?>((ref) {
   final authService = ref.watch(authServiceProvider);
   return authService.authStateChanges();
 });
 
-final currentAppUserProvider = StreamProvider<AppUser?>((ref) async* {
-  final authState = ref.watch(authStateProvider);
-
-  if (authState.value == null) {
-    yield null;
-  } else {
-    // Fetch the user document from Firestore
-    final userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(authState.value!.uid)
-        .get();
-
-    if (userDoc.exists) {
-      // Convert the Firestore document to your AppUser
-      yield AppUser.fromMap(userDoc.data()!);
-    } else {
-      yield null;
-    }
-  }
+final currentAppUserProvider = StreamProvider<AppUser?>((ref) {
+  final authService = ref.watch(authServiceProvider);
+  return authService.authStateChanges();
 });

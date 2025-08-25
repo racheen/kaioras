@@ -3,16 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/mock_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 
-class SignInForm extends ConsumerWidget {
+class SignInForm extends ConsumerStatefulWidget {
   SignInForm({Key? key}) : super(key: key);
 
+  @override
+  ConsumerState<SignInForm> createState() => _SignInFormState();
+}
+
+class _SignInFormState extends ConsumerState<SignInForm> {
   final _loginFormKey = GlobalKey<FormBuilderState>();
   final _emailFieldKey = GlobalKey<FormBuilderFieldState>();
+
+  bool _isForgotPasswordHovered = false;
+  bool _isSignUpHovered = false;
 
   final String appName = 'Kaioras';
   final double _minWidth = 400.0;
@@ -22,7 +30,7 @@ class SignInForm extends ConsumerWidget {
   final String _forgotPasswordText = 'Forgot your password?';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     void signUp() {
       debugPrint('Sign up clicked');
       context.goNamed(AppRoute.tenantSignUp.name);
@@ -38,6 +46,12 @@ class SignInForm extends ConsumerWidget {
           final authService = ref.read(authServiceProvider);
           await authService.signIn(email, password);
           // Navigation is now handled in AuthGate
+
+          print('Sign-in successful'); // Add this debug print
+
+          // Force refresh of auth state
+          ref.refresh(currentAppUserProvider);
+          print('Auth state refreshed'); // Add this debug print
         } on FirebaseAuthException catch (e) {
           String errorMessage;
           switch (e.code) {
@@ -126,11 +140,21 @@ class SignInForm extends ConsumerWidget {
             ),
           ),
           SizedBox(height: 40.0),
-          GestureDetector(
-            onTap: forgotPassword,
-            child: Text(
-              _forgotPasswordText,
-              style: TextStyle(color: AppColors.violetE3),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            onEnter: (_) => setState(() => _isForgotPasswordHovered = true),
+            onExit: (_) => setState(() => _isForgotPasswordHovered = false),
+            child: GestureDetector(
+              onTap: forgotPassword,
+              child: Text(
+                _forgotPasswordText,
+                style: TextStyle(
+                  color: AppColors.violetE3,
+                  decoration: _isForgotPasswordHovered
+                      ? TextDecoration.underline
+                      : TextDecoration.none,
+                ),
+              ),
             ),
           ),
           SizedBox(width: _minWidth, child: Divider(height: 80.0)),
@@ -141,11 +165,21 @@ class SignInForm extends ConsumerWidget {
                 'New to $appName? ',
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
-              GestureDetector(
-                onTap: signUp,
-                child: Text(
-                  _signUpText,
-                  style: TextStyle(color: AppColors.violetE3),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => setState(() => _isSignUpHovered = true),
+                onExit: (_) => setState(() => _isSignUpHovered = false),
+                child: GestureDetector(
+                  onTap: signUp,
+                  child: Text(
+                    _signUpText,
+                    style: TextStyle(
+                      color: AppColors.violetE3,
+                      decoration: _isSignUpHovered
+                          ? TextDecoration.underline
+                          : TextDecoration.none,
+                    ),
+                  ),
                 ),
               ),
             ],

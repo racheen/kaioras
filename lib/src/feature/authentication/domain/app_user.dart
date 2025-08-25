@@ -64,33 +64,37 @@ class AppUser {
 
   factory AppUser.fromMap(Map<String, dynamic> map) {
     return AppUser(
-      uid: map['uid'] ?? '',
-      email: map['email'] ?? '',
-      name: map['name'] ?? '',
-      createdAt: map['createdAt'] != null
-          ? DateTime.parse(map['createdAt'])
-          : DateTime.now(),
-      image: map['image'],
-      lastBusinessId: map['lastBusinessId'],
-      platformRole: map['platformRole'],
-      notifications: map['notifications'] ?? false,
-      roles:
-          (map['roles'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(
-              key,
-              UserRole(
-                role: value['role'] ?? '',
-                status: value['status'] ?? '',
-                createdAt: value['createdAt'] != null
-                    ? DateTime.parse(value['createdAt'])
-                    : DateTime.now(),
-              ),
-            ),
-          ) ??
-          {},
-      memberships: map['memberships'],
-      bookings: map['bookings'],
+      uid: map['uid'] as String,
+      email: map['email'] as String,
+      name: map['name'] as String,
+      createdAt: map['createdAt'] is Timestamp
+          ? (map['createdAt'] as Timestamp).toDate()
+          : DateTime.parse(map['createdAt'] as String),
+      image: map['image'] as String?,
+      lastBusinessId: map['lastBusinessId'] as String?,
+      platformRole: map['platformRole'] as String?,
+      notifications: map['notifications'] as bool,
+      roles: (map['roles'] as Map<String, dynamic>).map(
+        (key, value) =>
+            MapEntry(key, UserRole.fromMap(value as Map<String, dynamic>)),
+      ),
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'email': email,
+      'name': name,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'image': image,
+      'lastBusinessId': lastBusinessId,
+      'platformRole': platformRole,
+      'notifications': notifications,
+      'roles': roles.map((key, value) => MapEntry(key, value.toMap())),
+      'memberships': memberships,
+      'bookings': bookings,
+    };
   }
 }
 
@@ -102,9 +106,11 @@ class UserRole {
   UserRole({required this.role, required this.status, required this.createdAt});
   factory UserRole.fromMap(Map<String, dynamic> map) {
     return UserRole(
-      role: map['role'],
-      status: map['status'],
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      role: map['role'] as String,
+      status: map['status'] as String,
+      createdAt: map['createdAt'] is Timestamp
+          ? (map['createdAt'] as Timestamp).toDate()
+          : DateTime.parse(map['createdAt'] as String),
     );
   }
 

@@ -2,4 +2,5 @@ import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/a
 
 abstract class UserRepositoryBase {
   Future<AppUser?> getCurrentUser();
+  void signOut();
 }

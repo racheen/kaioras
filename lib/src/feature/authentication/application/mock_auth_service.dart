@@ -22,6 +22,12 @@ class AuthService {
     _authStateController.add(null);
   }
 
+  Future<AppUser?> signUpUser(Map<String, dynamic> userData) async {
+    final user = await _userRepository.signUpUser(userData);
+    _authStateController.add(user);
+    return user;
+  }
+
   Future<AppUser?> signUpTenant(
     Map<String, dynamic> userData,
     Map<String, dynamic> businessData,
@@ -54,6 +60,7 @@ final currentAppUserProvider = StreamProvider<AppUser?>((ref) async* {
     yield null;
   } else {
     print('AuthService: Returning authenticated user');
+    print(authState.value);
     yield authState.value;
   }
 });

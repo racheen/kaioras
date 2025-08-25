@@ -2,12 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/data/user_repository_provider.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/sign_in_form.dart';
-import 'package:flutter_riverpod_boilerplate/src/routing/app_router.dart';
-import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
-import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthGate extends ConsumerWidget {

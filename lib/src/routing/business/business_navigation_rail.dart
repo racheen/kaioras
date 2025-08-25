@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/mock_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/privilege_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';

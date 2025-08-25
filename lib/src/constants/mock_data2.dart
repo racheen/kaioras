@@ -17,7 +17,7 @@ enum RoleType { tenant, admin, customer }
 
 enum BlockType { group, individual }
 
-final mockUsers = {
+final Map<String, AppUser> mockUsers = {
   'user001': AppUser(
     uid: 'user001',
     email: 'customer1@example.com',
@@ -178,7 +178,7 @@ final mockUsers = {
   ),
 };
 
-final mockBusinesses = {
+final Map<String, dynamic> mockBusinesses = {
   'business001': {
     'businessId': 'business001',
     'name': 'Pilates Studio',

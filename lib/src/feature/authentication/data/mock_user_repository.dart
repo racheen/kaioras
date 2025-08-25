@@ -14,11 +14,11 @@ class UserRepository implements UserRepositoryBase {
 
   Future<AppUser?> signIn(String email, String password) async {
     await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-    if (password == 'password') {
-      _currentUser = mockUsers['user003'];
-      return _currentUser;
-    }
-    return null;
+    _currentUser = mockUsers.values.firstWhere(
+      (user) => user.email == email && password == 'password',
+      orElse: () => throw Exception('User not found'),
+    );
+    return _currentUser;
   }
 
   Future<void> signOut() async {
@@ -26,30 +26,91 @@ class UserRepository implements UserRepositoryBase {
     _currentUser = null;
   }
 
+  Future<AppUser?> signUpUser(Map<String, dynamic> userData) async {
+    await Future.delayed(Duration(seconds: 2)); // Simulate network delay
+    final newUserId = 'user${mockUsers.length + 1}';
+    final newUser = AppUser(
+      uid: newUserId,
+      email: userData['email'],
+      name: userData['name'],
+      createdAt: DateTime.now(),
+      image: '',
+      lastBusinessId: null,
+      platformRole: null,
+      notifications: false,
+      roles: {},
+    );
+    mockUsers[newUserId] = newUser;
+    _currentUser = newUser;
+    return newUser;
+  }
+
   Future<AppUser?> signUpTenant(
     Map<String, dynamic> userData,
     Map<String, dynamic> businessData,
   ) async {
     await Future.delayed(Duration(seconds: 2)); // Simulate network delay
-    // Create a new user and business (you can add more logic here if needed)
+    final newUserId = 'user${mockUsers.length + 1}';
+    final newBusinessId = 'business${mockBusinesses.length + 1}';
     final newUser = AppUser(
-      uid: 'user006',
+      uid: newUserId,
       email: userData['email'],
       name: userData['name'],
       createdAt: DateTime.now(),
       image: '',
-      lastBusinessId: 'business003',
+      lastBusinessId: newBusinessId,
       platformRole: null,
       notifications: false,
       roles: {
-        'business003': UserRole(
+        newBusinessId: UserRole(
           role: RoleType.tenant.name,
           status: 'active',
           createdAt: DateTime.now(),
         ),
       },
     );
+    mockUsers[newUserId] = newUser;
     _currentUser = newUser;
+
+    // Add new business to mockBusinesses
+    mockBusinesses[newBusinessId] = {
+      'businessId': newBusinessId,
+      'name': businessData['businessName'],
+      'ownerUid': newUserId,
+      'createdAt': DateTime.now().toIso8601String(),
+      'industry': businessData['industry'] ?? 'Other',
+      'branding': {
+        'primaryColor': '#4A90E2',
+        'logoUrl': 'https://example.com/logos/default.png',
+      },
+      'plan': 'basic',
+      'stripeAccountId': 'acct_${DateTime.now().millisecondsSinceEpoch}',
+      'offers': [],
+      'roles': {
+        newUserId: {
+          'uid': newUserId,
+          'role': RoleType.tenant.name,
+          'status': 'active',
+          'createdAt': DateTime.now().toIso8601String(),
+          'displayName': userData['name'],
+        },
+      },
+      'settings': {
+        'availability': {
+          'defaultHours': [
+            {'day': 'monday', 'start': '09:00', 'end': '17:00'},
+            {'day': 'tuesday', 'start': '09:00', 'end': '17:00'},
+            {'day': 'wednesday', 'start': '09:00', 'end': '17:00'},
+            {'day': 'thursday', 'start': '09:00', 'end': '17:00'},
+            {'day': 'friday', 'start': '09:00', 'end': '17:00'},
+          ],
+          'timeZone': 'America/New_York',
+        },
+        'holidays': [],
+        'closedDays': ['saturday', 'sunday'],
+      },
+    };
+
     return newUser;
   }
 }
