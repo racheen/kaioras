@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/async_value_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/booking_card_widget.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/blocks_list_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/inline_calendar/inline_calendar.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_notifier.dart';
@@ -26,6 +27,42 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
     if (widget.businessId!.isEmpty) {
       context.pop();
     }
+  }
+
+  Future<void> showConfirmCancelDialog(Block block) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Cancel Booking'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to cancel this booking?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                context.pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Confirm', style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                ref
+                    .read(bookingsControllerProvider.notifier)
+                    .cancel(block, block.origin.businessId);
+                context.pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -146,15 +183,8 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                                                   block.origin.businessId,
                                               block: block,
                                             ),
-                                        cancelCallback: () => ref
-                                            .read(
-                                              bookingsControllerProvider
-                                                  .notifier,
-                                            )
-                                            .cancel(
-                                              block,
-                                              block.origin.businessId,
-                                            ),
+                                        cancelCallback: () =>
+                                            showConfirmCancelDialog(block),
                                       ),
                                       onTap: () {
                                         if (isMobileView) {
