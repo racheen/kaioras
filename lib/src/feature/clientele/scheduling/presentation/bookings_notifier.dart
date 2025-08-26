@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_app_user_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/firebase_bookings_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/booking.dart';
 
@@ -14,7 +14,8 @@ class BookingsNotifier
   }
 
   Future<void> _fetchUserBookings() async {
-    final uid = await ref.read(appUserRepositoryProvider).currentUser();
+    final currentUser = ref.read(currentAppUserProvider);
+    final uid = currentUser.value!.uid;
     state = await ref.read(bookingsFutureProvider(uid).future);
   }
 

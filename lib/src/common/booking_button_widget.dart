@@ -101,7 +101,7 @@ class BookingButtonWidget extends ConsumerWidget {
     } else if (isCancelled) {
       buttonLabel = ButtonLabel.rebook;
     } else {
-      buttonLabel = '...';
+      buttonLabel = ButtonLabel.book;
     }
 
     if (isMobileView) {

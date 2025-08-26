@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/global_loading_indicator.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/application/booking_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_app_user_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/firebase_bookings_repository.dart';
@@ -10,10 +11,10 @@ import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/do
 
 class BookingsController extends AutoDisposeAsyncNotifier<List<Booking>> {
   Future<List<Booking>> fetchBookings() async {
-    final currentUser = await ref.read(appUserRepositoryProvider).currentUser();
-    return await ref
-        .read(bookingsRepositoryProvider)
-        .fetchUserBookings(currentUser);
+    final currentUser = ref.read(currentAppUserProvider);
+    final uid = currentUser.value?.uid;
+
+    return await ref.read(bookingsRepositoryProvider).fetchUserBookings(uid);
   }
 
   @override
