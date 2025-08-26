@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/auth_gate.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/role_selection_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/user_sign_up.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
@@ -22,10 +23,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       return userAsync.when(
         data: (user) {
-          print(
-            'Redirect: User state - ${user != null ? 'Authenticated' : 'Not authenticated'}',
-          );
-
           final isLoggedIn = user != null;
           final isLoggingIn = state.uri.toString() == '/sign-in';
           final isSigningUp = state.uri.toString() == '/tenant-sign-up';
@@ -39,9 +36,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 user.hasRole(UserRoleType.customer)) {
               return '/role-selection';
             } else if (user.hasRole(UserRoleType.tenant)) {
-              return '/tenant/schedule';
-            } else if (user.hasRole(UserRoleType.customer)) {
-              return '/clientele/bookings';
+              context.go(AppRoute.schedule.name);
+            } else {
+              context.go(ClienteleRoute.clienteleBookings.name);
             }
           }
 
@@ -75,14 +72,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         },
         routes: [
           GoRoute(
-            path: '/clientele',
-            builder: (context, state) => const SizedBox(),
-            routes: clienteleRoutes,
-          ),
-          GoRoute(
             path: '/tenant',
             builder: (context, state) => const SizedBox(),
             routes: businessRoutes,
+          ),
+          GoRoute(
+            path: '/clientele',
+            builder: (context, state) => const SizedBox(),
+            routes: clienteleRoutes,
           ),
         ],
       ),
@@ -93,30 +90,3 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     ),
   );
 });
-
-class RoleSelectionScreen extends StatelessWidget {
-  const RoleSelectionScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Select Role')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () => context.go('/tenant/schedule'),
-              child: Text('Continue as Tenant'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => context.go('/clientele/bookings'),
-              child: Text('Continue as Client'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

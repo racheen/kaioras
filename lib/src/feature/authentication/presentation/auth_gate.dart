@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/sign_in_form.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/business/business_router.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthGate extends ConsumerWidget {
@@ -20,10 +22,10 @@ class AuthGate extends ConsumerWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             switch (user.getPrimaryRole()) {
               case UserRoleType.tenant:
-                context.go('/tenant/schedule');
+                context.go(AppRoute.schedule.name);
                 break;
-              case UserRoleType.customer:
-                context.go('/clientele/bookings');
+              default:
+                context.go(ClienteleRoute.clienteleBookings.name);
                 break;
             }
           });
