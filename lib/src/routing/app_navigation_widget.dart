@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/async_value_widget.dart';
+import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/fake_user_role.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/privilege_controller.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/privilege_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_navigation_bar.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_navigation_rail.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_navigation_bar.dart';
@@ -36,6 +37,10 @@ class AppNavigationWidget extends ConsumerWidget {
       index,
       initialLocation: index == navigationShell.currentIndex,
     );
+  }
+
+  bool _isClienteleRoute(String location) {
+    return location.startsWith('/clientele');
   }
 
   Widget _clienteleNavigationWidget(
@@ -78,16 +83,19 @@ class AppNavigationWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final hasAdminPrivilege = ref.watch(privilegeControllerProvider);
+    final location = GoRouterState.of(context).uri.toString();
+    final isClienteleRoute = _isClienteleRoute(location);
 
-        if (hasAdminPrivilege) {
-          return _tenantNavigationWidget(context, constraints);
-        } else {
-          return _clienteleNavigationWidget(context, constraints);
-        }
-      },
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (isClienteleRoute) {
+            return _clienteleNavigationWidget(context, constraints);
+          } else {
+            return _tenantNavigationWidget(context, constraints);
+          }
+        },
+      ),
     );
   }
 }
