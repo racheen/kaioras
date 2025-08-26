@@ -36,7 +36,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 user.hasRole(UserRoleType.customer)) {
               return '/role-selection';
             } else if (user.hasRole(UserRoleType.tenant)) {
-              return '/tenant/schedule';
+              return AppRoute.schedule.name;
             } else {
               return '/clientele/bookings';
             }
@@ -44,8 +44,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
           return null;
         },
-        loading: () => '/loading', // You might want to create a loading screen
-        error: (_, __) => '/error', // You might want to create an error screen
+        loading: () {
+          print('Redirect: Loading user data');
+          return '/loading';
+        }, // You might want to create a loading screen
+        error: (error, stackTrace) {
+          print('Redirect: Error loading user data: $error');
+          print('Stack trace: $stackTrace');
+          return '/error';
+        },
       );
     },
     routes: [
