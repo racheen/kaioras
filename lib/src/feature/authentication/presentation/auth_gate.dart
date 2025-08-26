@@ -22,10 +22,10 @@ class AuthGate extends ConsumerWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             switch (user.getPrimaryRole()) {
               case UserRoleType.tenant:
-                context.go(AppRoute.schedule.name);
+                context.goNamed(AppRoute.schedule.name);
                 break;
               default:
-                context.go(ClienteleRoute.clienteleBookings.name);
+                context.goNamed(ClienteleRoute.clienteleBookings.name);
                 break;
             }
           });

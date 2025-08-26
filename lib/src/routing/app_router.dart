@@ -17,7 +17,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/sign-in',
     navigatorKey: _rootNavigatorKey,
-    debugLogDiagnostics: false,
+    debugLogDiagnostics: true,
     redirect: (context, state) {
       final userAsync = ref.watch(currentAppUserProvider);
 
@@ -36,9 +36,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 user.hasRole(UserRoleType.customer)) {
               return '/role-selection';
             } else if (user.hasRole(UserRoleType.tenant)) {
-              context.go(AppRoute.schedule.name);
+              return '/tenant/schedule';
             } else {
-              context.go(ClienteleRoute.clienteleBookings.name);
+              return ClienteleRoute.clienteleBookings.name;
             }
           }
 
@@ -73,12 +73,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: '/tenant',
-            builder: (context, state) => const SizedBox(),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: SizedBox()),
             routes: businessRoutes,
           ),
           GoRoute(
             path: '/clientele',
-            builder: (context, state) => const SizedBox(),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: SizedBox()),
             routes: clienteleRoutes,
           ),
         ],

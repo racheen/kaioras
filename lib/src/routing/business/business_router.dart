@@ -26,6 +26,7 @@ enum AppRoute {
   businessProfile,
   schedule,
   dataTable,
+  calendarDetail,
 }
 
 final businessRoutes = [
