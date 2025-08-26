@@ -38,7 +38,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             } else if (user.hasRole(UserRoleType.tenant)) {
               return '/tenant/schedule';
             } else {
-              return ClienteleRoute.clienteleBookings.name;
+              return '/clientele/bookings';
             }
           }
 
@@ -66,6 +66,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) =>
             const NoTransitionPage(child: RoleSelectionScreen()),
       ),
+      GoRoute(
+        path: '/clientele',
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: SizedBox()),
+        routes: clienteleRoutes,
+      ),
       ShellRoute(
         builder: (context, state, child) {
           return MaterialApp(home: child);
@@ -76,12 +82,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) =>
                 const NoTransitionPage(child: SizedBox()),
             routes: businessRoutes,
-          ),
-          GoRoute(
-            path: '/clientele',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: SizedBox()),
-            routes: clienteleRoutes,
           ),
         ],
       ),

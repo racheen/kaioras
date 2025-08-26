@@ -52,7 +52,7 @@ final clienteleRoutes = [
                 const NoTransitionPage(child: BookingsScreen()),
             routes: [
               GoRoute(
-                path: 'business/:businessId',
+                path: '/business/:businessId',
                 name: ClienteleRoute.tenantCalendar.name,
                 pageBuilder: (context, state) {
                   final businessId = state.pathParameters['businessId'];
@@ -62,7 +62,7 @@ final clienteleRoutes = [
                 },
                 routes: [
                   GoRoute(
-                    path: 'block/:blockId',
+                    path: '/block/:blockId',
                     name: ClienteleRoute.block.name,
                     pageBuilder: (context, state) {
                       final blockId = state.pathParameters['blockId'];
@@ -76,6 +76,19 @@ final clienteleRoutes = [
                     },
                   ),
                 ],
+              ),
+              GoRoute(
+                path: '/block/:blockId',
+                name: ClienteleRoute.bookingDetail.name,
+                pageBuilder: (context, state) {
+                  final blockId = state.pathParameters['blockId'];
+                  if (blockId != null) {
+                    return NoTransitionPage(
+                      child: BlockDetail(blockId: blockId),
+                    );
+                  }
+                  return NoTransitionPage(child: Text('data'));
+                },
               ),
             ],
           ),
