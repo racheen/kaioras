@@ -38,7 +38,7 @@ class ScheduleForm extends ConsumerWidget {
         businessDetails: BusinessDetails(
           businessId: 'business001',
           name: 'Pialtes Studio',
-          picture: 'https://example.com/logo.png',
+          image: 'https://example.com/logo.png',
         ),
         title: formData['title'],
         type: formData['type'],

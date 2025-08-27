@@ -135,21 +135,21 @@ class Host {
 class BusinessDetails {
   final String businessId;
   final String name;
-  final String picture;
+  final String image;
 
   BusinessDetails({
     required this.businessId,
     required this.name,
-    required this.picture,
+    required this.image,
   });
   factory BusinessDetails.fromMap(Map<String, dynamic> map) {
     return BusinessDetails(
       businessId: map['businessId'],
       name: map['name'],
-      picture: map['picture'],
+      image: map['image'],
     );
   }
   Map<String, dynamic> toJson() {
-    return {'businessId': businessId, 'name': name, 'picture': picture};
+    return {'businessId': businessId, 'name': name, 'image': image};
   }
 }

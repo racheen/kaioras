@@ -14,15 +14,16 @@ class FirebaseBookingsRepository {
   }
 
   Future<void> addBooking(String businessId, Booking newBooking) async {
-    final blockId = newBooking.blockId;
+    if (newBooking.blockSnapshot != null) {
+      final blockId = newBooking.blockSnapshot?.blockId;
+      final docRef = _firestore
+          .collection('businesses/$businessId/blocks/$blockId/bookings')
+          .doc();
+      final bookingId = docRef.id;
 
-    final docRef = _firestore
-        .collection('businesses/$businessId/blocks/$blockId/bookings')
-        .doc();
-    final bookingId = docRef.id;
-
-    newBooking.bookingId = bookingId;
-    await docRef.set(newBooking.toJson());
+      newBooking.bookingId = bookingId;
+      await docRef.set(newBooking.toJson());
+    }
   }
 
   DocumentReference<Map<String, dynamic>> queryBookingById(
@@ -136,7 +137,9 @@ class FirebaseBookingsRepository {
   ) {
     List<Map<String?, String?>> list = [];
     for (int i = 0; i < bookings.length; i++) {
-      list.add({bookings[i].blockId: bookings[i].status});
+      if (bookings[i].blockSnapshot != null) {
+        list.add({bookings[i].blockSnapshot!.blockId: bookings[i].status});
+      }
     }
     return list;
   }

@@ -98,7 +98,7 @@ class Membership {
   final DateTime expiration;
   final String status;
   final DateTime createdAt;
-  final Map<String, BookingSnapshot> bookings;
+  // final Map<String, BookingSnapshot> bookings;
 
   Membership({
     required this.membershipId,
@@ -110,7 +110,7 @@ class Membership {
     required this.expiration,
     required this.status,
     required this.createdAt,
-    required this.bookings,
+    // required this.bookings,
   });
 
   factory Membership.fromFirestore(DocumentSnapshot doc) {
@@ -125,10 +125,24 @@ class Membership {
       expiration: (data['expiration'] as Timestamp).toDate(),
       status: data['status'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      bookings: (data['bookings'] as Map<String, dynamic>).map(
-        (key, value) => MapEntry(key, BookingSnapshot.fromMap(value)),
-      ),
+      // bookings: (data['bookings'] as Map<String, dynamic>).map(
+      //   (key, value) => MapEntry(key, BookingSnapshot.fromMap(value)),
+      // ),
     );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'membershipId': membershipId,
+      'businessDetails': businessDetails.toJson(),
+      'offerSnapshot': offerSnapshot.toJson(),
+      'name': name,
+      'credits': credits,
+      'creditsUsed': creditsUsed,
+      'expiration': Timestamp.fromDate(expiration),
+      'status': status,
+      'createdAt': Timestamp.fromDate(createdAt),
+    };
   }
 }
 
@@ -149,6 +163,10 @@ class OfferSnapshot {
       type: map['type'],
       description: map['description'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name, 'type': type, 'description': description};
   }
 }
 

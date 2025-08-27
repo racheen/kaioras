@@ -62,7 +62,7 @@ final Map<String, AppUser> mockUsers = {
         businessDetails: BusinessDetails(
           businessId: 'business001',
           name: 'Pilates Studio',
-          picture: 'https://example.com/logos/pilates.png',
+          image: 'https://example.com/logos/pilates.png',
         ),
         offerSnapshot: OfferSnapshot(
           name: 'Monthly Unlimited',
@@ -75,14 +75,14 @@ final Map<String, AppUser> mockUsers = {
         creditsUsed: 0,
         expiration: DateTime(2025, 6, 2, 9, 0),
         createdAt: DateTime(2025, 6, 1, 9, 0),
-        bookings: {
-          'booking001': BookingSnapshot(
-            blockId: 'block001',
-            title: 'Morning Pilates',
-            startTime: DateTime(2025, 6, 1, 9, 0),
-            status: BookingStatus.booked.name,
-          ),
-        },
+        // bookings: {
+        //   'booking001': BookingSnapshot(
+        //     blockId: 'block001',
+        //     title: 'Morning Pilates',
+        //     startTime: DateTime(2025, 6, 1, 9, 0),
+        //     status: BookingStatus.booked.name,
+        //   ),
+        // },
       ),
     },
     bookings: {
@@ -92,7 +92,7 @@ final Map<String, AppUser> mockUsers = {
         businessDetails: BusinessDetails(
           businessId: 'business001',
           name: 'Pilates Studio',
-          picture: 'https://example.com/logos/pilates.png',
+          image: 'https://example.com/logos/pilates.png',
         ),
         status: BookingStatus.booked.name,
         bookedAt: DateTime.now(),
@@ -130,7 +130,7 @@ final Map<String, AppUser> mockUsers = {
         businessDetails: BusinessDetails(
           businessId: 'business001',
           name: 'Pilates Studio',
-          picture: 'https://example.com/logos/pilates.png',
+          image: 'https://example.com/logos/pilates.png',
         ),
         offerSnapshot: OfferSnapshot(
           name: 'Monthly Unlimited',
@@ -143,14 +143,14 @@ final Map<String, AppUser> mockUsers = {
         creditsUsed: 0,
         expiration: DateTime(2025, 6, 2, 9, 0),
         createdAt: DateTime(2025, 6, 1, 9, 0),
-        bookings: {
-          'booking001': BookingSnapshot(
-            blockId: 'block001',
-            title: 'Morning Pilates',
-            startTime: DateTime(2025, 6, 1, 9, 0),
-            status: BookingStatus.booked.name,
-          ),
-        },
+        // bookings: {
+        //   'booking001': BookingSnapshot(
+        //     blockId: 'block001',
+        //     title: 'Morning Pilates',
+        //     startTime: DateTime(2025, 6, 1, 9, 0),
+        //     status: BookingStatus.booked.name,
+        //   ),
+        // },
       ),
     },
     bookings: {
@@ -160,7 +160,7 @@ final Map<String, AppUser> mockUsers = {
         businessDetails: BusinessDetails(
           businessId: 'business001',
           name: 'Pilates Studio',
-          picture: 'https://example.com/logos/pilates.png',
+          image: 'https://example.com/logos/pilates.png',
         ),
         status: BookingStatus.booked.name,
         bookedAt: DateTime.now(),
@@ -373,7 +373,7 @@ final mockBlocks = {
     businessDetails: BusinessDetails(
       businessId: 'business001',
       name: 'Pilates Studio',
-      picture: 'https://example.com/logos/pilates.png',
+      image: 'https://example.com/logos/pilates.png',
     ),
     title: 'Morning Pilates',
     type: BlockType.group.name,
@@ -407,7 +407,7 @@ final mockBlocks = {
     businessDetails: BusinessDetails(
       businessId: 'business001',
       name: 'Pilates Studio',
-      picture: 'https://example.com/logos/pilates.png',
+      image: 'https://example.com/logos/pilates.png',
     ),
     title: 'Morning Pilates',
     type: BlockType.group.name,
@@ -441,7 +441,7 @@ final mockBlocks = {
     businessDetails: BusinessDetails(
       businessId: 'business001',
       name: 'Pilates Studio',
-      picture: 'https://example.com/logos/pilates.png',
+      image: 'https://example.com/logos/pilates.png',
     ),
     title: 'Morning Pilates',
     type: BlockType.group.name,
@@ -475,7 +475,7 @@ final mockBlocks = {
     businessDetails: BusinessDetails(
       businessId: 'business001',
       name: 'Pilates Studio',
-      picture: 'https://example.com/logos/pilates.png',
+      image: 'https://example.com/logos/pilates.png',
     ),
     title: 'Morning Pilates',
     type: BlockType.group.name,
@@ -509,7 +509,7 @@ final mockBlocks = {
     businessDetails: BusinessDetails(
       businessId: 'business001',
       name: 'Pilates Studio',
-      picture: 'https://example.com/logos/pilates.png',
+      image: 'https://example.com/logos/pilates.png',
     ),
     title: 'Morning Pilates',
     type: BlockType.group.name,

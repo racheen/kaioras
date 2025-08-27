@@ -7,6 +7,7 @@ class Booking {
   String? membershipId;
   String? status;
   DateTime bookedAt;
+  BlockSnapshot? blockSnapshot;
   Block? block;
   AppUser? user;
   String? image;
@@ -21,6 +22,7 @@ class Booking {
     this.status = 'waitlisted',
     required this.bookedAt,
     this.block,
+    this.blockSnapshot,
     this.user,
     this.image,
     this.name,
@@ -50,26 +52,22 @@ class Booking {
       'membershipId': membershipId,
       'status': status,
       'bookedAt': Timestamp.fromDate(bookedAt),
-      'name': name,
-      'image': image,
       'uid': uid,
-      'blockId': blockId,
-      'businessId': businessId,
+      'block': blockSnapshot?.toJson(),
     };
   }
 
   factory Booking.fromMap(Map<String, dynamic> json, String bookingId) {
     final bookedAt = json['bookedAt'] as Timestamp;
+    final block = json['block'] as Map<String, dynamic>;
+
     return Booking(
       bookingId: bookingId,
       membershipId: json['membershipId'],
       status: json['status'],
       bookedAt: bookedAt.toDate(),
-      image: json['image'],
-      name: json['name'],
       uid: json['uid'],
-      blockId: json['blockId'],
-      businessId: json['businessId'],
+      blockSnapshot: BlockSnapshot.fromMap(block),
     );
   }
 }
