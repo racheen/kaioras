@@ -123,17 +123,27 @@ class BookingService {
               uid: uid,
             );
         if (existingBooking != null) {
-          existingBooking.status = BookingStatus.cancelled.name;
-          await ref
-              .read(bookingsRepositoryProvider)
-              .updateBooking(
-                currentBlock.origin.businessId,
-                currentBlock.blockId!,
-                existingBooking,
-              );
-          await ref
-              .read(bookingsNotifierProvider.notifier)
-              .updateUserBookings(uid, existingBooking);
+          final isRefundComplete = await ref
+              .read(membershipsRepositoryProvider)
+              .refundCredits(
+                uid,
+                existingBooking.membershipId!,
+                60,
+              ); // todo: replace with actual price
+
+          if (isRefundComplete) {
+            existingBooking.status = BookingStatus.cancelled.name;
+            await ref
+                .read(bookingsRepositoryProvider)
+                .updateBooking(
+                  currentBlock.origin.businessId,
+                  currentBlock.blockId!,
+                  existingBooking,
+                );
+            await ref
+                .read(bookingsNotifierProvider.notifier)
+                .updateUserBookings(uid, existingBooking);
+          }
         } else {
           print('unable to find existing booking to cancel');
         }
