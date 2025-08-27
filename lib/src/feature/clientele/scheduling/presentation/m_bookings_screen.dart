@@ -5,6 +5,7 @@ import 'package:flutter_riverpod_boilerplate/src/common/booking_card_widget.dart
 import 'package:flutter_riverpod_boilerplate/src/common/carousel_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_app_user_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/fake_memberships_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,9 +20,7 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
   @override
   Widget build(BuildContext context) {
     final membershipsAsyncValue = ref.watch(membershipsListFutureProvider);
-    final upcomingBookingsAsyncValue = ref.watch(
-      upcomingBookingsListFutureProvider,
-    );
+    final upcomingBookingsAsyncValue = ref.watch(bookingsControllerProvider);
     final pastBookingsAsyncValue = ref.watch(pastBookingsListFutureProvider);
 
     return AsyncValueWidget(
@@ -110,15 +109,16 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
                             context.goNamed(
                               ClienteleRoute.bookingDetail.name,
                               pathParameters: {
-                                'blockId': booking.blockId.toString(),
+                                'blockId': booking.block!.blockId.toString(),
                               },
                             );
                           },
                           child: BookingCardWidget(
-                            title: booking.title.toString(),
-                            startTime: booking.startTime.toString(),
+                            title: booking.block!.title.toString(),
+                            startTime: booking.block!.startTime.toString(),
                             location: booking.block?.location.toString() ?? '',
                             status: booking.status.toString(),
+                            block: booking.block!,
                           ),
                         ),
                       )
@@ -145,17 +145,18 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
                             context.goNamed(
                               ClienteleRoute.bookingDetail.name,
                               pathParameters: {
-                                'blockId': booking.blockId.toString(),
+                                'blockId': booking.block!.blockId.toString(),
                               },
                             );
                           },
                           child: BookingCardWidget(
-                            title: booking.title.toString(),
-                            startTime: booking.startTime.toString(),
+                            title: booking.block!.title.toString(),
+                            startTime: booking.block!.startTime.toString(),
                             location:
                                 booking.block?.location.toString() ??
                                 'no location',
                             status: booking.status.toString(),
+                            block: booking.block!,
                           ),
                         ),
                       )

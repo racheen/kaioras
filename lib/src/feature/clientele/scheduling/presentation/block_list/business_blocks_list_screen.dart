@@ -45,115 +45,123 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
     }
 
     return Scaffold(
-      body: ListView(
-        children: [
-          AsyncValueWidget(
-            value: blocksAsyncValue,
-            data: (blocks) {
-              if (businessName == null) {
-                return Container(
-                  margin: const EdgeInsets.all(50.0),
-                  width: 1080,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Unable to find the business',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          context.pop();
-                        },
-                        child: Text('Go back'),
-                      ),
-                    ],
+      body: ListView.builder(
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index) {
+          if (businessName == null) {
+            return Container(
+              margin: const EdgeInsets.all(50.0),
+              width: 1080,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Unable to find the business',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                );
-              } else {
-                return Container(
-                  margin: EdgeInsets.all(isMobileView ? 16.0 : 50.0),
-                  width: 1080,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: AssetImage(
-                            'assets/avatar_placeholder2.jpg',
-                          ),
-                          backgroundColor: Colors.transparent,
-                        ),
-                        title: Text(businessName),
+                  TextButton(
+                    onPressed: () {
+                      context.pop();
+                    },
+                    child: Text('Go back'),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Container(
+              margin: EdgeInsets.all(isMobileView ? 16.0 : 50.0),
+              width: 1080,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundImage: AssetImage(
+                        'assets/avatar_placeholder2.jpg',
                       ),
-                      InlineCalendar(selectDate: selectDate),
-                      Visibility(
-                        visible: blocks.isEmpty,
-                        child: SizedBox(
-                          width: 800,
-                          child: Column(
-                            children: [
-                              SizedBox(height: 80),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.event_busy),
-                                  Text(
-                                    'No event',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
+                      backgroundColor: Colors.transparent,
+                    ),
+                    title: Text(businessName),
+                  ),
+                  InlineCalendar(selectDate: selectDate),
+                  SizedBox(
+                    width: 800,
+                    child: AsyncValueWidget(
+                      value: blocksAsyncValue,
+                      data: (blocks) => Column(
+                        children: blocks.isEmpty
+                            ? [
+                                Visibility(
+                                  visible: blocks.isEmpty,
+                                  child: SizedBox(
+                                    width: 800,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 80),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.event_busy),
+                                            Text(
+                                              'No available classes at the moment',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Column(
-                        children: blocks
-                            .map(
-                              (block) => GestureDetector(
-                                child: BookingCardWidget(
-                                  title: block!.title.toString(),
-                                  host: block.host!.name.toString(),
-                                  startTime: block.startTime.toString(),
-                                  duration: block.duration.toString(),
-                                  location: block.location.toString(),
-                                  status: block.status.toString(),
-                                  description: block.description.toString(),
-                                  tags: block.tags!,
-                                  price: '60',
                                 ),
-                                onTap: () {
-                                  if (isMobileView) {
-                                    context.goNamed(
-                                      ClienteleRoute.block.name,
-                                      pathParameters: {
-                                        'businessId': block.origin.businessId
+                              ]
+                            : blocks
+                                  .map(
+                                    (block) => GestureDetector(
+                                      child: BookingCardWidget(
+                                        block: block!,
+                                        title: block.title.toString(),
+                                        host: block.host!.name.toString(),
+                                        startTime: block.startTime.toString(),
+                                        duration: block.duration.toString(),
+                                        location: block.location.toString(),
+                                        status: block.status.toString(),
+                                        description: block.description
                                             .toString(),
-                                        'blockId': block.blockId.toString(),
+                                        tags: block.tags!,
+                                        price: '60',
+                                      ),
+                                      onTap: () {
+                                        if (isMobileView) {
+                                          context.goNamed(
+                                            ClienteleRoute.block.name,
+                                            pathParameters: {
+                                              'businessId': block
+                                                  .origin
+                                                  .businessId
+                                                  .toString(),
+                                              'blockId': block.blockId
+                                                  .toString(),
+                                            },
+                                          );
+                                        }
                                       },
-                                    );
-                                  }
-                                },
-                              ),
-                            )
-                            .toList(),
+                                    ),
+                                  )
+                                  .toList(),
                       ),
-                    ],
+                    ),
                   ),
-                );
-              }
-            },
-          ),
-        ],
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }

@@ -5,11 +5,14 @@ import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/do
 
 enum MembershipStatus { active, expired, cancelled }
 
-enum BookingStatus { booked, cancelled, attended }
+enum BookingStatus { booked, cancelled, attended, waitlisted }
 
 enum BlockStatus { active, cancelled, completed }
 
 enum VisibilityStatus { public, private }
+
+final longText =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
 /// Clientele Module Data Models
 ///
@@ -19,7 +22,8 @@ enum VisibilityStatus { public, private }
 ///
 /// Blocks
 ///
-final mockAppUser = AppUser(
+final AppUser mockAppUser = AppUser(
+  uid: 'user000',
   name: 'Test User',
   email: 'test@email.com',
   createdAt: '',
@@ -41,19 +45,67 @@ final mockAppUser = AppUser(
       // embedded snapshot
       bookings: [
         Booking(
-          title: 'Pilates Class',
-          startTime: '12:00 PM',
           status: BookingStatus.booked.name,
+          // bookingId: '',
+          bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
+          block: Block(
+            blockId: 'block001',
+            title: 'Test',
+            startTime: DateTime(2025, 8, 20),
+            origin: Origin(
+              businessId: 'business001',
+              name: 'Test',
+              image: 'image',
+            ),
+          ),
         ),
         Booking(
-          title: 'Dance Class',
-          startTime: '12:00 PM',
           status: BookingStatus.attended.name,
+          // bookingId: '',
+          bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
+          block: Block(
+            blockId: 'block001',
+            title: 'Test',
+            startTime: DateTime(2025, 8, 20),
+            origin: Origin(
+              businessId: 'business001',
+              name: 'Test',
+              image: 'image',
+            ),
+          ),
         ),
         Booking(
-          title: 'Dance Class',
-          startTime: '12:00 PM',
           status: BookingStatus.attended.name,
+          // bookingId: '',
+          bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
+          block: Block(
+            blockId: 'block001',
+            title: 'Test',
+            startTime: DateTime(2025, 8, 20),
+            origin: Origin(
+              businessId: 'business001',
+              name: 'Test',
+              image: 'image',
+            ),
+          ),
         ),
       ],
     ),
@@ -71,14 +123,26 @@ final mockAppUser = AppUser(
       // embedded snapshot
       bookings: [
         Booking(
-          title: 'Pilates Class',
-          startTime: '12:00 PM',
           status: BookingStatus.booked.name,
+          // bookingId: '',
+          bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
         ),
         Booking(
-          title: 'Pilates Class',
-          startTime: '12:00 PM',
           status: BookingStatus.attended.name,
+          // bookingId: '',
+          bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
         ),
       ],
     ),
@@ -96,25 +160,41 @@ final mockAppUser = AppUser(
       // embedded snapshot
       bookings: [
         Booking(
-          title: 'Pilates Class',
-          startTime: '12:00 PM',
           status: BookingStatus.booked.name,
+          // bookingId: '',
+          bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
         ),
         Booking(
-          title: 'Pilates Class',
-          startTime: '12:00 PM',
           status: BookingStatus.attended.name,
+          // bookingId: '',
+          bookedAt: DateTime(2025, 8, 1),
+          user: AppUser(
+            uid: 'user002',
+            email: 'user002@email.com',
+            name: 'user002',
+            image: '',
+          ),
         ),
       ],
     ),
   ],
   bookings: [
     Booking(
-      bookingId: '1',
-      blockId: '1',
-      title: 'Pilates Class',
-      startTime: 'Jul 26, 2025 3:00 PM * 55 mins',
+      // bookingId: '1',
+      bookedAt: DateTime(2025, 8, 1),
       status: BookingStatus.booked.name,
+      user: AppUser(
+        uid: 'user002',
+        email: 'user002@email.com',
+        name: 'user002',
+        image: '',
+      ),
       block: Block(
         blockId: '1',
         origin: Origin(
@@ -132,24 +212,26 @@ final mockAppUser = AppUser(
         status: BlockStatus.active.name,
         createdAt: 'createdAt',
         tags: ['Beginner', 'Pilates'],
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        description: longText,
         host: Host(
           uid: '1',
           name: 'Emily Tresk',
           title: 'Instructor',
-          about:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          about: longText,
           image: 'avatar_placeholder3.png',
         ),
       ),
     ),
     Booking(
-      bookingId: '1',
-      blockId: '2',
-      title: 'Dance Class',
-      startTime: 'Jul 26, 2025 3:00 PM * 55 mins',
+      bookedAt: DateTime(2025, 8, 1),
+      // bookingId: '1',
       status: BookingStatus.attended.name,
+      user: AppUser(
+        uid: 'user002',
+        email: 'user002@email.com',
+        name: 'user002',
+        image: '',
+      ),
       block: Block(
         blockId: '2',
         origin: Origin(
@@ -167,24 +249,26 @@ final mockAppUser = AppUser(
         status: BlockStatus.active.name,
         createdAt: 'createdAt',
         tags: ['Beginner', 'Pilates'],
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        description: longText,
         host: Host(
           uid: '1',
           name: 'Emily Tresk',
           title: 'Instructor',
-          about:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          about: longText,
           image: 'avatar_placeholder3.png',
         ),
       ),
     ),
     Booking(
-      bookingId: '1',
-      blockId: '3',
-      title: 'Studio A - Core',
-      startTime: 'Jul 26, 2025 3:00 PM * 55 mins',
+      // bookingId: '1',
+      bookedAt: DateTime(2025, 8, 1),
       status: BookingStatus.attended.name,
+      user: AppUser(
+        uid: 'user002',
+        email: 'user002@email.com',
+        name: 'user002',
+        image: '',
+      ),
       block: Block(
         blockId: '3',
         origin: Origin(
@@ -202,14 +286,12 @@ final mockAppUser = AppUser(
         status: BlockStatus.active.name,
         createdAt: 'createdAt',
         tags: ['Beginner', 'Pilates'],
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        description: longText,
         host: Host(
           uid: '1',
           name: 'Emily Tresk',
           title: 'Instructor',
-          about:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          about: longText,
           image: 'avatar_placeholder3.png',
         ),
       ),
@@ -220,12 +302,12 @@ final mockAppUser = AppUser(
 final mockBlocks = [
   Block(
     blockId: '1',
-    title: 'Dance Class',
+    title: 'Dance Class!!!',
     type: '',
     startTime: DateTime(2025, 8, 13),
     duration: 55,
     location: 'Studio A, Street Name, City, Country',
-    capacity: 100,
+    capacity: 1,
     visibility: VisibilityStatus.public.name,
     status: BlockStatus.active.name,
     createdAt: 'createdAt',
@@ -241,13 +323,22 @@ final mockBlocks = [
       uid: '1',
       name: 'Emily Tresk',
       title: 'Instructor',
-      about:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    booked: [],
-    waitlisted: [],
-    cancelled: [],
+    // bookings: [
+    //   Booking(
+    //     bookingId: 'booking001',
+    //     status: 'booked',
+    //     bookedAt: DateTime(2025, 8, 10),
+    //     user: AppUser(
+    //       uid: 'user005',
+    //       name: 'Emiliy Tresk',
+    //       email: 'email@example.com',
+    //       image: '',
+    //     ),
+    //   ),
+    // ],
   ),
   Block(
     blockId: '2',
@@ -272,13 +363,10 @@ final mockBlocks = [
       uid: '1',
       name: 'Emily Tresk',
       title: 'Instructor',
-      about:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    booked: [],
-    waitlisted: [],
-    cancelled: [],
+    // bookings: [],
   ),
   Block(
     blockId: '3',
@@ -303,13 +391,10 @@ final mockBlocks = [
       uid: '1',
       name: 'Emily Tresk',
       title: 'Instructor',
-      about:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    booked: [],
-    waitlisted: [],
-    cancelled: [],
+    // bookings: [],
   ),
   Block(
     blockId: '4',
@@ -334,13 +419,10 @@ final mockBlocks = [
       uid: '1',
       name: 'Emily Tresk',
       title: 'Instructor',
-      about:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      about: longText,
       image: '',
     ),
-    booked: [],
-    waitlisted: [],
-    cancelled: [],
+    // bookings: [],
   ),
   Block(
     blockId: '5',
@@ -365,12 +447,9 @@ final mockBlocks = [
       uid: '1',
       name: 'Emily Tresk',
       title: 'Instructor',
-      about:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      about: longText,
       image: 'avatar_placeholder3.png',
     ),
-    booked: [],
-    waitlisted: [],
-    cancelled: [],
+    // bookings: [],
   ),
 ];

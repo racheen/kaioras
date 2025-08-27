@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Block {
   String? blockId;
@@ -14,11 +14,7 @@ class Block {
   List<String>? tags;
   String? description;
   Host? host;
-  String? tenant;
   Origin origin;
-  List<Block>? booked;
-  List<Block>? waitlisted;
-  List<Block>? cancelled;
 
   Block({
     this.blockId,
@@ -34,12 +30,79 @@ class Block {
     this.tags,
     this.description,
     this.host,
-    this.tenant,
     required this.origin,
-    this.booked,
-    this.waitlisted,
-    this.cancelled,
   });
+
+  factory Block.fromMap(Map<String, dynamic> data, String blockId) {
+    final title = data['title'] as String;
+    final type = data['type'] as String;
+    final startTime = data['startTime'] as Timestamp;
+    final duration = data['duration'] as int;
+    final location = data['location'] as String;
+    final capacity = data['capacity'] as int;
+    final visibility = data['visibility'] as String;
+    final status = data['status'] as String;
+    final createdAt = data['createdAt'] as Timestamp;
+    final tags = data['tags'] as List<dynamic>;
+    final description = data['description'] as String;
+    final host = data['host'] as Map<String, dynamic>;
+    final origin = data['origin'] as Map<String, dynamic>;
+
+    return Block(
+      blockId: blockId,
+      title: title,
+      type: type,
+      startTime: startTime.toDate(),
+      duration: duration,
+      location: location,
+      capacity: capacity,
+      visibility: visibility,
+      status: status,
+      createdAt: createdAt.toString(),
+      tags: tags.map((tag) => tag.toString()).toList(),
+      description: description,
+      host: Host.fromMap(host),
+      origin: Origin.fromMap(origin),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'blockId': blockId,
+      'title': title,
+      'type': type,
+      'startTime': startTime,
+      'duration': duration,
+      'location': location,
+      'capacity': capacity,
+      'visibility': visibility,
+      'status': status,
+      'createdAt': createdAt,
+      'tags': tags,
+      'description': description,
+      'host': host,
+      'origin': origin,
+    };
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'blockId': blockId,
+      'title': title,
+      'type': type,
+      'startTime': Timestamp.fromDate(startTime!),
+      'duration': duration,
+      'location': location,
+      'capacity': capacity,
+      'visibility': visibility,
+      'status': status,
+      'createdAt': Timestamp.fromDate(DateTime.parse(createdAt!)),
+      'tags': tags,
+      'description': description,
+      'host': host,
+      'origin': origin,
+    };
+  }
 
   // Block copyWith({
   //   String? blockId,
@@ -78,36 +141,6 @@ class Block {
   // );
 }
 
-class Attendee {
-  String? uid;
-  String? membershipId;
-  String? name;
-  String? status;
-  String? bookedAt;
-
-  Attendee({
-    this.uid,
-    this.membershipId,
-    this.name,
-    this.status,
-    this.bookedAt,
-  });
-
-  Attendee copyWith({
-    String? uid,
-    String? membershipId,
-    String? name,
-    String? status,
-    String? bookedAt,
-  }) => Attendee(
-    uid: uid ?? this.uid,
-    membershipId: membershipId ?? this.membershipId,
-    name: name ?? this.name,
-    status: status ?? this.status,
-    bookedAt: bookedAt ?? this.bookedAt,
-  );
-}
-
 class Host {
   String? uid;
   String? name;
@@ -116,6 +149,25 @@ class Host {
   String? image;
 
   Host({this.uid, this.name, this.title, this.about, this.image});
+
+  factory Host.fromMap(Map<String, dynamic> map) {
+    return Host(
+      uid: map['uid'],
+      name: map['name'],
+      title: map['title'],
+      about: map['about'],
+      image: map['image'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'name': name,
+      'title': title,
+      'about': about,
+      'image': image,
+    };
+  }
 
   Host copyWith({
     String? uid,
@@ -138,6 +190,7 @@ class Origin {
   final String image;
 
   Origin({required this.businessId, required this.name, required this.image});
+
   factory Origin.fromMap(Map<String, dynamic> map) {
     return Origin(
       businessId: map['businessId'],
