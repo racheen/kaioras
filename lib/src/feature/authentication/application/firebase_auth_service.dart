@@ -50,10 +50,27 @@ class AuthService {
     // The authStateChanges listener will handle updating the controller
   }
 
-  Future<AppUser?> signUpUser(Map<String, dynamic> userData) async {
-    final user = await _userRepository.signUpWithEmailAndPassword(userData);
-    _authStateController.add(user);
-    return user;
+  Future<AppUser?> signUpUser(
+    Map<String, dynamic> userData,
+    String? businessId,
+  ) async {
+    try {
+      if (businessId == null) {
+        final user = await _userRepository.signUpWithEmailAndPassword(userData);
+        _authStateController.add(user);
+        return user;
+      } else {
+        final user = await _userRepository.signUpUserForBusiness(
+          userData,
+          businessId,
+        );
+        _authStateController.add(user);
+        return user;
+      }
+    } catch (e) {
+      print('Error signing up user: $e');
+      return null;
+    }
   }
 
   Future<AppUser?> signUpTenant(

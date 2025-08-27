@@ -79,18 +79,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             const NoTransitionPage(child: SizedBox()),
         routes: clienteleRoutes,
       ),
-      ShellRoute(
-        builder: (context, state, child) {
-          return MaterialApp(home: child);
-        },
-        routes: [
-          GoRoute(
-            path: '/tenant',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: SizedBox()),
-            routes: businessRoutes,
-          ),
-        ],
+      GoRoute(
+        path: '/tenant',
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: SizedBox()),
+        routes: businessRoutes,
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

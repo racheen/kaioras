@@ -102,12 +102,12 @@ class UserRepository implements UserRepositoryBase {
     Map<String, dynamic> userData,
     Map<String, dynamic> businessData,
   ) async {
-    // if (userData['email'] == null ||
-    //     userData['password'] == null ||
-    //     userData['name'] == null ||
-    //     businessData['businessName'] == null) {
-    //   throw Exception('Missing required fields for signup');
-    // }
+    if (userData['email'] == null ||
+        userData['password'] == null ||
+        userData['name'] == null ||
+        businessData['businessName'] == null) {
+      throw Exception('Missing required fields for signup');
+    }
 
     try {
       final existingUser = await _firestore
@@ -263,6 +263,86 @@ class UserRepository implements UserRepositoryBase {
 
     await _firestore.collection('businesses').add(newBusiness.toMap());
     return newBusiness;
+  }
+
+  Future<void> signUpUserForBusiness(
+    Map<String, dynamic> userData,
+    String businessId,
+  ) async {
+    try {
+      // Check if the business exists
+      final businessDoc = await _firestore
+          .collection('businesses')
+          .doc(businessId)
+          .get();
+      if (!businessDoc.exists) {
+        throw Exception('Business does not exist');
+      }
+
+      // Check if the user already exists
+      final existingUserQuery = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: userData['email'])
+          .get();
+
+      if (existingUserQuery.docs.isNotEmpty) {
+        // User exists, add the new role
+        final existingUserDoc = existingUserQuery.docs.first;
+        final existingUser = AppUser.fromMap(existingUserDoc.data());
+
+        final newRole = UserRole(
+          role: RoleType.customer.name,
+          status: 'active',
+          createdAt: DateTime.now(),
+        );
+
+        final updatedRoles = {...existingUser.roles, businessId: newRole};
+
+        return await _firestore
+            .collection('users')
+            .doc(existingUser.uid)
+            .update({
+              'roles': updatedRoles.map(
+                (key, value) => MapEntry(key, value.toMap()),
+              ),
+            });
+      } else {
+        // Create a new user
+        final UserCredential userCredential = await _auth
+            .createUserWithEmailAndPassword(
+              email: userData['email'],
+              password: userData['password'],
+            );
+
+        final newUser = AppUser(
+          uid: userCredential.user!.uid,
+          email: userData['email'],
+          name: userData['name'],
+          createdAt: DateTime.now(),
+          image: '',
+          lastBusinessId: businessId,
+          platformRole: null,
+          notifications: false,
+          roles: {
+            businessId: UserRole(
+              role: RoleType.customer.name,
+              status: 'active',
+              createdAt: DateTime.now(),
+            ),
+          },
+        );
+
+        await _firestore
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set(newUser.toMap());
+
+        _currentUser = newUser;
+      }
+    } catch (e) {
+      print('Error signing up user for business: $e');
+      return null;
+    }
   }
 }
 
