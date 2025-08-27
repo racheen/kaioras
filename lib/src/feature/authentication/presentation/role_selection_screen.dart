@@ -15,13 +15,13 @@ class RoleSelectionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => context.go(AppRoute.schedule.name),
+              onPressed: () => context.goNamed(AppRoute.schedule.name),
               child: Text('Continue as Tenant'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () =>
-                  context.go(ClienteleRoute.clienteleBookings.name),
+                  context.goNamed(ClienteleRoute.clienteleBookings.name),
               child: Text('Continue as Client'),
             ),
           ],
