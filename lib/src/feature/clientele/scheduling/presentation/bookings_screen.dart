@@ -35,7 +35,6 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
 
     final membershipsAsyncValue = ref.watch(membershipsListFutureProvider);
     final upcomingBookingsAsyncValue = ref.watch(bookingsControllerProvider);
-    final pastBookingsAsyncValue = ref.watch(pastBookingsListFutureProvider);
 
     // if (isMobileView) {
     //   return MBookingsScreen();
@@ -171,16 +170,18 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                       ),
                                       child: ListTile(
                                         title: Text(
-                                          // booking.block!.title.toString(),
-                                          booking.name!,
+                                          booking.blockSnapshot!.title
+                                              .toString(),
                                           style: TextStyle(
                                             color: AppColors.violet99,
                                           ),
                                         ),
-                                        subtitle: Text('Hosted by Business'),
+                                        subtitle: Text(
+                                          'Hosted by ${booking.blockSnapshot?.origin.name}',
+                                        ),
                                         trailing: Text(
-                                          // booking.block!.startTime.toString(),
-                                          booking.name!,
+                                          booking.blockSnapshot!.startTime
+                                              .toString(),
                                           style: TextStyle(
                                             color: AppColors.lightGrey,
                                           ),
@@ -190,12 +191,12 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                             ClienteleRoute.bookingDetail.name,
                                             // ClienteleRoute.block.name,
                                             pathParameters: {
-                                              'blockId': booking.blockId
-                                                  .toString(),
                                               // 'businessId': booking.businessId
                                               //     .toString(),
-                                              // 'blockId': booking.block!.blockId
-                                              //     .toString(),
+                                              'blockId': booking
+                                                  .blockSnapshot!
+                                                  .blockId
+                                                  .toString(),
                                             },
                                           );
                                         },
@@ -211,70 +212,94 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                 ),
                 SizedBox(height: 30),
                 AsyncValueWidget(
-                  value: pastBookingsAsyncValue,
-                  data: (bookings) => Container(
-                    decoration: BoxDecoration(
-                      border: BoxBorder.all(color: AppColors.lightGrey),
-                      borderRadius: BorderRadius.circular(3.0),
-                    ),
-                    child: ExpansionPanelList(
-                      expansionCallback: (int index, bool isExpanded) {
-                        setState(() {
-                          pastBookingsIsExpanded = isExpanded;
-                        });
-                      },
-                      children: [
-                        ExpansionPanel(
-                          headerBuilder:
-                              (BuildContext context, bool isExpanded) {
-                                return ListTile(
-                                  title: Text(
-                                    'Past',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
+                  value: upcomingBookingsAsyncValue,
+                  data: (bookings) {
+                    final pastBookings = bookings.where(
+                      (booking) => booking.blockSnapshot!.startTime.isBefore(
+                        DateTime.now(),
+                      ),
+                    );
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: BoxBorder.all(color: AppColors.lightGrey),
+                        borderRadius: BorderRadius.circular(3.0),
+                      ),
+                      child: ExpansionPanelList(
+                        expansionCallback: (int index, bool isExpanded) {
+                          setState(() {
+                            pastBookingsIsExpanded = isExpanded;
+                          });
+                        },
+                        children: [
+                          ExpansionPanel(
+                            headerBuilder:
+                                (BuildContext context, bool isExpanded) {
+                                  return ListTile(
+                                    title: Text(
+                                      'Past',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                          body: Column(
-                            children: bookings.map((booking) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  border: BoxBorder.fromLTRB(
-                                    top: BorderSide(color: AppColors.lightGrey),
-                                  ),
-                                ),
-                                child: ListTile(
-                                  title: Text(
-                                    booking.block!.title.toString(),
-                                    style: TextStyle(color: AppColors.violet99),
-                                  ),
-                                  subtitle: Text('Hosted by Business'),
-                                  trailing: Text(
-                                    booking.block!.startTime.toString(),
-                                    style: TextStyle(
-                                      color: AppColors.lightGrey,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    context.goNamed(
-                                      ClienteleRoute.bookingDetail.name,
-                                      pathParameters: {
-                                        'blockId': booking.block!.blockId
-                                            .toString(),
-                                      },
-                                    );
-                                  },
-                                ),
-                              );
-                            }).toList(),
+                                  );
+                                },
+                            body: Column(
+                              children: pastBookings.isEmpty
+                                  ? [
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text('No past bookings'),
+                                      ),
+                                    ]
+                                  : pastBookings.map((booking) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          border: BoxBorder.fromLTRB(
+                                            top: BorderSide(
+                                              color: AppColors.lightGrey,
+                                            ),
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          title: Text(
+                                            booking.blockSnapshot!.title
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: AppColors.violet99,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            'Hosted by ${booking.blockSnapshot?.origin.name}',
+                                          ),
+                                          trailing: Text(
+                                            booking.blockSnapshot!.startTime
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: AppColors.lightGrey,
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            context.goNamed(
+                                              ClienteleRoute.bookingDetail.name,
+                                              pathParameters: {
+                                                'blockId': booking
+                                                    .block!
+                                                    .blockId
+                                                    .toString(),
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }).toList(),
+                            ),
+                            isExpanded: pastBookingsIsExpanded,
                           ),
-                          isExpanded: pastBookingsIsExpanded,
-                        ),
-                      ],
-                    ),
-                  ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

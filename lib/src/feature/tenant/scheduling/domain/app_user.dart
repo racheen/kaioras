@@ -152,6 +152,10 @@ class OfferSnapshot {
       description: map['description'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name, 'type': type, 'description': description};
+  }
 }
 
 class BookingSnapshot {

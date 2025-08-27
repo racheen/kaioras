@@ -202,3 +202,50 @@ class Origin {
     return {'businessId': businessId, 'name': name, 'image': image};
   }
 }
+
+class BlockSnapshot {
+  String blockId;
+  String title;
+  DateTime startTime;
+  String location;
+  Host host;
+  Origin origin;
+
+  BlockSnapshot({
+    required this.blockId,
+    required this.title,
+    required this.startTime,
+    required this.location,
+    required this.host,
+    required this.origin,
+  });
+
+  factory BlockSnapshot.fromMap(Map<String, dynamic> data) {
+    final blockId = data['blockId'] as String;
+    final title = data['title'] as String;
+    final startTime = data['startTime'] as Timestamp;
+    final location = data['location'] as String;
+    final host = data['host'] as Map<String, dynamic>;
+    final origin = data['origin'] as Map<String, dynamic>;
+
+    return BlockSnapshot(
+      blockId: blockId,
+      title: title,
+      startTime: startTime.toDate(),
+      location: location,
+      host: Host.fromMap(host),
+      origin: Origin.fromMap(origin),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'blockId': blockId,
+      'title': title,
+      'startTime': startTime,
+      'location': location,
+      'host': host.toJson(),
+      'origin': origin.toJson(),
+    };
+  }
+}

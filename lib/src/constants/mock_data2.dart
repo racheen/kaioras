@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/app_user.dart'
     hide AppUser, UserRole;
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart'
+    hide Host, Block;
 
 enum MembershipStatus { active, expired, cancelled }
 
