@@ -265,7 +265,7 @@ class UserRepository implements UserRepositoryBase {
     return newBusiness;
   }
 
-  Future<void> signUpUserForBusiness(
+  Future<AppUser?> signUpUserForBusiness(
     Map<String, dynamic> userData,
     String businessId,
   ) async {
@@ -298,14 +298,14 @@ class UserRepository implements UserRepositoryBase {
 
         final updatedRoles = {...existingUser.roles, businessId: newRole};
 
-        return await _firestore
-            .collection('users')
-            .doc(existingUser.uid)
-            .update({
-              'roles': updatedRoles.map(
-                (key, value) => MapEntry(key, value.toMap()),
-              ),
-            });
+        await _firestore.collection('users').doc(existingUser.uid).update({
+          'roles': updatedRoles.map(
+            (key, value) => MapEntry(key, value.toMap()),
+          ),
+        });
+
+        _currentUser = await getCurrentUser();
+        return _currentUser;
       } else {
         // Create a new user
         final UserCredential userCredential = await _auth
@@ -338,6 +338,7 @@ class UserRepository implements UserRepositoryBase {
             .set(newUser.toMap());
 
         _currentUser = newUser;
+        return _currentUser;
       }
     } catch (e) {
       print('Error signing up user for business: $e');
