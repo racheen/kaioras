@@ -65,6 +65,7 @@ final Map<String, AppUser> mockUsers = {
           businessId: 'business001',
           name: 'Pilates Studio',
           image: 'https://example.com/logos/pilates.png',
+          image: 'https://example.com/logos/pilates.png',
         ),
         offerSnapshot: OfferSnapshot(
           name: 'Monthly Unlimited',
@@ -75,16 +76,16 @@ final Map<String, AppUser> mockUsers = {
         name: 'Monthly Unlimited',
         credits: 999999,
         creditsUsed: 0,
-        expiration: DateTime(2025, 6, 2, 9, 0).toString(),
-        createdAt: DateTime(2025, 6, 1, 9, 0).toString(),
-        bookings: {
-          'booking001': BookingSnapshot(
-            blockId: 'block001',
-            title: 'Morning Pilates',
-            startTime: DateTime(2025, 6, 1, 9, 0),
-            status: BookingStatus.booked.name,
-          ),
-        },
+        expiration: DateTime(2025, 6, 2, 9, 0),
+        createdAt: DateTime(2025, 6, 1, 9, 0),
+        // bookings: {
+        //   'booking001': BookingSnapshot(
+        //     blockId: 'block001',
+        //     title: 'Morning Pilates',
+        //     startTime: DateTime(2025, 6, 1, 9, 0),
+        //     status: BookingStatus.booked.name,
+        //   ),
+        // },
       ),
     },
     bookings: {
@@ -94,6 +95,7 @@ final Map<String, AppUser> mockUsers = {
         businessDetails: BusinessDetails(
           businessId: 'business001',
           name: 'Pilates Studio',
+          image: 'https://example.com/logos/pilates.png',
           image: 'https://example.com/logos/pilates.png',
         ),
         status: BookingStatus.booked.name,
@@ -133,6 +135,7 @@ final Map<String, AppUser> mockUsers = {
           businessId: 'business001',
           name: 'Pilates Studio',
           image: 'https://example.com/logos/pilates.png',
+          image: 'https://example.com/logos/pilates.png',
         ),
         offerSnapshot: OfferSnapshot(
           name: 'Monthly Unlimited',
@@ -143,16 +146,16 @@ final Map<String, AppUser> mockUsers = {
         name: 'Monthly Unlimited',
         credits: 999999,
         creditsUsed: 0,
-        expiration: DateTime(2025, 6, 2, 9, 0).toString(),
-        createdAt: DateTime(2025, 6, 1, 9, 0).toString(),
-        bookings: {
-          'booking001': BookingSnapshot(
-            blockId: 'block001',
-            title: 'Morning Pilates',
-            startTime: DateTime(2025, 6, 1, 9, 0),
-            status: BookingStatus.booked.name,
-          ),
-        },
+        expiration: DateTime(2025, 6, 2, 9, 0),
+        createdAt: DateTime(2025, 6, 1, 9, 0),
+        // bookings: {
+        //   'booking001': BookingSnapshot(
+        //     blockId: 'block001',
+        //     title: 'Morning Pilates',
+        //     startTime: DateTime(2025, 6, 1, 9, 0),
+        //     status: BookingStatus.booked.name,
+        //   ),
+        // },
       ),
     },
     bookings: {
@@ -162,6 +165,7 @@ final Map<String, AppUser> mockUsers = {
         businessDetails: BusinessDetails(
           businessId: 'business001',
           name: 'Pilates Studio',
+          image: 'https://example.com/logos/pilates.png',
           image: 'https://example.com/logos/pilates.png',
         ),
         status: BookingStatus.booked.name,
@@ -376,6 +380,7 @@ final mockBlocks = {
       businessId: 'business001',
       name: 'Pilates Studio',
       image: 'https://example.com/logos/pilates.png',
+      image: 'https://example.com/logos/pilates.png',
     ),
     title: 'Morning Pilates',
     type: BlockType.group.name,
@@ -399,6 +404,11 @@ final mockBlocks = {
   ),
   'block002': Block(
     blockId: 'block002',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      image: 'https://example.com/logos/pilates.png',
+    ),
     title: 'Morning Pilates',
     type: BlockType.group.name,
     startTime: DateTime(2025, 8, 22, 9, 0),
@@ -423,6 +433,7 @@ final mockBlocks = {
       businessId: 'business003',
       name: 'Pilates Studio',
       image: 'https://example.com/logos/pilates.png',
+      image: 'https://example.com/logos/pilates.png',
     ),
     title: 'Morning Pilates',
     type: BlockType.group.name,
@@ -438,10 +449,77 @@ final mockBlocks = {
 
     host: Host(
       uid: 'user001',
-      name: 'Pilates Instructor',
-      title: 'Senior Instructor',
-      about: 'Certified Pilates instructor with 5 years of experience',
-      image: 'https://example.com/instructor.jpg',
+      name: 'Jane Doe',
+      details:
+          'Experienced instructor specializing in beginner and intermediate Pilates',
+    ),
+  ),
+  'block004': Block(
+    blockId: 'block004',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      image: 'https://example.com/logos/pilates.png',
+    ),
+    title: 'Morning Pilates',
+    type: BlockType.group.name,
+    startTime: DateTime(2025, 8, 24, 10, 0),
+    duration: 60,
+    location: 'Main Studio',
+    capacity: 15,
+    visibility: VisibilityStatus.public.name,
+    status: BlockStatus.active.name,
+    createdAt: DateTime.now(),
+    tags: ['morning', 'beginner'],
+    description: 'Start your day with an energizing Pilates session',
+    attendees: {
+      'user002': Attendee(
+        uid: 'user002',
+        membershipId: 'membership001',
+        name: 'Janine Smith',
+        status: BookingStatus.booked.name,
+        bookedAt: DateTime.now(),
+      ),
+    },
+    host: Host(
+      uid: 'user001',
+      name: 'Jane Doe',
+      details:
+          'Experienced instructor specializing in beginner and intermediate Pilates',
+    ),
+  ),
+  'block005': Block(
+    blockId: 'block005',
+    businessDetails: BusinessDetails(
+      businessId: 'business001',
+      name: 'Pilates Studio',
+      image: 'https://example.com/logos/pilates.png',
+    ),
+    title: 'Morning Pilates',
+    type: BlockType.group.name,
+    startTime: DateTime(2025, 8, 12, 13, 0),
+    duration: 60,
+    location: 'Main Studio',
+    capacity: 15,
+    visibility: VisibilityStatus.public.name,
+    status: BlockStatus.active.name,
+    createdAt: DateTime.now(),
+    tags: ['morning', 'beginner'],
+    description: 'Start your day with an energizing Pilates session',
+    attendees: {
+      'user002': Attendee(
+        uid: 'user002',
+        membershipId: 'membership001',
+        name: 'Janine Smith',
+        status: BookingStatus.booked.name,
+        bookedAt: DateTime.now(),
+      ),
+    },
+    host: Host(
+      uid: 'user001',
+      name: 'Jane Doe',
+      details:
+          'Experienced instructor specializing in beginner and intermediate Pilates',
     ),
   ),
 };
