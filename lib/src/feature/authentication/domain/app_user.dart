@@ -64,20 +64,22 @@ class AppUser {
 
   factory AppUser.fromMap(Map<String, dynamic> map) {
     return AppUser(
-      uid: map['uid'] as String,
-      email: map['email'] as String,
-      name: map['name'] as String,
+      uid: map['uid'] as String? ?? '',
+      email: map['email'] as String? ?? '',
+      name: map['name'] as String? ?? '',
       createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt'] as String),
       image: map['image'] as String?,
       lastBusinessId: map['lastBusinessId'] as String?,
       platformRole: map['platformRole'] as String?,
-      notifications: map['notifications'] as bool,
-      roles: (map['roles'] as Map<String, dynamic>).map(
-        (key, value) =>
-            MapEntry(key, UserRole.fromMap(value as Map<String, dynamic>)),
-      ),
+      notifications: map['notifications'] as bool? ?? false,
+      roles:
+          (map['roles'] as Map<String, dynamic>?)?.map(
+            (key, value) =>
+                MapEntry(key, UserRole.fromMap(value as Map<String, dynamic>)),
+          ) ??
+          {},
     );
   }
 
@@ -96,6 +98,11 @@ class AppUser {
       'bookings': bookings,
     };
   }
+
+  Future<AppUser?> copyWith({
+    required Map<String, UserRole> roles,
+    required lastBusinessId,
+  }) async {}
 }
 
 class UserRole {
@@ -106,8 +113,8 @@ class UserRole {
   UserRole({required this.role, required this.status, required this.createdAt});
   factory UserRole.fromMap(Map<String, dynamic> map) {
     return UserRole(
-      role: map['role'] as String,
-      status: map['status'] as String,
+      role: map['role'] as String? ?? '',
+      status: map['status'] as String? ?? '',
       createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt'] as String),

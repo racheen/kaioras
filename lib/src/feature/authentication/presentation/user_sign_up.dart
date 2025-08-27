@@ -565,7 +565,9 @@ class _UserSignUpState extends ConsumerState<UserSignUp> {
     };
 
     try {
-      final newUser = await ref.read(authServiceProvider).signUpUser(userData);
+      final newUser = await ref
+          .read(authServiceProvider)
+          .signUpUser(userData, 'business001');
       print('New user: $newUser');
       if (newUser != null && newUser is AppUser) {
         ScaffoldMessenger.of(context).showSnackBar(
