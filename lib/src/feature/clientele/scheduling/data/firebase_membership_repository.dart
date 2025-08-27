@@ -94,6 +94,62 @@ class FirebaseMembershipsRepository {
     }
     return false;
   }
+
+  bool _verifyMembershipRefundCredits(
+    Membership userMembership,
+    int refundAmount,
+  ) {
+    final isValidMembership = DateTime.now().isBefore(
+      userMembership.expiration,
+    );
+    final hasAvailableCredits = userMembership.creditsUsed >= refundAmount;
+    if (isValidMembership && hasAvailableCredits) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> refundCredits(
+    String uid,
+    String membershipId,
+    int refundAmount,
+  ) async {
+    final userMembership = await fetchUserMembership(uid, membershipId);
+    if (userMembership != null) {
+      final hasValidMembershipCredits = _verifyMembershipRefundCredits(
+        userMembership,
+        refundAmount,
+      );
+
+      if (hasValidMembershipCredits) {
+        final newTotalCreditsUsed = userMembership.creditsUsed - refundAmount;
+        final newCredits = userMembership.credits + refundAmount;
+
+        final updatedMembership = Membership(
+          membershipId: userMembership.membershipId,
+          businessDetails: userMembership.businessDetails,
+          offerSnapshot: userMembership.offerSnapshot,
+          name: userMembership.name,
+          credits: newCredits,
+          creditsUsed: newTotalCreditsUsed,
+          expiration: userMembership.expiration,
+          status: userMembership.status,
+          createdAt: userMembership.createdAt,
+        );
+
+        await queryMembershipById(
+          uid,
+          membershipId,
+        ).set(updatedMembership.toFirestore());
+
+        return true;
+      } else {
+        print('no credits to refund');
+        return false;
+      }
+    }
+    return false;
+  }
 }
 
 final membershipsRepositoryProvider = Provider((Ref ref) {
