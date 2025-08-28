@@ -12,12 +12,12 @@ class FakeBlocksRepository implements BlocksRepositoryBase {
   final Map<String, Block> _blocks = Map.from(mockBlocks);
 
   @override
-  Future<void> createEvent(Block event) async {
+  Future<void> createEvent(Block block) async {
     // Simulate network delay
     await Future.delayed(Duration(milliseconds: 300));
 
     // Add the new event to the _blocks map
-    _blocks[event.blockId] = event;
+    _blocks[block.blockId!] = block;
 
     debugPrint(_blocks.toString());
   }
@@ -28,7 +28,7 @@ class FakeBlocksRepository implements BlocksRepositoryBase {
     await Future.delayed(Duration(milliseconds: 300));
 
     return _blocks.values
-        .where((block) => block.host.uid == instructorId)
+        .where((block) => block.host!.uid! == instructorId)
         .toList();
   }
 

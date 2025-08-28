@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/inline_calendar/inline_calendar.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/utils/date_time_utils.dart';
@@ -75,9 +76,9 @@ class ScheduleList extends StatelessWidget {
     final groupedSchedules = <DateTime, List<Block>>{};
     for (final schedule in schedules) {
       final date = DateTime(
-        schedule.startTime.year,
-        schedule.startTime.month,
-        schedule.startTime.day,
+        schedule.startTime!.year,
+        schedule.startTime!.month,
+        schedule.startTime!.day,
       );
       if (!groupedSchedules.containsKey(date)) {
         groupedSchedules[date] = [];
@@ -94,9 +95,9 @@ Map<DateTime, List<Block>> groupSchedulesByDate(List<Block> schedules) {
   final groupedSchedules = <DateTime, List<Block>>{};
   for (final schedule in schedules) {
     final date = DateTime(
-      schedule.startTime.year,
-      schedule.startTime.month,
-      schedule.startTime.day,
+      schedule.startTime!.year,
+      schedule.startTime!.month,
+      schedule.startTime!.day,
     );
     if (!groupedSchedules.containsKey(date)) {
       groupedSchedules[date] = [];
@@ -121,8 +122,9 @@ class ScheduleItem extends StatelessWidget {
     final backgroundColor = color.backgroundColor;
 
     final title = "${data.title} • ${data.location}";
-    final startTime = data.startTime;
-    final endTime = startTime.add(Duration(minutes: data.duration));
+    final startTime = data.startTime!;
+    final duration = data.duration! | 60;
+    final endTime = startTime.add(Duration(minutes: duration));
     final subtitle = formatTimeRange(startTime, endTime);
     final label = formatTime(startTime);
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/fake_blocks_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/firebase_blocks_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/availability.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
@@ -35,11 +36,6 @@ class ScheduleForm extends ConsumerWidget {
       final Block newEvent = Block(
         blockId:
             '', // This will be set by Firestore when the document is created
-        businessDetails: BusinessDetails(
-          businessId: 'business001',
-          name: 'Pialtes Studio',
-          picture: 'https://example.com/logo.png',
-        ),
         title: formData['title'],
         type: formData['type'],
         startTime: startTime,
@@ -48,7 +44,7 @@ class ScheduleForm extends ConsumerWidget {
         capacity: int.parse(formData['capacity']),
         visibility: formData['visibility'],
         status: 'active', // Assuming new events are always created as active
-        createdAt: DateTime.now(),
+        createdAt: DateTime.now().toString(),
         tags:
             (formData['tags'] as String?)
                 ?.split(',')
@@ -56,13 +52,8 @@ class ScheduleForm extends ConsumerWidget {
                 .toList() ??
             [],
         description: formData['description'] ?? '',
-        attendees: {},
-        host: Host(
-          uid: 'user001',
-          name: 'Jane Doe',
-          details:
-              'Experienced instructor specializing in beginner and intermediate Pilates',
-        ),
+        host: Host(uid: 'user001', name: 'Jane Doe'),
+        origin: Origin(businessId: 'business001', name: 'Pilates', image: ''),
       );
 
       try {
