@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 
 class AppUser {
   final String uid;
@@ -12,8 +11,7 @@ class AppUser {
   final bool notifications;
   final Map<String, UserRole> roles;
   final Map<String, Membership>? memberships;
-  final Map<String, Booking>? bookings;
-  final Map<String, Subscription>? subscriptions;
+  final Map<String, BookingSnapshot>? bookings;
 
   AppUser({
     required this.uid,
@@ -27,7 +25,6 @@ class AppUser {
     required this.roles,
     this.memberships,
     this.bookings,
-    this.subscriptions,
   });
 
   factory AppUser.fromFirestore(DocumentSnapshot doc) {
@@ -46,7 +43,6 @@ class AppUser {
       ),
       memberships: {},
       bookings: {},
-      subscriptions: {},
     );
   }
 
@@ -89,47 +85,53 @@ class UserRole {
 }
 
 class Membership {
-  final String membershipId;
-  final BusinessDetails businessDetails;
-  final OfferSnapshot offerSnapshot;
-  final String name;
-  final int credits;
-  final int creditsUsed;
-  final DateTime expiration;
-  final String status;
-  final DateTime createdAt;
-  final Map<String, BookingSnapshot> bookings;
+  String? membershipId;
+  OfferSnapshot? offerSnapshot;
+  BusinessDetails? businessDetails;
+  String? name;
+  int? credits;
+  int? creditsUsed;
+  String? expiration;
+  String? status;
+  String? createdAt;
+  Map<String, BookingSnapshot>? bookings;
 
   Membership({
-    required this.membershipId,
-    required this.businessDetails,
-    required this.offerSnapshot,
-    required this.name,
-    required this.credits,
-    required this.creditsUsed,
-    required this.expiration,
-    required this.status,
-    required this.createdAt,
-    required this.bookings,
+    this.membershipId,
+    this.businessDetails,
+    this.offerSnapshot,
+    this.name,
+    this.credits,
+    this.creditsUsed,
+    this.expiration,
+    this.status,
+    this.createdAt,
+    this.bookings,
   });
 
-  factory Membership.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return Membership(
-      membershipId: doc.id,
-      businessDetails: BusinessDetails.fromMap(data['businessDetails']),
-      offerSnapshot: OfferSnapshot.fromMap(data['offerSnapshot']),
-      name: data['name'],
-      credits: data['credits'],
-      creditsUsed: data['creditsUsed'],
-      expiration: (data['expiration'] as Timestamp).toDate(),
-      status: data['status'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      bookings: (data['bookings'] as Map<String, dynamic>).map(
-        (key, value) => MapEntry(key, BookingSnapshot.fromMap(value)),
-      ),
-    );
-  }
+  Membership copyWith({
+    String? membershipId,
+    BusinessDetails? businessDetails,
+    OfferSnapshot? offerSnapshot,
+    String? name,
+    int? credits,
+    int? creditsUsed,
+    String? expiration,
+    String? status,
+    String? createdAt,
+    Map<String, BookingSnapshot>? bookings,
+  }) => Membership(
+    membershipId: membershipId ?? this.membershipId,
+    businessDetails: businessDetails ?? this.businessDetails,
+    offerSnapshot: offerSnapshot ?? this.offerSnapshot,
+    name: name ?? this.name,
+    credits: credits ?? this.credits,
+    creditsUsed: creditsUsed ?? this.creditsUsed,
+    expiration: expiration ?? this.expiration,
+    status: status ?? this.status,
+    createdAt: createdAt ?? this.createdAt,
+    bookings: bookings ?? this.bookings,
+  );
 }
 
 class OfferSnapshot {
@@ -234,76 +236,22 @@ class BlockDetails {
   }
 }
 
-class Subscription {
-  final String subscriptionId;
+class BusinessDetails {
+  final String name;
+  final String image;
   final String businessId;
-  final BusinessSnapshot businessSnapshot;
-  final String offerId;
-  final OfferSnapshot offerSnapshot;
-  final String name;
-  final int credits;
-  final int creditsUsed;
-  final DateTime expiration;
-  final String status;
-  final DateTime createdAt;
-  final DateTime renewedAt;
-  final int renewalIntervalDays;
-  final bool autoRenew;
 
-  Subscription({
-    required this.subscriptionId,
+  BusinessDetails({
+    required this.name,
+    required this.image,
     required this.businessId,
-    required this.businessSnapshot,
-    required this.offerId,
-    required this.offerSnapshot,
-    required this.name,
-    required this.credits,
-    required this.creditsUsed,
-    required this.expiration,
-    required this.status,
-    required this.createdAt,
-    required this.renewedAt,
-    required this.renewalIntervalDays,
-    required this.autoRenew,
   });
 
-  factory Subscription.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return Subscription(
-      subscriptionId: doc.id,
-      businessId: data['businessId'],
-      businessSnapshot: BusinessSnapshot.fromMap(data['businessSnapshot']),
-      offerId: data['offerId'],
-      offerSnapshot: OfferSnapshot.fromMap(data['offerSnapshot']),
-      name: data['name'],
-      credits: data['credits'],
-      creditsUsed: data['creditsUsed'],
-      expiration: (data['expiration'] as Timestamp).toDate(),
-      status: data['status'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      renewedAt: (data['renewedAt'] as Timestamp).toDate(),
-      renewalIntervalDays: data['renewalIntervalDays'],
-      autoRenew: data['autoRenew'],
-    );
-  }
-}
-
-class BusinessSnapshot {
-  final String name;
-  final String industry;
-  final Branding branding;
-
-  BusinessSnapshot({
-    required this.name,
-    required this.industry,
-    required this.branding,
-  });
-
-  factory BusinessSnapshot.fromMap(Map<String, dynamic> map) {
-    return BusinessSnapshot(
+  factory BusinessDetails.fromMap(Map<String, dynamic> map) {
+    return BusinessDetails(
+      businessId: map['businessId'],
       name: map['name'],
-      industry: map['industry'],
-      branding: Branding.fromMap(map['branding']),
+      image: map['image'],
     );
   }
 }
