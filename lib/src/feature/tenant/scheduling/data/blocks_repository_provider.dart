@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/core/services/firebase_service.dart';
 import 'blocks_repository_base.dart';
 import 'fake_blocks_repository.dart' as FakeBlocksRepository;
 import 'firebase_blocks_repository.dart' as FirebaseBlocksRepository;
