@@ -9,7 +9,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 
 class SignInForm extends ConsumerStatefulWidget {
-  SignInForm({Key? key}) : super(key: key);
+  const SignInForm({super.key});
 
   @override
   ConsumerState<SignInForm> createState() => _SignInFormState();
@@ -112,6 +112,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                           FormBuilderValidators.required(),
                           FormBuilderValidators.email(),
                         ]),
+                        onSubmitted: (_) => signIn(),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -122,6 +123,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
                       ]),
+                      onSubmitted: (_) => signIn(),
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(

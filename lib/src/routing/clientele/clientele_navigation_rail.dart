@@ -4,7 +4,7 @@ import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_navigation_widget.dart';
-import 'package:go_router/go_router.dart';
+import 'package:web/web.dart' as html;
 
 class ClienteleNavigationRail extends ConsumerStatefulWidget {
   const ClienteleNavigationRail({
@@ -26,22 +26,17 @@ class _ScaffoldWithNavigationRailState
     extends ConsumerState<ClienteleNavigationRail> {
   bool isExtended = false;
 
-  void _handleLogout() async {
-    try {
-      await ref.read(authServiceProvider).signOut();
-      context.goNamed('sign-in');
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error signing out: $e')));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size.width;
     final isMobile = screenSize < 600;
     final user = ref.watch(currentAppUserProvider).value;
+    final isAdmin = user?.hasRole(UserRoleType.tenant) ?? false;
+
+    String getBaseUrl() {
+      final uri = Uri.base;
+      return '${uri.scheme}://${uri.host}${uri.hasPort ? ':${uri.port}' : ''}';
+    }
 
     return Scaffold(
       body: Row(
@@ -88,15 +83,18 @@ class _ScaffoldWithNavigationRailState
                   children: [
                     IconButton(
                       icon: const Icon(Icons.logout, color: Colors.white70),
-                      onPressed: _handleLogout,
+                      onPressed: () => ref.read(authServiceProvider).signOut(),
                       tooltip: 'Logout',
                     ),
-                    if (user!.hasRole(UserRoleType.tenant))
+                    if (isAdmin)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: FloatingActionButton(
                           onPressed: () {
-                            context.go('/tenant/schedule');
+                            final baseUrl = getBaseUrl();
+                            final adminPath = '$baseUrl/tenant/schedule';
+
+                            html.window.open(adminPath);
                           },
                           child: const Icon(Icons.work),
                         ),
