@@ -9,7 +9,7 @@ import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domai
 class ExpansionItem {
   ExpansionItem({
     required this.membershipItem,
-    this.isExpanded = false,
+    this.isExpanded = true,
     this.isActive = false,
   });
 
@@ -25,7 +25,7 @@ List<ExpansionItem> generateExpansionItems(
   return List<ExpansionItem>.generate(memberships.length, (int index) {
     return ExpansionItem(
       membershipItem: memberships[index],
-      isExpanded: isExpanded,
+      isExpanded: true,
       isActive: true,
     );
   });
@@ -60,27 +60,29 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
                 'Memberships',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
               ),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        side: BorderSide(color: AppColors.violetE3),
-                      ),
-                      child: Text('Active'),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      side: BorderSide(color: AppColors.violetE3),
-                    ),
-                    child: Text('New'),
-                  ),
-                ],
-              ),
+              // todo: implement membership list filtering
+              // Row(
+              //   children: [
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: TextButton(
+              //         onPressed: () {},
+              //         style: TextButton.styleFrom(
+              //           side: BorderSide(color: AppColors.violetE3),
+              //         ),
+              //         child: Text('Active'),
+              //       ),
+              //     ),
+              //     TextButton(
+              //       onPressed: () {},
+              //       style: TextButton.styleFrom(
+              //         side: BorderSide(color: AppColors.violetE3),
+              //       ),
+              //       child: Text('New'),
+              //     ),
+              //   ],
+              // ),
+              SizedBox(height: 20),
               AsyncValueWidget(
                 value: asyncMemberships,
                 data: (memberships) {

@@ -48,11 +48,8 @@ class FirebaseMembershipsRepository {
     return false;
   }
 
-  Future<bool> checkout(
-    String uid,
-    String membershipId,
-    int toPayAmount,
-  ) async {
+  Future<bool> checkout(String uid, String membershipId) async {
+    final toPayAmount = 1;
     try {
       final userMembership = await fetchUserMembership(uid, membershipId);
       if (userMembership != null) {
@@ -109,12 +106,9 @@ class FirebaseMembershipsRepository {
     return false;
   }
 
-  Future<bool> refundCredits(
-    String uid,
-    String membershipId,
-    int refundAmount,
-  ) async {
+  Future<bool> refundCredits(String uid, String membershipId) async {
     final userMembership = await fetchUserMembership(uid, membershipId);
+    final refundAmount = 1;
     if (userMembership != null) {
       final hasValidMembershipCredits = _verifyMembershipRefundCredits(
         userMembership,

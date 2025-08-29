@@ -188,7 +188,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                         ),
                                         onTap: () {
                                           context.goNamed(
-                                            ClienteleRoute.bookingDetail.name,
+                                            ClienteleRoute.blockDetail.name,
                                             // ClienteleRoute.block.name,
                                             pathParameters: {
                                               // 'businessId': booking.businessId
@@ -281,7 +281,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                           ),
                                           onTap: () {
                                             context.goNamed(
-                                              ClienteleRoute.bookingDetail.name,
+                                              ClienteleRoute.blockDetail.name,
                                               pathParameters: {
                                                 'blockId': booking
                                                     .block!
