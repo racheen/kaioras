@@ -8,7 +8,7 @@ class FirebaseMembershipsRepository {
 
   Query<Membership> queryMemberships(String uid) {
     return _firestore
-        .collection('users/$uid/memberships')
+        .collection('users/$uid/membership')
         .withConverter(
           fromFirestore: (snapshot, _) => Membership.fromFirestore(snapshot),
           toFirestore: (membership, _) {
