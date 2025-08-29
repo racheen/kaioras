@@ -60,46 +60,49 @@ class _MembershipListItemState extends ConsumerState<MembershipListItem> {
                   ),
                   Text(isMobileView ? '' : item.membershipItem.name),
                   Text('with ${item.membershipItem.businessDetails.name}'),
-                  Text(
-                    item.membershipItem.status,
-                    style: TextStyle(
-                      color:
-                          item.membershipItem.status ==
-                              MembershipStatus.active.name
-                          ? AppColors.green92
-                          : Colors.redAccent,
-                    ),
-                  ),
+                  Text(isMobileView ? '' : '${item.membershipItem.credits}'),
+                  item.membershipItem.status == MembershipStatus.active.name
+                      ? Text(
+                          isMobileView ? '' : item.membershipItem.status,
+                          style: TextStyle(color: AppColors.green92),
+                        )
+                      : Text(
+                          isMobileView ? '' : item.membershipItem.status,
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
                 ],
               ),
             );
           },
           body: AsyncValueWidget(
             value: asyncValueMembershipBookings,
-            data: (membershipBookings) => Column(
-              children: membershipBookings.isEmpty
-                  ? [
-                      ListTile(
-                        tileColor: Colors.grey.shade300,
-                        title: Text('No Bookings'),
-                      ),
-                    ]
-                  : membershipBookings
-                        .where(
-                          (booking) =>
-                              booking.membershipId ==
-                              item.membershipItem.membershipId,
-                        )
-                        .map(
-                          (booking) => ListTile(
-                            title: Text(
-                              booking.blockSnapshot!.title.toString(),
+            data: (membershipBookings) {
+              final filteredMembership = membershipBookings.where(
+                (booking) =>
+                    booking.membershipId == item.membershipItem.membershipId,
+              );
+
+              return Column(
+                children: filteredMembership.isEmpty
+                    ? [
+                        ListTile(
+                          tileColor: Colors.grey.shade300,
+                          title: Text('No Bookings'),
+                        ),
+                      ]
+                    : filteredMembership
+                          .map(
+                            (booking) => ListTile(
+                              tileColor: Colors.grey.shade300,
+                              title: Text(
+                                booking.blockSnapshot!.title.toString(),
+                              ),
+                              trailing: Text(booking.bookedAt.toString()),
                             ),
-                            trailing: Text(booking.bookedAt.toString()),
-                          ),
-                        )
-                        .toList(),
-            ),
+                          )
+                          .toList(),
+              );
+            },
           ),
           isExpanded: item.isExpanded,
         );

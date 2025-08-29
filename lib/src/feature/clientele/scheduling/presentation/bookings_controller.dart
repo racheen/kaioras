@@ -31,10 +31,16 @@ class BookingsController extends AutoDisposeAsyncNotifier<List<Booking>> {
     });
   }
 
-  Future<void> book({required businessId, required block}) async {
+  Future<void> book({
+    required businessId,
+    required block,
+    required membershipId,
+  }) async {
     state = await AsyncValue.guard(() async {
       ref.read(loadingProvider.notifier).state = true;
-      await ref.read(bookingsServiceProvider).book(businessId, block);
+      await ref
+          .read(bookingsServiceProvider)
+          .book(businessId, block, membershipId);
       return fetchBookings();
     }).whenComplete(() => ref.read(loadingProvider.notifier).state = false);
   }

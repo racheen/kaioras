@@ -138,11 +138,15 @@ class OfferSnapshot {
   final String name;
   final String type;
   final String description;
+  final String blockType;
+  final String blockSubtype;
 
   OfferSnapshot({
     required this.name,
     required this.type,
     required this.description,
+    required this.blockType,
+    required this.blockSubtype,
   });
 
   factory OfferSnapshot.fromMap(Map<String, dynamic> map) {
@@ -150,11 +154,19 @@ class OfferSnapshot {
       name: map['name'],
       type: map['type'],
       description: map['description'],
+      blockType: map['blockType'],
+      blockSubtype: map['blockSubtype'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'type': type, 'description': description};
+    return {
+      'name': name,
+      'type': type,
+      'description': description,
+      'blockType': blockType,
+      'blockSubtype': blockSubtype,
+    };
   }
 }
 
