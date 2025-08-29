@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/firebase_bookings_repository.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/data/firebase_membership_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/data/firebase_membership_repository.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/booking.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_notifier.dart';
