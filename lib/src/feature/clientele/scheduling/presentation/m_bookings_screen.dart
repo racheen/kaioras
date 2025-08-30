@@ -107,7 +107,7 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
                         (booking) => GestureDetector(
                           onTap: () {
                             context.goNamed(
-                              ClienteleRoute.bookingDetail.name,
+                              ClienteleRoute.blockDetail.name,
                               pathParameters: {
                                 'blockId': booking.block!.blockId.toString(),
                               },
@@ -143,7 +143,7 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
                         (booking) => GestureDetector(
                           onTap: () {
                             context.goNamed(
-                              ClienteleRoute.bookingDetail.name,
+                              ClienteleRoute.blockDetail.name,
                               pathParameters: {
                                 'blockId': booking.block!.blockId.toString(),
                               },

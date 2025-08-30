@@ -7,6 +7,8 @@ import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_notifier.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 class ButtonLabel {
@@ -31,6 +33,33 @@ class BookingButtonWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    FToast fToast = FToast();
+    fToast.init(context);
+
+    showToast(message) {
+      Widget toast = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: AppColors.green92,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.check, color: Colors.white),
+            SizedBox(width: 12.0),
+            Text(message, style: TextStyle(color: Colors.white)),
+          ],
+        ),
+      );
+
+      fToast.showToast(
+        child: toast,
+        gravity: ToastGravity.BOTTOM_RIGHT,
+        toastDuration: Duration(seconds: 5),
+      );
+    }
+
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobileView = screenWidth < 800;
 
@@ -77,7 +106,10 @@ class BookingButtonWidget extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(bookingsControllerProvider.notifier)
-                      .cancel(block, block.origin.businessId);
+                      .cancel(block, block.origin.businessId)
+                      .whenComplete(
+                        () => showToast('Sucessully cancelled booking'),
+                      );
                   context.pop();
                 },
               ),
@@ -139,12 +171,13 @@ class BookingButtonWidget extends ConsumerWidget {
                 return ElevatedButton(
                   onPressed: () {
                     if (!isBooked) {
-                      ref
-                          .read(bookingsControllerProvider.notifier)
-                          .book(
-                            businessId: block.origin.businessId,
-                            block: block,
-                          );
+                      context.goNamed(
+                        ClienteleRoute.bookingDetail.name,
+                        pathParameters: {
+                          'businessId': block.origin.businessId.toString(),
+                          'blockId': block.blockId.toString(),
+                        },
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -203,14 +236,14 @@ class BookingButtonWidget extends ConsumerWidget {
                   default:
                     return ElevatedButton(
                       onPressed: () {
-                        if (!isBooked) {
-                          ref
-                              .read(bookingsControllerProvider.notifier)
-                              .book(
-                                businessId: block.origin.businessId,
-                                block: block,
-                              );
-                        }
+                        if (!isBooked) {}
+                        context.goNamed(
+                          ClienteleRoute.bookingDetail.name,
+                          pathParameters: {
+                            'businessId': block.origin.businessId.toString(),
+                            'blockId': block.blockId.toString(),
+                          },
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.violetC2,

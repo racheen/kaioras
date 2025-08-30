@@ -126,89 +126,96 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                 SizedBox(height: 30),
                 AsyncValueWidget(
                   value: upcomingBookingsAsyncValue,
-                  data: (bookings) => Container(
-                    decoration: BoxDecoration(
-                      border: BoxBorder.all(color: AppColors.lightGrey),
-                      borderRadius: BorderRadius.circular(3.0),
-                    ),
-                    child: ExpansionPanelList(
-                      expansionCallback: (int index, bool isExpanded) {
-                        setState(() {
-                          upcomingBookingsIsExpanded = isExpanded;
-                        });
-                      },
-                      children: <ExpansionPanel>[
-                        ExpansionPanel(
-                          headerBuilder:
-                              (BuildContext context, bool isExpanded) {
-                                return ListTile(
-                                  title: Text(
-                                    'Upcoming',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                );
-                              },
-                          body: Column(
-                            children: bookings.isEmpty
-                                ? [
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text('No upcoming bookings'),
-                                    ),
-                                  ]
-                                : bookings.map((booking) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        border: BoxBorder.fromLTRB(
-                                          top: BorderSide(
-                                            color: AppColors.lightGrey,
-                                          ),
-                                        ),
+                  data: (bookings) {
+                    final upcomingBookings = bookings.where(
+                      (booking) => booking.blockSnapshot!.startTime.isAfter(
+                        DateTime.now(),
+                      ),
+                    );
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: BoxBorder.all(color: AppColors.lightGrey),
+                        borderRadius: BorderRadius.circular(3.0),
+                      ),
+                      child: ExpansionPanelList(
+                        expansionCallback: (int index, bool isExpanded) {
+                          setState(() {
+                            upcomingBookingsIsExpanded = isExpanded;
+                          });
+                        },
+                        children: <ExpansionPanel>[
+                          ExpansionPanel(
+                            headerBuilder:
+                                (BuildContext context, bool isExpanded) {
+                                  return ListTile(
+                                    title: Text(
+                                      'Upcoming',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
                                       ),
-                                      child: ListTile(
-                                        title: Text(
-                                          booking.blockSnapshot!.title
-                                              .toString(),
-                                          style: TextStyle(
-                                            color: AppColors.violet99,
-                                          ),
-                                        ),
-                                        subtitle: Text(
-                                          'Hosted by ${booking.blockSnapshot?.origin.name}',
-                                        ),
-                                        trailing: Text(
-                                          booking.blockSnapshot!.startTime
-                                              .toString(),
-                                          style: TextStyle(
-                                            color: AppColors.lightGrey,
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          context.goNamed(
-                                            ClienteleRoute.bookingDetail.name,
-                                            // ClienteleRoute.block.name,
-                                            pathParameters: {
-                                              // 'businessId': booking.businessId
-                                              //     .toString(),
-                                              'blockId': booking
-                                                  .blockSnapshot!
-                                                  .blockId
-                                                  .toString(),
-                                            },
-                                          );
-                                        },
+                                    ),
+                                  );
+                                },
+                            body: Column(
+                              children: upcomingBookings.isEmpty
+                                  ? [
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text('No upcoming bookings'),
                                       ),
-                                    );
-                                  }).toList(),
+                                    ]
+                                  : upcomingBookings.map((booking) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          border: BoxBorder.fromLTRB(
+                                            top: BorderSide(
+                                              color: AppColors.lightGrey,
+                                            ),
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          title: Text(
+                                            booking.blockSnapshot!.title
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: AppColors.violet99,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            'Hosted by ${booking.blockSnapshot?.origin.name}',
+                                          ),
+                                          trailing: Text(
+                                            booking.blockSnapshot!.startTime
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: AppColors.lightGrey,
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            context.goNamed(
+                                              ClienteleRoute.blockDetail.name,
+                                              // ClienteleRoute.block.name,
+                                              pathParameters: {
+                                                // 'businessId': booking.businessId
+                                                //     .toString(),
+                                                'blockId': booking
+                                                    .blockSnapshot!
+                                                    .blockId
+                                                    .toString(),
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }).toList(),
+                            ),
+                            isExpanded: upcomingBookingsIsExpanded,
                           ),
-                          isExpanded: upcomingBookingsIsExpanded,
-                        ),
-                      ],
-                    ),
-                  ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 30),
                 AsyncValueWidget(
@@ -281,7 +288,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                                           ),
                                           onTap: () {
                                             context.goNamed(
-                                              ClienteleRoute.bookingDetail.name,
+                                              ClienteleRoute.blockDetail.name,
                                               pathParameters: {
                                                 'blockId': booking
                                                     .block!

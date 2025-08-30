@@ -30,6 +30,7 @@ enum ClienteleRoute {
   clienteleProfile,
   bookingDetail,
   block,
+  blockDetail,
 }
 
 final clienteleRoutes = [
@@ -79,7 +80,7 @@ final clienteleRoutes = [
               ),
               GoRoute(
                 path: '/block/:blockId',
-                name: ClienteleRoute.bookingDetail.name,
+                name: ClienteleRoute.blockDetail.name,
                 pageBuilder: (context, state) {
                   final blockId = state.pathParameters['blockId'];
                   if (blockId != null) {

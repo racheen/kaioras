@@ -4,6 +4,7 @@ class Block {
   String? blockId;
   String? title;
   String? type;
+  List<String>? subtype;
   DateTime? startTime;
   int? duration;
   String? location;
@@ -20,6 +21,7 @@ class Block {
     this.blockId,
     this.title,
     this.type,
+    this.subtype,
     this.startTime,
     this.duration,
     this.location,
@@ -36,6 +38,7 @@ class Block {
   factory Block.fromMap(Map<String, dynamic> data, String blockId) {
     final title = data['title'] as String;
     final type = data['type'] as String;
+    final subtype = data['subtype'] as List<dynamic>;
     final startTime = data['startTime'] as Timestamp;
     final duration = data['duration'] as int;
     final location = data['location'] as String;
@@ -52,6 +55,7 @@ class Block {
       blockId: blockId,
       title: title,
       type: type,
+      subtype: subtype.map((s) => s.toString()).toList(),
       startTime: startTime.toDate(),
       duration: duration,
       location: location,
@@ -71,6 +75,7 @@ class Block {
       'blockId': blockId,
       'title': title,
       'type': type,
+      'subtype': subtype,
       'startTime': startTime,
       'duration': duration,
       'location': location,
@@ -90,6 +95,7 @@ class Block {
       'blockId': blockId,
       'title': title,
       'type': type,
+      'subtype': subtype,
       'startTime': Timestamp.fromDate(startTime!),
       'duration': duration,
       'location': location,
