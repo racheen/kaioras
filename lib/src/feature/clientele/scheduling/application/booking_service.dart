@@ -21,6 +21,106 @@ class BookingService {
   Ref ref;
   BookingService(this.ref);
 
+  Future<bool> checkAvailability(
+    String businessId,
+    Block currentBlock,
+    String membershipId,
+  ) async {
+    return await ref
+        .read(bookingsRepositoryProvider)
+        .verifyBookingAvailability(
+          businessId,
+          currentBlock.blockId!,
+          currentBlock.capacity!,
+        );
+  }
+
+  Future<bool> waitlist(
+    String businessId,
+    Block currentBlock,
+    String membershipId,
+  ) async {
+    final currentUser = ref.read(currentAppUserProvider);
+    bool isComplete = false;
+    if (currentUser.value != null) {
+      final uid = currentUser.value!.uid;
+
+      final existingBooking = await ref
+          .read(bookingsRepositoryProvider)
+          .verifyExistingBooking(
+            businessId: businessId,
+            blockId: currentBlock.blockId,
+            uid: uid,
+          );
+
+      final hasExistingWaitlist = await ref
+          .read(bookingsRepositoryProvider)
+          .verifyExistingWaitlisting(
+            businessId: businessId,
+            blockId: currentBlock.blockId,
+            uid: uid,
+          );
+
+      if (existingBooking != null) {
+        final hasExistingWaitlist = await ref
+            .read(bookingsRepositoryProvider)
+            .verifyExistingWaitlisting(
+              businessId: businessId,
+              blockId: currentBlock.blockId,
+              uid: uid,
+            );
+
+        if (!hasExistingWaitlist) {
+          existingBooking.status = BookingStatus.waitlisted.name;
+        }
+        await ref
+            .read(bookingsRepositoryProvider)
+            .updateBooking(
+              currentBlock.origin.businessId,
+              currentBlock.blockId!,
+              existingBooking,
+            );
+        await ref
+            .read(bookingsNotifierProvider.notifier)
+            .updateUserBookings(uid, existingBooking)
+            .whenComplete(() {
+              isComplete = true;
+            });
+      } else {
+        Booking newBooking = Booking(
+          bookedAt: DateTime.now(),
+          uid: uid,
+          membershipId: membershipId,
+          status: BookingStatus.waitlisted.name,
+          blockSnapshot: BlockSnapshot(
+            blockId: currentBlock.blockId!,
+            title: currentBlock.title!,
+            startTime: currentBlock.startTime!,
+            location: currentBlock.location!,
+            host: currentBlock.host!,
+            origin: currentBlock.origin,
+          ),
+        );
+
+        if (!hasExistingWaitlist) {
+          newBooking.status = BookingStatus.waitlisted.name;
+        }
+        await ref
+            .read(bookingsRepositoryProvider)
+            .addBooking(currentBlock.origin.businessId, newBooking);
+        await ref
+            .read(bookingsNotifierProvider.notifier)
+            .updateUserBookings(uid, newBooking)
+            .whenComplete(() {
+              isComplete = true;
+            });
+      }
+
+      return Future.value(isComplete);
+    }
+    return Future.value(isComplete);
+  }
+
   Future<void> book(
     String businessId,
     Block currentBlock,

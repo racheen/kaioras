@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/global_loading_indicator.dart';
+import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/memberships_controller.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/application/booking_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_notifier.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/booking_detail/membership_selector_form.dart';
@@ -10,6 +13,7 @@ import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_rou
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/async_value_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_detail/block_controller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 List<Membership> filterMemberships(List<Membership> memberships, Block block) {
@@ -41,6 +45,40 @@ class BookingDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
+  FToast? fToast;
+
+  @override
+  void initState() {
+    super.initState();
+    fToast = FToast();
+
+    fToast?.init(context);
+  }
+
+  _showToast(message) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: AppColors.green92,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.check, color: Colors.white),
+          SizedBox(width: 12.0),
+          Text(message, style: TextStyle(color: Colors.white)),
+        ],
+      ),
+    );
+
+    fToast?.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM_RIGHT,
+      toastDuration: Duration(seconds: 5),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final blockAsyncValue = ref.watch(blockControllerProvider(widget.blockId));
@@ -49,6 +87,58 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
 
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobileView = screenWidth < 600;
+
+    Future<void> showConfirmWaitlistDialog(
+      businessId,
+      block,
+      membershipId,
+    ) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('There are no more available slots'),
+            content: const SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Do you wish to be added as waitlisted?'),
+                  Text(
+                    'We can let you know when slots opened up for this booking.',
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('No'),
+                onPressed: () {
+                  context.pop();
+                  context.goNamed(ClienteleRoute.clienteleBookings.name);
+                },
+              ),
+              TextButton(
+                child: const Text('Yes', style: TextStyle(color: Colors.green)),
+                onPressed: () async {
+                  ref.read(loadingProvider.notifier).state = true;
+                  final isComplete = await ref
+                      .read(bookingsServiceProvider)
+                      .waitlist(businessId, block, membershipId);
+
+                  if (context.mounted && isComplete) {
+                    context.pop();
+                    context.goNamed(ClienteleRoute.clienteleBookings.name);
+                    ref.read(loadingProvider.notifier).state = false;
+                    _showToast('Successfully added as waitlist');
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.all(20.0),
@@ -156,28 +246,47 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
                                     visible: validMemberships.isNotEmpty,
                                     child: MembershipSelectorForm(
                                       memberships: validMemberships,
-                                      callback: (membershipId) {
+                                      callback: (membershipId) async {
                                         // todo: implement membership check before allowing to book a block
-                                        ref
-                                            .read(
-                                              bookingsControllerProvider
-                                                  .notifier,
-                                            )
-                                            .book(
-                                              businessId:
-                                                  block.origin.businessId,
-                                              block: block,
-                                              membershipId: membershipId,
-                                            )
-                                            .whenComplete(() {
-                                              if (context.mounted) {
-                                                context.goNamed(
-                                                  ClienteleRoute
-                                                      .clienteleBookings
-                                                      .name,
-                                                );
-                                              }
-                                            });
+
+                                        final hasAvailability = await ref
+                                            .read(bookingsServiceProvider)
+                                            .checkAvailability(
+                                              block.origin.businessId,
+                                              block,
+                                              membershipId,
+                                            );
+                                        if (hasAvailability) {
+                                          ref
+                                              .read(
+                                                bookingsControllerProvider
+                                                    .notifier,
+                                              )
+                                              .book(
+                                                businessId:
+                                                    block.origin.businessId,
+                                                block: block,
+                                                membershipId: membershipId,
+                                              )
+                                              .whenComplete(() {
+                                                if (context.mounted) {
+                                                  context.goNamed(
+                                                    ClienteleRoute
+                                                        .clienteleBookings
+                                                        .name,
+                                                  );
+                                                  _showToast(
+                                                    'Successfully booked',
+                                                  );
+                                                }
+                                              });
+                                        } else {
+                                          showConfirmWaitlistDialog(
+                                            block.origin.businessId,
+                                            block,
+                                            membershipId,
+                                          );
+                                        }
                                       },
                                     ),
                                   ),
