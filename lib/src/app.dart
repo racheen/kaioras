@@ -4,7 +4,6 @@ import 'package:flutter_riverpod_boilerplate/src/common/error_message_widget.dar
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/app_router.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
@@ -18,7 +17,6 @@ class App extends ConsumerWidget {
         final routerProvider = ref.watch(goRouterProvider(user));
 
         return MaterialApp.router(
-          builder: FToastBuilder(),
           routerConfig: routerProvider,
           title: 'Kaioras',
           theme: ThemeData(

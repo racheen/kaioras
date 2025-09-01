@@ -52,6 +52,14 @@ class _GlobalLoadingIndicatorState
       }
     });
 
-    return widget.child;
+    return Overlay(
+      initialEntries: <OverlayEntry>[
+        OverlayEntry(
+          builder: (BuildContext ctx) {
+            return widget.child;
+          },
+        ),
+      ],
+    );
   }
 }
