@@ -22,7 +22,7 @@ import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_rou
 import 'package:flutter_riverpod_boilerplate/src/routing/go_router_refresh_stream.dart';
 import 'package:go_router/go_router.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final _rootClienteleNavigatorKey = GlobalKey<NavigatorState>();
 final _shellClienteleBookingsKey = GlobalKey<NavigatorState>(
@@ -51,7 +51,7 @@ final goRouterProvider = Provider.family<GoRouter, AppUser?>((ref, user) {
 
   return GoRouter(
     initialLocation: '/sign-in',
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     debugLogDiagnostics: true,
     redirect: (context, state) {
       final path = state.uri.path;
