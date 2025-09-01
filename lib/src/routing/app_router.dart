@@ -22,10 +22,10 @@ import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_rou
 import 'package:flutter_riverpod_boilerplate/src/routing/go_router_refresh_stream.dart';
 import 'package:go_router/go_router.dart';
 
-final rootNavigatorKey = GlobalKey<NavigatorState>();
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final _rootClienteleNavigatorKey = GlobalKey<NavigatorState>();
-final _shellClienteleBookingsKey = GlobalKey<NavigatorState>(
+final shellClienteleBookingsKey = GlobalKey<NavigatorState>(
   debugLabel: 'shellClienteleBookings',
 );
 final _shellClienteleMembershipKey = GlobalKey<NavigatorState>(
@@ -51,7 +51,7 @@ final goRouterProvider = Provider.family<GoRouter, AppUser?>((ref, user) {
 
   return GoRouter(
     initialLocation: '/sign-in',
-    navigatorKey: rootNavigatorKey,
+    navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
     redirect: (context, state) {
       final path = state.uri.path;
@@ -139,7 +139,7 @@ final goRouterProvider = Provider.family<GoRouter, AppUser?>((ref, user) {
             branches: [
               /// Clientele Routes
               StatefulShellBranch(
-                navigatorKey: _shellClienteleBookingsKey,
+                navigatorKey: shellClienteleBookingsKey,
                 routes: [
                   GoRoute(
                     path: '/bookings',

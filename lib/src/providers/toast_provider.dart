@@ -4,6 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 final globalToastProvider = Provider((Ref ref) {
   final fToast = FToast();
-  fToast.init(rootNavigatorKey.currentContext!);
+  fToast.init(shellClienteleBookingsKey.currentContext!);
   return fToast;
 });
