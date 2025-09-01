@@ -21,6 +21,7 @@ class Block {
     this.blockId,
     this.title,
     this.type,
+    this.subtype,
     this.startTime,
     this.duration,
     this.location,
@@ -100,9 +101,45 @@ class Block {
       'createdAt': Timestamp.fromDate(DateTime.parse(createdAt!)),
       'tags': tags,
       'description': description,
-      'host': host,
-      'origin': origin,
+      'host': host?.toJson(),
+      'origin': origin.toJson(),
     };
+  }
+
+  Block copyWith({
+    String? blockId,
+    String? title,
+    String? type,
+    String? subtype,
+    DateTime? startTime,
+    int? duration,
+    String? location,
+    int? capacity,
+    String? visibility,
+    String? status,
+    String? createdAt,
+    List<String>? tags,
+    String? description,
+    Host? host,
+    Origin? origin,
+  }) {
+    return Block(
+      blockId: blockId ?? this.blockId,
+      title: title ?? this.title,
+      type: type ?? this.type,
+      subtype: subtype ?? this.subtype,
+      startTime: startTime ?? this.startTime,
+      duration: duration ?? this.duration,
+      location: location ?? this.location,
+      capacity: capacity ?? this.capacity,
+      visibility: visibility ?? this.visibility,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      tags: tags ?? this.tags,
+      description: description ?? this.description,
+      host: host ?? this.host,
+      origin: origin ?? this.origin,
+    );
   }
 }
 
@@ -143,9 +180,9 @@ class Host {
   }) => Host(
     uid: uid ?? this.uid,
     name: name ?? this.name,
-    title: title ?? title,
-    about: about ?? about,
-    image: image ?? image,
+    title: title ?? this.title,
+    about: about ?? this.about,
+    image: image ?? this.image,
   );
 }
 

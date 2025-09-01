@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/blocks_repository_base.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/blocks_repository_provider.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 
-class FirebaseBlocksRepository {
-  const FirebaseBlocksRepository(this._firestore);
+class BlocksRepository implements BlocksRepositoryBase {
+  const BlocksRepository(this._firestore);
   final FirebaseFirestore _firestore;
 
   Query<Block> queryBlocksHosted(String businessId, String currentAppUserUid) {
@@ -44,11 +45,46 @@ class FirebaseBlocksRepository {
     }
     return null;
   }
-}
 
-final blocksRepositoryProvider = Provider((Ref ref) {
-  return FirebaseBlocksRepository(FirebaseFirestore.instance);
-});
+  @override
+  Future<void> createNewBlock(Block block, String businessId) async {
+    try {
+      // Create a new document reference
+      final docRef = _firestore
+          .collection('businesses/$businessId/blocks')
+          .doc();
+
+      // Set the block ID to the generated document ID
+      final blockWithId = block.copyWith(blockId: docRef.id);
+
+      // Add the new block to Firestore
+      await docRef.set(blockWithId.toFirestore());
+
+      print('New block created with ID: ${docRef.id}');
+    } catch (e) {
+      print('Error creating new block: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteEvent(String id) {
+    // TODO: implement deleteEvent
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Block?> fetchBlockById(String blockId) {
+    // TODO: implement fetchBlockById
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Block>> getInstructorEvents(String instructorId) {
+    // TODO: implement getInstructorEvents
+    throw UnimplementedError();
+  }
+}
 
 final blocksHostedProvider =
     FutureProvider.family<List<Block>, (String, String)>((ref, params) async {

@@ -1,23 +1,51 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/fake_blocks_repository.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/firebase_blocks_repository.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/firebase_auth_service.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/business_profile/data/firebase_business_repostiory.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/blocks_repository_provider.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/availability.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/presentation/custom_date_time_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
-final _createClassKey = GlobalKey<FormBuilderState>();
-List<String> typeOptions = ['Individual', 'Group'];
+List<String> typeOptions = ['Private', 'Group'];
+List<String> subtypeOptions = ['Reformer', 'Mat', 'Chair'];
 List<String> visibilityOptions = ['Public', 'Private'];
 List<String> locationOptions = ['Studio A', 'Studio B'];
 
-class ScheduleForm extends ConsumerWidget {
-  const ScheduleForm({super.key});
+class ScheduleForm extends ConsumerStatefulWidget {
+  final List<Block> existingBlocks;
+
+  const ScheduleForm({super.key, required this.existingBlocks});
+
+  @override
+  ConsumerState<ScheduleForm> createState() => _ScheduleFormState();
+}
+
+class _ScheduleFormState extends ConsumerState<ScheduleForm> {
+  final _createClassKey = GlobalKey<FormBuilderState>();
+  AsyncValue<AppUser?> currentUserAsync = const AsyncValue.loading();
+  late List<Block> existingBlocks;
+
+  @override
+  void initState() {
+    super.initState();
+    existingBlocks = widget.existingBlocks;
+    _loadCurrentUser();
+  }
+
+  void _loadCurrentUser() {
+    currentUserAsync = ref.read(currentAppUserProvider);
+    currentUserAsync.whenData((user) {
+      if (user != null) {
+        setState(() {});
+      }
+    });
+  }
 
   final double _minWidth = 400.0;
   final double _spacing = 120.0;
@@ -28,14 +56,31 @@ class ScheduleForm extends ConsumerWidget {
     debugPrint('Form cancelled');
   }
 
-  Future<void> submitForm(BuildContext context, WidgetRef ref) async {
+  Future<void> submitForm(BuildContext context) async {
     if (_createClassKey.currentState?.saveAndValidate() ?? false) {
       final formData = _createClassKey.currentState!.value;
       final startTime = formData['startTime'] as DateTime;
 
-      final Block newEvent = Block(
-        blockId:
-            '', // This will be set by Firestore when the document is created
+      final currentUser = currentUserAsync.value;
+      if (currentUser == null || currentUser.roles.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User data not available')),
+        );
+        return;
+      }
+
+      final businessId = currentUser.roles.keys.firstOrNull;
+      if (businessId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No business associated with this account'),
+          ),
+        );
+        return;
+      }
+
+      final Block newBlock = Block(
+        blockId: '',
         title: formData['title'],
         type: formData['type'],
         startTime: startTime,
@@ -43,7 +88,7 @@ class ScheduleForm extends ConsumerWidget {
         location: formData['location'],
         capacity: int.parse(formData['capacity']),
         visibility: formData['visibility'],
-        status: 'active', // Assuming new events are always created as active
+        status: 'active',
         createdAt: DateTime.now().toString(),
         tags:
             (formData['tags'] as String?)
@@ -52,13 +97,21 @@ class ScheduleForm extends ConsumerWidget {
                 .toList() ??
             [],
         description: formData['description'] ?? '',
-        host: Host(uid: 'user001', name: 'Jane Doe'),
-        origin: Origin(businessId: 'business001', name: 'Pilates', image: ''),
+        host: Host(
+          uid: currentUser.uid,
+          name: currentUser.name,
+          title: 'Onwer',
+          about: 'Test User',
+          image: 'https://example.com/stretch_instructor.jpg',
+        ),
+        origin: Origin(businessId: businessId, name: 'Pilates', image: ''),
       );
 
       try {
-        await ref.read(eventServiceProvider).create(newEvent);
-        debugPrint('New Blocks: $newEvent');
+        await ref
+            .read(blocksRepositoryProvider)
+            .createNewBlock(newBlock, businessId);
+        debugPrint('New Block: $newBlock');
         debugPrint('✅ Event created!');
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,75 +134,47 @@ class ScheduleForm extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final studioAvailability = ref.watch(studioAvailabilityProvider);
+  Widget build(BuildContext context) {
+    return currentUserAsync.when(
+      data: (currentUser) {
+        if (currentUser == null || currentUser.roles.isEmpty) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Create New Schedule')),
+            body: Center(child: Text('No user data available')),
+          );
+        }
 
-    return Scaffold(
-      appBar: AppBar(title: const Center(child: Text('Create New Schedule'))),
-      body: Center(
-        child: Container(
-          alignment: Alignment.center,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: FormBuilder(
-                  key: _createClassKey,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Wrap(
-                          runSpacing: _runSpacing,
-                          spacing: _spacing,
-                          children: [
-                            _buildTextField('title', 'Title'),
-                            _buildDropdown('type', 'Type', typeOptions),
-                            _buildTextField(
-                              'description',
-                              'Description',
-                              maxLines: 3,
-                            ),
-                            _buildTextField('tags', 'Tags (comma-separated)'),
-                            const Divider(
-                              color: AppColors.lightGrey,
-                              thickness: 1.0,
-                            ),
-                            _buildDateTimePicker(context, studioAvailability),
-                            _buildTextField(
-                              'duration',
-                              'Duration (minutes)',
-                              keyboardType: TextInputType.number,
-                            ),
-                            _buildDropdown(
-                              'location',
-                              'Location',
-                              locationOptions,
-                            ),
-                            _buildTextField(
-                              'capacity',
-                              'Capacity',
-                              keyboardType: TextInputType.number,
-                            ),
-                            _buildDropdown(
-                              'visibility',
-                              'Visibility',
-                              visibilityOptions,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      _buildFormButtons(context, ref),
-                    ],
-                  ),
-                ),
-              ),
+        final businessId = currentUser.roles.keys.firstOrNull;
+        if (businessId == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Create New Schedule')),
+            body: Center(
+              child: Text('No business associated with this account'),
             ),
+          );
+        }
+
+        final businessAvailabilityAsync = ref.watch(
+          businessAvailabilityProvider(businessId),
+        );
+
+        return Scaffold(
+          appBar: AppBar(title: const Text('Create New Schedule')),
+          body: businessAvailabilityAsync.when(
+            data: (businessAvailability) {
+              return businessAvailability != null
+                  ? _buildForm(context, businessAvailability)
+                  : Center(child: Text('No availability data'));
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(child: Text('Error: $error')),
           ),
-        ),
-      ),
+        );
+      },
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, stack) =>
+          Scaffold(body: Center(child: Text('Error: $error'))),
     );
   }
 
@@ -227,12 +252,24 @@ class ScheduleForm extends ConsumerWidget {
               ),
               trailing: const Icon(Icons.calendar_today),
               onTap: () async {
+                List<TimeRange> existingTimeRanges = existingBlocks.map((
+                  block,
+                ) {
+                  return TimeRange(
+                    start: TimeOfDay.fromDateTime(block.startTime!),
+                    end: TimeOfDay.fromDateTime(
+                      block.startTime!.add(Duration(minutes: block.duration!)),
+                    ),
+                  );
+                }).toList();
+
                 final DateTime? picked = await showCustomDateTimePicker(
                   context: context,
                   initialDate: field.value ?? DateTime.now(),
                   firstDate: DateTime.now(),
                   lastDate: DateTime.now().add(const Duration(days: 365)),
                   studioAvailability: studioAvailability,
+                  existingBlocks: existingTimeRanges,
                 );
                 if (picked != null) {
                   field.didChange(picked);
@@ -245,7 +282,7 @@ class ScheduleForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildFormButtons(BuildContext context, WidgetRef ref) {
+  Widget _buildFormButtons(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Wrap(
@@ -272,11 +309,79 @@ class ScheduleForm extends ConsumerWidget {
                 backgroundColor: AppColors.violetE3,
                 foregroundColor: AppColors.white,
               ),
-              onPressed: () => submitForm(context, ref),
+              onPressed: () => submitForm(context),
               child: const Text('Create Schedule'),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildForm(BuildContext context, Availability businessAvailability) {
+    return Center(
+      child: Container(
+        alignment: Alignment.center,
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: FormBuilder(
+                key: _createClassKey,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Wrap(
+                        runSpacing: _runSpacing,
+                        spacing: _spacing,
+                        children: [
+                          _buildTextField('title', 'Title'),
+                          _buildDropdown('type', 'Type', typeOptions),
+                          _buildDropdown('subtype', 'SubType', subtypeOptions),
+                          _buildTextField('tags', 'Tags (comma-separated)'),
+                          _buildTextField(
+                            'description',
+                            'Description',
+                            maxLines: 3,
+                          ),
+                          const Divider(
+                            color: AppColors.lightGrey,
+                            thickness: 1.0,
+                          ),
+                          _buildDateTimePicker(context, businessAvailability),
+                          _buildTextField(
+                            'duration',
+                            'Duration (minutes)',
+                            keyboardType: TextInputType.number,
+                          ),
+                          _buildDropdown(
+                            'location',
+                            'Location',
+                            locationOptions,
+                          ),
+                          _buildTextField(
+                            'capacity',
+                            'Capacity',
+                            keyboardType: TextInputType.number,
+                          ),
+                          _buildDropdown(
+                            'visibility',
+                            'Visibility',
+                            visibilityOptions,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildFormButtons(context),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

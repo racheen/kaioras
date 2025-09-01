@@ -6,13 +6,13 @@ import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domai
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 import 'blocks_repository_base.dart';
 
-class FakeBlocksRepository implements BlocksRepositoryBase {
-  FakeBlocksRepository();
+class BlocksRepository implements BlocksRepositoryBase {
+  BlocksRepository();
 
   final Map<String, Block> _blocks = Map.from(mockBlocks);
 
   @override
-  Future<void> createEvent(Block block) async {
+  Future<void> createNewBlock(Block block, String businessId) async {
     // Simulate network delay
     await Future.delayed(Duration(milliseconds: 300));
 
@@ -47,9 +47,18 @@ class FakeBlocksRepository implements BlocksRepositoryBase {
 
     _blocks.remove(id);
   }
+
+  @override
+  Future<List<Block>> fetchBlocksHosted(
+    String businessId,
+    String currentAppUserUid,
+  ) {
+    // TODO: implement fetchBlocksHosted
+    throw UnimplementedError();
+  }
 }
 
-final blocksRepoProvider = Provider((ref) => FakeBlocksRepository());
+final blocksRepoProvider = Provider((ref) => BlocksRepository());
 
 final eventServiceProvider = Provider((ref) {
   final repository = ref.watch(blocksRepoProvider);

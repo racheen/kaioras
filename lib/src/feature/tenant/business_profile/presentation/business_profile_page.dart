@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_business.dart'
+    hide AppBusiness;
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/business_profile/domain/app_business.dart';
 import 'package:go_router/go_router.dart';
 import '../data/fake_business_repository.dart';
-import '../domain/business.dart';
+import '../domain/app_business.dart' hide AppBusiness;
 
 class BusinessProfilePage extends ConsumerWidget {
   const BusinessProfilePage({Key? key}) : super(key: key);
@@ -31,7 +34,7 @@ class BusinessProfilePage extends ConsumerWidget {
 }
 
 class _BusinessProfileContent extends StatelessWidget {
-  final Business business;
+  final AppBusiness business;
 
   const _BusinessProfileContent({Key? key, required this.business})
     : super(key: key);
@@ -47,12 +50,12 @@ class _BusinessProfileContent extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(business.branding.logoUrl),
+                backgroundImage: NetworkImage(business.meta.branding!.logoUrl),
               ),
             ),
             SizedBox(height: 24),
             _buildInfoSection('Business Name', business.name),
-            _buildInfoSection('Industry', business.industry),
+            _buildInfoSection('Industry', business.meta.industry),
             _buildInfoSection('Plan', business.plan),
             _buildInfoSection('Created At', business.createdAt.toString()),
             SizedBox(height: 24),

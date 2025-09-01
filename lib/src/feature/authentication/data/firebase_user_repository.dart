@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data2.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/data/user_repository_base.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_business.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_user.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/availability.dart';
 
 class UserRepository implements UserRepositoryBase {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -246,17 +248,33 @@ class UserRepository implements UserRepositoryBase {
         branding: null, // You can add branding information if available
         settings: BusinessSettings(
           availability: Availability(
-            defaultHours: [
-              DayHours(day: 'monday', start: '09:00', end: '17:00'),
-              DayHours(day: 'tuesday', start: '09:00', end: '17:00'),
-              DayHours(day: 'wednesday', start: '09:00', end: '17:00'),
-              DayHours(day: 'thursday', start: '09:00', end: '17:00'),
-              DayHours(day: 'friday', start: '09:00', end: '17:00'),
-            ],
+            weekdayHours: {
+              'Monday': TimeRange(
+                start: TimeOfDay(hour: 9, minute: 0),
+                end: TimeOfDay(hour: 17, minute: 0),
+              ),
+              'Tuesday': TimeRange(
+                start: TimeOfDay(hour: 9, minute: 0),
+                end: TimeOfDay(hour: 17, minute: 0),
+              ),
+              'Wednesday': TimeRange(
+                start: TimeOfDay(hour: 9, minute: 0),
+                end: TimeOfDay(hour: 17, minute: 0),
+              ),
+              'Thursday': TimeRange(
+                start: TimeOfDay(hour: 9, minute: 0),
+                end: TimeOfDay(hour: 17, minute: 0),
+              ),
+              'Friday': TimeRange(
+                start: TimeOfDay(hour: 9, minute: 0),
+                end: TimeOfDay(hour: 17, minute: 0),
+              ),
+            },
+            blackoutDates: [],
             timeZone: 'America/New_York',
+            closedDays: ['Saturday', 'Sunday'],
           ),
           holidays: [],
-          closedDays: ['saturday', 'sunday'],
         ),
       ),
     );

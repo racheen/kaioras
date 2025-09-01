@@ -48,13 +48,17 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ScheduleForm()),
-                  );
+                  blocksAsync.whenData((blocks) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ScheduleForm(existingBlocks: blocks),
+                      ),
+                    );
+                  });
                 },
                 style: TextButton.styleFrom(foregroundColor: Colors.white),
-                child: const Text('New Class'),
+                child: const Text('Create New Block'),
               ),
             ],
           ),

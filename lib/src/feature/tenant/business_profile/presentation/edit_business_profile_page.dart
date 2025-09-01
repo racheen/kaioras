@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/app_business.dart';
 import '../../../../constants/app_colors.dart';
 import '../data/fake_business_repository.dart';
-import '../domain/business.dart';
+import '../domain/app_business.dart' hide AppBusiness;
 
 class EditBusinessProfilePage extends ConsumerStatefulWidget {
-  const EditBusinessProfilePage({Key? key}) : super(key: key);
+  const EditBusinessProfilePage({super.key});
 
   @override
   _EditBusinessProfilePageState createState() =>
@@ -50,7 +51,7 @@ class _EditBusinessProfilePageState
       body: businessAsyncValue.when(
         data: (business) {
           _nameController.text = business.name;
-          _industryController.text = business.industry;
+          _industryController.text = business.meta.industry;
 
           return SingleChildScrollView(
             child: Padding(
@@ -123,8 +124,8 @@ class _EditBusinessProfilePageState
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       final businessAsyncValue = ref.read(businessProvider('business001'));
-      if (businessAsyncValue is AsyncData<Business>) {
-        final updatedBusiness = businessAsyncValue.value.copyWith(
+      if (businessAsyncValue is AsyncData<AppBusiness>) {
+        final updatedBusiness = businessAsyncValue.value?.copyWith(
           name: _nameController.text,
           industry: _industryController.text,
         );
