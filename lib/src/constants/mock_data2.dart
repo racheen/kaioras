@@ -465,7 +465,6 @@ final mockBlocks = {
   ),
   'block005': Block(
     blockId: 'block005',
-
     title: 'Morning Pilates',
     type: BlockType.group.name,
     startTime: DateTime(2025, 8, 12, 13, 0),
