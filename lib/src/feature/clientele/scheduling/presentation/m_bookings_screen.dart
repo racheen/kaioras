@@ -115,7 +115,8 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
                           },
                           child: BookingCardWidget(
                             title: booking.block!.title.toString(),
-                            startTime: booking.block!.startTime.toString(),
+                            startTime: booking.block!.startTime!,
+                            duration: booking.block!.duration!,
                             location: booking.block?.location.toString() ?? '',
                             status: booking.status.toString(),
                             block: booking.block!,
@@ -151,7 +152,8 @@ class _BookingsScreenState extends ConsumerState<MBookingsScreen> {
                           },
                           child: BookingCardWidget(
                             title: booking.block!.title.toString(),
-                            startTime: booking.block!.startTime.toString(),
+                            startTime: booking.block!.startTime!,
+                            duration: booking.block!.duration!,
                             location:
                                 booking.block?.location.toString() ??
                                 'no location',
