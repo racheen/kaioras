@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_boilerplate/src/common/booking_button_widget.dart';
+import 'package:flutter_riverpod_boilerplate/src/common/image_widget.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
@@ -115,13 +116,7 @@ class BookingCardWidget extends ConsumerWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Image(
-                              width: 250,
-                              height: 200,
-                              image: AssetImage(
-                                'assets/avatar_placeholder3.jpg',
-                              ),
-                            ),
+                            child: ImageWidget(imageUrl: 'image'),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
