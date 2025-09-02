@@ -7,7 +7,9 @@ import 'package:flutter_riverpod_boilerplate/src/feature/authentication/domain/a
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/auth_gate.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/role_selection_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presentation/user_sign_up.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/checkout_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/memberships_screen.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/offers_list_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_detail/block_detail_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_blocks_list_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/booking_detail/booking_detail_screen.dart';
@@ -30,6 +32,9 @@ final shellClienteleBookingsKey = GlobalKey<NavigatorState>(
 );
 final _shellClienteleMembershipKey = GlobalKey<NavigatorState>(
   debugLabel: 'shellClienteleMembership',
+);
+final _shellClienteleOffersKey = GlobalKey<NavigatorState>(
+  debugLabel: 'shellClienteleOffers',
 );
 final _shellClienteleProfileKey = GlobalKey<NavigatorState>(
   debugLabel: 'shellClienteleProfile',
@@ -217,6 +222,29 @@ final goRouterProvider = Provider.family<GoRouter, AppUser?>((ref, user) {
                     name: ClienteleRoute.clienteleMemberships.name,
                     pageBuilder: (context, state) =>
                         const NoTransitionPage(child: MembershipsScreen()),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                navigatorKey: _shellClienteleOffersKey,
+                routes: [
+                  GoRoute(
+                    path: '/offers',
+                    name: ClienteleRoute.clienteleOffers.name,
+                    pageBuilder: (context, state) =>
+                        const NoTransitionPage(child: OffersListScreen()),
+                    routes: [
+                      GoRoute(
+                        path: '/:businessId/checkout',
+                        name: ClienteleRoute.checkout.name,
+                        pageBuilder: (context, state) {
+                          final businessId = state.pathParameters['businessId'];
+                          return NoTransitionPage(
+                            child: CheckoutScreen(businessId: businessId!),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -26,6 +26,10 @@ class ClienteleNavigationBar extends StatelessWidget {
             icon: Icon(Icons.home, color: Colors.white70),
           ),
           NavigationDestination(
+            label: ClienteleNavigationLabel.offers,
+            icon: Icon(Icons.store, color: Colors.white70),
+          ),
+          NavigationDestination(
             label: ClienteleNavigationLabel.memberships,
             icon: Icon(Icons.card_membership, color: Colors.white70),
           ),

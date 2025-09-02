@@ -27,10 +27,12 @@ enum ClienteleRoute {
   clienteleBookings,
   tenantCalendar,
   clienteleMemberships,
+  clienteleOffers,
   clienteleProfile,
   bookingDetail,
   block,
   blockDetail,
+  checkout,
 }
 
 final clienteleRoutes = [
