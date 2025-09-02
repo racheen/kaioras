@@ -127,14 +127,13 @@ class _BlocksListState extends ConsumerState<BusinessBlocksList> {
                                         block: block!,
                                         title: block.title.toString(),
                                         host: block.host!.name.toString(),
-                                        startTime: block.startTime.toString(),
-                                        duration: block.duration.toString(),
+                                        startTime: block.startTime!,
+                                        duration: block.duration!,
                                         location: block.location.toString(),
                                         status: block.status.toString(),
                                         description: block.description
                                             .toString(),
                                         tags: block.tags!,
-                                        price: '60',
                                       ),
                                       onTap: () {
                                         if (isMobileView) {

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod_boilerplate/src/common/booking_button_widget.da
 import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
 import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
+import 'package:flutter_riverpod_boilerplate/src/utils/date_time_utils.dart';
 
 class ButtonLabel {
   static const book = 'Book';
@@ -16,13 +17,12 @@ class ButtonLabel {
 class BookingCardWidget extends ConsumerWidget {
   final String title;
   final String? host;
-  final String startTime;
-  final String? duration;
+  final DateTime startTime;
+  final int duration;
   final String location;
   final String status;
   final String? description;
   final List<String> tags;
-  final String? price;
   final Block block;
 
   const BookingCardWidget({
@@ -30,12 +30,11 @@ class BookingCardWidget extends ConsumerWidget {
     required this.title,
     this.host,
     required this.startTime,
-    this.duration,
+    required this.duration,
     required this.location,
     required this.status,
     this.description,
     this.tags = const [],
-    this.price,
     required this.block,
   });
 
@@ -69,7 +68,21 @@ class BookingCardWidget extends ConsumerWidget {
                 subtitle: Text(location),
               ),
               ListTile(
-                title: Text(startTime, style: TextStyle(color: AppColors.grey)),
+                title: Wrap(
+                  children: [
+                    Text(
+                      '${formatDate(startTime)} ',
+                      style: TextStyle(color: AppColors.grey),
+                    ),
+                    Text(
+                      formatTimeRange(
+                        startTime,
+                        startTime.add(Duration(minutes: duration)),
+                      ),
+                      style: TextStyle(color: AppColors.grey),
+                    ),
+                  ],
+                ),
               ),
               Divider(),
               BookingButtonWidget(block: block),
@@ -149,7 +162,9 @@ class BookingCardWidget extends ConsumerWidget {
                                               padding: const EdgeInsets.only(
                                                 left: 10.0,
                                               ),
-                                              child: Text(startTime),
+                                              child: Text(
+                                                '${formatDate(startTime)} ${formatTimeRange(startTime, startTime.add(Duration(minutes: duration)))}',
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -196,21 +211,6 @@ class BookingCardWidget extends ConsumerWidget {
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  '\$ $price',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
-                                  ),
-                                ),
-                              ),
                             ),
                           ),
                         ],
