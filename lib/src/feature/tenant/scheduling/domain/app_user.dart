@@ -85,53 +85,61 @@ class UserRole {
 }
 
 class Membership {
-  String? membershipId;
-  OfferSnapshot? offerSnapshot;
-  BusinessDetails? businessDetails;
-  String? name;
-  int? credits;
-  int? creditsUsed;
-  String? expiration;
-  String? status;
-  String? createdAt;
-  Map<String, BookingSnapshot>? bookings;
+  final String membershipId;
+  final BusinessDetails businessDetails;
+  final OfferSnapshot offerSnapshot;
+  final String name;
+  final int credits;
+  final int creditsUsed;
+  final DateTime expiration;
+  final String status;
+  final DateTime createdAt;
+  // final Map<String, BookingSnapshot> bookings;
 
   Membership({
-    this.membershipId,
-    this.businessDetails,
-    this.offerSnapshot,
-    this.name,
-    this.credits,
-    this.creditsUsed,
-    this.expiration,
-    this.status,
-    this.createdAt,
-    this.bookings,
+    required this.membershipId,
+    required this.businessDetails,
+    required this.offerSnapshot,
+    required this.name,
+    required this.credits,
+    required this.creditsUsed,
+    required this.expiration,
+    required this.status,
+    required this.createdAt,
+    // required this.bookings,
   });
 
-  Membership copyWith({
-    String? membershipId,
-    BusinessDetails? businessDetails,
-    OfferSnapshot? offerSnapshot,
-    String? name,
-    int? credits,
-    int? creditsUsed,
-    String? expiration,
-    String? status,
-    String? createdAt,
-    Map<String, BookingSnapshot>? bookings,
-  }) => Membership(
-    membershipId: membershipId ?? this.membershipId,
-    businessDetails: businessDetails ?? this.businessDetails,
-    offerSnapshot: offerSnapshot ?? this.offerSnapshot,
-    name: name ?? this.name,
-    credits: credits ?? this.credits,
-    creditsUsed: creditsUsed ?? this.creditsUsed,
-    expiration: expiration ?? this.expiration,
-    status: status ?? this.status,
-    createdAt: createdAt ?? this.createdAt,
-    bookings: bookings ?? this.bookings,
-  );
+  factory Membership.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return Membership(
+      membershipId: doc.id,
+      businessDetails: BusinessDetails.fromMap(data['businessDetails']),
+      offerSnapshot: OfferSnapshot.fromMap(data['offerSnapshot']),
+      name: data['name'],
+      credits: data['credits'],
+      creditsUsed: data['creditsUsed'],
+      expiration: (data['expiration'] as Timestamp).toDate(),
+      status: data['status'],
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      // bookings: (data['bookings'] as Map<String, dynamic>).map(
+      //   (key, value) => MapEntry(key, BookingSnapshot.fromMap(value)),
+      // ),
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'membershipId': membershipId,
+      'businessDetails': businessDetails.toJson(),
+      'offerSnapshot': offerSnapshot.toJson(),
+      'name': name,
+      'credits': credits,
+      'creditsUsed': creditsUsed,
+      'expiration': Timestamp.fromDate(expiration),
+      'status': status,
+      'createdAt': Timestamp.fromDate(createdAt),
+    };
+  }
 }
 
 class OfferSnapshot {
@@ -269,6 +277,10 @@ class BusinessDetails {
       name: map['name'],
       image: map['image'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'businessId': businessId, 'name': name, 'image': image};
   }
 }
 

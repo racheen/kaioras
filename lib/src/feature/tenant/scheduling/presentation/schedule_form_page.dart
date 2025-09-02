@@ -83,6 +83,7 @@ class _ScheduleFormState extends ConsumerState<ScheduleForm> {
         blockId: '',
         title: formData['title'],
         type: formData['type'],
+        subtype: formData['subtype'],
         startTime: startTime,
         duration: int.parse(formData['duration']),
         location: formData['location'],

@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 
 class Block {
   String? blockId;
   String? title;
   String? type;
-  String? subtype;
+  List<String>? subtype;
   DateTime? startTime;
   int? duration;
   String? location;
@@ -39,6 +38,7 @@ class Block {
   factory Block.fromMap(Map<String, dynamic> data, String blockId) {
     final title = data['title'] as String;
     final type = data['type'] as String;
+    final subtype = data['subtype'] as List<dynamic>;
     final startTime = data['startTime'] as Timestamp;
     final duration = data['duration'] as int;
     final location = data['location'] as String;
@@ -55,6 +55,7 @@ class Block {
       blockId: blockId,
       title: title,
       type: type,
+      subtype: subtype.map((s) => s.toString()).toList(),
       startTime: startTime.toDate(),
       duration: duration,
       location: location,
@@ -74,6 +75,7 @@ class Block {
       'blockId': blockId,
       'title': title,
       'type': type,
+      'subtype': subtype,
       'startTime': startTime,
       'duration': duration,
       'location': location,
@@ -93,6 +95,7 @@ class Block {
       'blockId': blockId,
       'title': title,
       'type': type,
+      'subtype': subtype,
       'startTime': Timestamp.fromDate(startTime!),
       'duration': duration,
       'location': location,
@@ -102,8 +105,8 @@ class Block {
       'createdAt': Timestamp.fromDate(DateTime.parse(createdAt!)),
       'tags': tags,
       'description': description,
-      'host': host?.toJson(),
-      'origin': origin.toJson(),
+      'host': host,
+      'origin': origin,
     };
   }
 
@@ -111,7 +114,7 @@ class Block {
     String? blockId,
     String? title,
     String? type,
-    String? subtype,
+    List<String>? subtype,
     DateTime? startTime,
     int? duration,
     String? location,
@@ -128,7 +131,7 @@ class Block {
       blockId: blockId ?? this.blockId,
       title: title ?? this.title,
       type: type ?? this.type,
-      subtype: subtype ?? this.subtype,
+      subtype: subtype?.map((s) => s.toString()).toList(),
       startTime: startTime ?? this.startTime,
       duration: duration ?? this.duration,
       location: location ?? this.location,
