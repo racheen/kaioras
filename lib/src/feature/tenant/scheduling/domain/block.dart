@@ -85,8 +85,8 @@ class Block {
       'createdAt': createdAt,
       'tags': tags,
       'description': description,
-      'host': host,
-      'origin': origin,
+      'host': host?.toJson(),
+      'origin': origin.toJson(),
     };
   }
 
@@ -105,8 +105,8 @@ class Block {
       'createdAt': Timestamp.fromDate(DateTime.parse(createdAt!)),
       'tags': tags,
       'description': description,
-      'host': host,
-      'origin': origin,
+      'host': host?.toJson(),
+      'origin': origin.toJson(),
     };
   }
 
@@ -131,7 +131,7 @@ class Block {
       blockId: blockId ?? this.blockId,
       title: title ?? this.title,
       type: type ?? this.type,
-      subtype: subtype?.map((s) => s.toString()).toList(),
+      subtype: subtype ?? this.subtype,
       startTime: startTime ?? this.startTime,
       duration: duration ?? this.duration,
       location: location ?? this.location,

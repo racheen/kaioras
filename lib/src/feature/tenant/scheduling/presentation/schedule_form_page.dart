@@ -9,6 +9,7 @@ import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/data/
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/availability.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/presentation/custom_date_time_picker.dart';
+import 'package:flutter_riverpod_boilerplate/src/utils/date_time_utils.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
@@ -79,13 +80,15 @@ class _ScheduleFormState extends ConsumerState<ScheduleForm> {
         return;
       }
 
+      final duration = int.parse(formData['duration']);
+
       final Block newBlock = Block(
         blockId: '',
         title: formData['title'],
         type: formData['type'],
-        subtype: formData['subtype'],
+        subtype: formData['subtype'] as List<String>? ?? [],
         startTime: startTime,
-        duration: int.parse(formData['duration']),
+        duration: duration,
         location: formData['location'],
         capacity: int.parse(formData['capacity']),
         visibility: formData['visibility'],
@@ -227,6 +230,26 @@ class _ScheduleFormState extends ConsumerState<ScheduleForm> {
     );
   }
 
+  Widget _buildMultiDropdown(String name, String label, List<String> options) {
+    return SizedBox(
+      width: _minWidth,
+      child: FormBuilderCheckboxGroup<String>(
+        name: name,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        options: options
+            .map((option) => FormBuilderFieldOption(value: option))
+            .toList(),
+        validator: FormBuilderValidators.compose([
+          FormBuilderValidators.required(),
+        ]),
+        activeColor: AppColors.violetE3,
+      ),
+    );
+  }
+
   Widget _buildDateTimePicker(
     BuildContext context,
     Availability studioAvailability,
@@ -253,17 +276,25 @@ class _ScheduleFormState extends ConsumerState<ScheduleForm> {
               ),
               trailing: const Icon(Icons.calendar_today),
               onTap: () async {
-                List<TimeRange> existingTimeRanges = existingBlocks.map((
-                  block,
-                ) {
-                  return TimeRange(
-                    start: TimeOfDay.fromDateTime(block.startTime!),
-                    end: TimeOfDay.fromDateTime(
-                      block.startTime!.add(Duration(minutes: block.duration!)),
-                    ),
-                  );
-                }).toList();
-
+                final selectedDate = field.value ?? DateTime.now();
+                List<TimeRange> existingTimeRanges = existingBlocks
+                    .where(
+                      (block) =>
+                          block.startTime!.year == selectedDate.year &&
+                          block.startTime!.month == selectedDate.month &&
+                          block.startTime!.day == selectedDate.day,
+                    )
+                    .map((block) {
+                      return TimeRange(
+                        start: TimeOfDay.fromDateTime(block.startTime!),
+                        end: TimeOfDay.fromDateTime(
+                          block.startTime!.add(
+                            Duration(minutes: block.duration!),
+                          ),
+                        ),
+                      );
+                    })
+                    .toList();
                 final DateTime? picked = await showCustomDateTimePicker(
                   context: context,
                   initialDate: field.value ?? DateTime.now(),
@@ -340,7 +371,11 @@ class _ScheduleFormState extends ConsumerState<ScheduleForm> {
                         children: [
                           _buildTextField('title', 'Title'),
                           _buildDropdown('type', 'Type', typeOptions),
-                          _buildDropdown('subtype', 'SubType', subtypeOptions),
+                          _buildMultiDropdown(
+                            'subtype',
+                            'Subtype',
+                            subtypeOptions,
+                          ),
                           _buildTextField('tags', 'Tags (comma-separated)'),
                           _buildTextField(
                             'description',

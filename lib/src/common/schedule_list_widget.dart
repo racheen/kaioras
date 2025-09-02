@@ -123,7 +123,7 @@ class ScheduleItem extends StatelessWidget {
 
     final title = "${data.title} • ${data.location}";
     final startTime = data.startTime!;
-    final duration = data.duration! | 60;
+    final duration = data.duration ?? 0;
     final endTime = startTime.add(Duration(minutes: duration));
     final subtitle = formatTimeRange(startTime, endTime);
     final label = formatTime(startTime);
