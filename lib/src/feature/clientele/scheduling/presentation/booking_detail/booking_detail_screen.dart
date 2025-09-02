@@ -196,9 +196,10 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
                                           ),
                                           TextButton(
                                             onPressed: () {
-                                              // todo: implement navigate to offers screen
-                                              print(
-                                                'should navigate to offers screen',
+                                              context.goNamed(
+                                                ClienteleRoute
+                                                    .clienteleOffers
+                                                    .name,
                                               );
                                             },
                                             child: Text('Browse Offers'),

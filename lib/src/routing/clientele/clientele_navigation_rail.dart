@@ -71,6 +71,10 @@ class _ScaffoldWithNavigationRailState
                 icon: Icon(Icons.card_membership, color: Colors.white70),
               ),
               NavigationRailDestination(
+                label: Text(ClienteleNavigationLabel.offers),
+                icon: Icon(Icons.store, color: Colors.white70),
+              ),
+              NavigationRailDestination(
                 label: Text(ClienteleNavigationLabel.profile),
                 icon: Icon(Icons.person, color: Colors.white70),
               ),

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_boilerplate/src/common/async_value_widget.dart';
-import 'package:flutter_riverpod_boilerplate/src/constants/app_colors.dart';
-import 'package:flutter_riverpod_boilerplate/src/constants/fake_user_role.dart';
-import 'package:flutter_riverpod_boilerplate/src/constants/user_roles.dart';
-import 'package:flutter_riverpod_boilerplate/src/feature/authentication/application/privilege_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_navigation_bar.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/business/business_navigation_rail.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_navigation_bar.dart';
 import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_navigation_rail.dart';
-import 'package:flutter_riverpod_boilerplate/src/routing/scaffold_with_navigation_bar.dart';
-import 'package:flutter_riverpod_boilerplate/src/routing/scaffold_with_navigation_rail.dart';
+
 import 'package:go_router/go_router.dart';
 
 class NavigationLabel {
@@ -24,6 +18,7 @@ class NavigationLabel {
 class ClienteleNavigationLabel {
   static const bookings = 'Bookings';
   static const memberships = 'Memberships';
+  static const offers = 'Offers';
   static const profile = 'Profile';
 }
 
