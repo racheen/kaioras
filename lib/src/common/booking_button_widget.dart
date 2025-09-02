@@ -7,6 +7,8 @@ import 'package:flutter_riverpod_boilerplate/src/constants/mock_data.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/domain/block.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_controller.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_notifier.dart';
+import 'package:flutter_riverpod_boilerplate/src/routing/clientele/clientele_router.dart';
+import 'package:flutter_riverpod_boilerplate/src/utils/toast.dart';
 import 'package:go_router/go_router.dart';
 
 class ButtonLabel {
@@ -77,7 +79,13 @@ class BookingButtonWidget extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(bookingsControllerProvider.notifier)
-                      .cancel(block, block.origin.businessId);
+                      .cancel(block, block.origin.businessId)
+                      .whenComplete(
+                        () => showGlobalToast(
+                          ref,
+                          'Sucessully cancelled booking',
+                        ),
+                      );
                   context.pop();
                 },
               ),
@@ -139,12 +147,13 @@ class BookingButtonWidget extends ConsumerWidget {
                 return ElevatedButton(
                   onPressed: () {
                     if (!isBooked) {
-                      ref
-                          .read(bookingsControllerProvider.notifier)
-                          .book(
-                            businessId: block.origin.businessId,
-                            block: block,
-                          );
+                      context.goNamed(
+                        ClienteleRoute.bookingDetail.name,
+                        pathParameters: {
+                          'businessId': block.origin.businessId.toString(),
+                          'blockId': block.blockId.toString(),
+                        },
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -203,14 +212,14 @@ class BookingButtonWidget extends ConsumerWidget {
                   default:
                     return ElevatedButton(
                       onPressed: () {
-                        if (!isBooked) {
-                          ref
-                              .read(bookingsControllerProvider.notifier)
-                              .book(
-                                businessId: block.origin.businessId,
-                                block: block,
-                              );
-                        }
+                        if (!isBooked) {}
+                        context.goNamed(
+                          ClienteleRoute.bookingDetail.name,
+                          pathParameters: {
+                            'businessId': block.origin.businessId.toString(),
+                            'blockId': block.blockId.toString(),
+                          },
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.violetC2,

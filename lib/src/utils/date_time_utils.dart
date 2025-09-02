@@ -32,3 +32,10 @@ String formatTime(DateTime time) {
   final period = localTime.period == DayPeriod.am ? 'AM' : 'PM';
   return '$hour:$minute $period';
 }
+
+int daysBetweenfromToday(DateTime toDate) {
+  DateTime fromDate = DateTime.now();
+  toDate = DateTime(toDate.year, toDate.month, toDate.day);
+
+  return (toDate.difference(fromDate).inHours / 24).round();
+}

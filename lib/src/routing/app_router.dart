@@ -10,6 +10,7 @@ import 'package:flutter_riverpod_boilerplate/src/feature/authentication/presenta
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/membership/presentation/memberships_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_detail/block_detail_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/block_list/business_blocks_list_screen.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/booking_detail/booking_detail_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/clientele/scheduling/presentation/bookings_screen.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/home/data_table.dart';
 import 'package:flutter_riverpod_boilerplate/src/feature/tenant/business_profile/presentation/business_profile_page.dart';
@@ -24,7 +25,7 @@ import 'package:go_router/go_router.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final _rootClienteleNavigatorKey = GlobalKey<NavigatorState>();
-final _shellClienteleBookingsKey = GlobalKey<NavigatorState>(
+final shellClienteleBookingsKey = GlobalKey<NavigatorState>(
   debugLabel: 'shellClienteleBookings',
 );
 final _shellClienteleMembershipKey = GlobalKey<NavigatorState>(
@@ -138,7 +139,7 @@ final goRouterProvider = Provider.family<GoRouter, AppUser?>((ref, user) {
             branches: [
               /// Clientele Routes
               StatefulShellBranch(
-                navigatorKey: _shellClienteleBookingsKey,
+                navigatorKey: shellClienteleBookingsKey,
                 routes: [
                   GoRoute(
                     path: '/bookings',
@@ -170,12 +171,30 @@ final goRouterProvider = Provider.family<GoRouter, AppUser?>((ref, user) {
                                 ),
                               );
                             },
+                            routes: [
+                              GoRoute(
+                                path: '/book',
+                                name: ClienteleRoute.bookingDetail.name,
+                                pageBuilder: (context, state) {
+                                  final blockId =
+                                      state.pathParameters['blockId'];
+                                  final businessId =
+                                      state.pathParameters['businessId'];
+                                  return NoTransitionPage(
+                                    child: BookingDetailScreen(
+                                      blockId: blockId!,
+                                      businessId: businessId!,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
                       GoRoute(
                         path: '/block/:blockId',
-                        name: ClienteleRoute.bookingDetail.name,
+                        name: ClienteleRoute.blockDetail.name,
                         pageBuilder: (context, state) {
                           final blockId = state.pathParameters['blockId'];
                           if (blockId != null) {
