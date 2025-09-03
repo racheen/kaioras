@@ -18,7 +18,9 @@ import 'package:go_router/go_router.dart';
 List<Membership> filterMemberships(List<Membership> memberships, Block block) {
   return memberships.where((membership) {
     final hasActiveMembership = membership.status == 'active';
-    final isValidType = membership.offerSnapshot.blockType == block.type;
+    final isValidType =
+        membership.offerSnapshot.blockType.toLowerCase() ==
+        block.type?.toLowerCase();
     final hasValidSubtype = block.subtype!.contains(
       membership.offerSnapshot.blockSubtype,
     );

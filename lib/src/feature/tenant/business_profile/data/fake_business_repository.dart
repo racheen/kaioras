@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../constants/mock_data2.dart';
-import '../domain/business.dart';
+import '../domain/app_business.dart';
 
 class FakeBusinessRepository {
-  final Map<String, Business> _businesses = Map.from(mockBusinesses);
+  final Map<String, AppBusiness> _businesses = Map.from(mockBusinesses);
 
-  Future<Business> fetchBusiness(String businessId) async {
+  Future<AppBusiness> fetchBusiness(String businessId) async {
     // Simulate network delay
     await Future.delayed(Duration(seconds: 1));
     if (_businesses.containsKey(businessId)) {
@@ -15,7 +15,7 @@ class FakeBusinessRepository {
     }
   }
 
-  Future<void> updateBusiness(Business updatedBusiness) async {
+  Future<void> updateBusiness(AppBusiness updatedBusiness) async {
     // Simulate network delay
     await Future.delayed(Duration(seconds: 1));
     if (_businesses.containsKey(updatedBusiness.businessId)) {
@@ -30,7 +30,10 @@ final businessRepositoryProvider = Provider<FakeBusinessRepository>((ref) {
   return FakeBusinessRepository();
 });
 
-final businessProvider = FutureProvider.family<Business, String>((ref, businessId) async {
+final businessProvider = FutureProvider.family<AppBusiness, String>((
+  ref,
+  businessId,
+) async {
   final repository = ref.watch(businessRepositoryProvider);
   return repository.fetchBusiness(businessId);
 });

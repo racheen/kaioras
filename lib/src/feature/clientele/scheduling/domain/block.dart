@@ -110,6 +110,42 @@ class Block {
     };
   }
 
+  Block copyWith({
+    String? blockId,
+    String? title,
+    String? type,
+    List<String>? subtype,
+    DateTime? startTime,
+    int? duration,
+    String? location,
+    int? capacity,
+    String? visibility,
+    String? status,
+    String? createdAt,
+    List<String>? tags,
+    String? description,
+    Host? host,
+    Origin? origin,
+  }) {
+    return Block(
+      blockId: blockId ?? this.blockId,
+      title: title ?? this.title,
+      type: type ?? this.type,
+      subtype: subtype?.map((s) => s.toString()).toList(),
+      startTime: startTime ?? this.startTime,
+      duration: duration ?? this.duration,
+      location: location ?? this.location,
+      capacity: capacity ?? this.capacity,
+      visibility: visibility ?? this.visibility,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      tags: tags ?? this.tags,
+      description: description ?? this.description,
+      host: host ?? this.host,
+      origin: origin ?? this.origin,
+    );
+  }
+
   // Block copyWith({
   //   String? blockId,
   //   String? businessId,

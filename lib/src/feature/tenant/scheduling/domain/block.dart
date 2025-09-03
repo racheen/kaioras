@@ -1,149 +1,204 @@
-import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Block {
-  final String blockId;
-  final BusinessDetails businessDetails;
-  final String title;
-  final String type;
-  final DateTime startTime;
-  final int duration;
-  final String location;
-  final int capacity;
-  final String visibility;
-  final String status;
-  final DateTime createdAt;
-  final List<String> tags;
-  final String description;
-  final Map<String, Attendee> attendees;
-  final Host host;
+  String? blockId;
+  String? title;
+  String? type;
+  List<String>? subtype;
+  DateTime? startTime;
+  int? duration;
+  String? location;
+  int? capacity;
+  String? visibility;
+  String? status;
+  String? createdAt;
+  List<String>? tags;
+  String? description;
+  Host? host;
+  Origin origin;
 
   Block({
-    required this.blockId,
-    required this.businessDetails,
-    required this.title,
-    required this.type,
-    required this.startTime,
-    required this.duration,
-    required this.location,
-    required this.capacity,
-    required this.visibility,
-    required this.status,
-    required this.createdAt,
-    required this.tags,
-    required this.description,
-    required this.attendees,
-    required this.host,
+    this.blockId,
+    this.title,
+    this.type,
+    this.subtype,
+    this.startTime,
+    this.duration,
+    this.location,
+    this.capacity,
+    this.visibility,
+    this.status,
+    this.createdAt,
+    this.tags,
+    this.description,
+    this.host,
+    required this.origin,
   });
 
-  factory Block.fromJson(Map<String, dynamic> json) {
+  factory Block.fromMap(Map<String, dynamic> data, String blockId) {
+    final title = data['title'] as String;
+    final type = data['type'] as String;
+    final subtype = data['subtype'] as List<dynamic>;
+    final startTime = data['startTime'] as Timestamp;
+    final duration = data['duration'] as int;
+    final location = data['location'] as String;
+    final capacity = data['capacity'] as int;
+    final visibility = data['visibility'] as String;
+    final status = data['status'] as String;
+    final createdAt = data['createdAt'] as Timestamp;
+    final tags = data['tags'] as List<dynamic>;
+    final description = data['description'] as String;
+    final host = data['host'] as Map<String, dynamic>;
+    final origin = data['origin'] as Map<String, dynamic>;
+
     return Block(
-      blockId: json['id'],
-      businessDetails: json['businessDetails'],
-      title: json['title'],
-      type: json['type'],
-      startTime: (json['startTime'] as Timestamp).toDate(),
-      duration: json['duration'],
-      location: json['location'],
-      capacity: json['capacity'],
-      visibility: json['visibility'],
-      status: json['status'],
-      createdAt: (json['createdAt'] as Timestamp).toDate(),
-      tags: List<String>.from(json['tags'] ?? []),
-      description: json['description'],
-      attendees:
-          (json['attendees'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(key, Attendee.fromJson(value)),
-          ) ??
-          {},
-      host: Host.fromJson(json['provider']),
+      blockId: blockId,
+      title: title,
+      type: type,
+      subtype: subtype.map((s) => s.toString()).toList(),
+      startTime: startTime.toDate(),
+      duration: duration,
+      location: location,
+      capacity: capacity,
+      visibility: visibility,
+      status: status,
+      createdAt: createdAt.toString(),
+      tags: tags.map((tag) => tag.toString()).toList(),
+      description: description,
+      host: Host.fromMap(host),
+      origin: Origin.fromMap(origin),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'businessDetails': businessDetails.toJson(),
+      'blockId': blockId,
       'title': title,
       'type': type,
-      'startTime': Timestamp.fromDate(startTime),
+      'subtype': subtype,
+      'startTime': startTime,
       'duration': duration,
       'location': location,
       'capacity': capacity,
       'visibility': visibility,
       'status': status,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'createdAt': createdAt,
       'tags': tags,
       'description': description,
-      'attendees': attendees.map((key, value) => MapEntry(key, value.toJson())),
-      'provider': host.toJson(),
+      'host': host?.toJson(),
+      'origin': origin.toJson(),
     };
   }
-}
 
-class Attendee {
-  final String uid;
-  final String membershipId;
-  final String name;
-  final String status;
-  final DateTime bookedAt;
-
-  Attendee({
-    required this.uid,
-    required this.membershipId,
-    required this.name,
-    required this.status,
-    required this.bookedAt,
-  });
-
-  factory Attendee.fromJson(Map<String, dynamic> json) {
-    return Attendee(
-      uid: json['uid'],
-      membershipId: json['membershipId'],
-      name: json['name'],
-      status: json['status'],
-      bookedAt: (json['bookedAt'] as Timestamp).toDate(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toFirestore() {
     return {
-      'uid': uid,
-      'membershipId': membershipId,
-      'name': name,
+      'blockId': blockId,
+      'title': title,
+      'type': type,
+      'subtype': subtype,
+      'startTime': Timestamp.fromDate(startTime!),
+      'duration': duration,
+      'location': location,
+      'capacity': capacity,
+      'visibility': visibility,
       'status': status,
-      'bookedAt': Timestamp.fromDate(bookedAt),
+      'createdAt': Timestamp.fromDate(DateTime.parse(createdAt!)),
+      'tags': tags,
+      'description': description,
+      'host': host?.toJson(),
+      'origin': origin.toJson(),
     };
+  }
+
+  Block copyWith({
+    String? blockId,
+    String? title,
+    String? type,
+    List<String>? subtype,
+    DateTime? startTime,
+    int? duration,
+    String? location,
+    int? capacity,
+    String? visibility,
+    String? status,
+    String? createdAt,
+    List<String>? tags,
+    String? description,
+    Host? host,
+    Origin? origin,
+  }) {
+    return Block(
+      blockId: blockId ?? this.blockId,
+      title: title ?? this.title,
+      type: type ?? this.type,
+      subtype: subtype ?? this.subtype,
+      startTime: startTime ?? this.startTime,
+      duration: duration ?? this.duration,
+      location: location ?? this.location,
+      capacity: capacity ?? this.capacity,
+      visibility: visibility ?? this.visibility,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      tags: tags ?? this.tags,
+      description: description ?? this.description,
+      host: host ?? this.host,
+      origin: origin ?? this.origin,
+    );
   }
 }
 
 class Host {
-  final String uid;
-  final String name;
-  final String details;
+  String? uid;
+  String? name;
+  String? title;
+  String? about;
+  String? image;
 
-  Host({required this.uid, required this.name, required this.details});
+  Host({this.uid, this.name, this.title, this.about, this.image});
 
-  factory Host.fromJson(Map<String, dynamic> json) {
-    return Host(uid: json['uid'], name: json['name'], details: json['details']);
+  factory Host.fromMap(Map<String, dynamic> map) {
+    return Host(
+      uid: map['uid'],
+      name: map['name'],
+      title: map['title'],
+      about: map['about'],
+      image: map['image'],
+    );
   }
-
   Map<String, dynamic> toJson() {
-    return {'uid': uid, 'name': name, 'details': details};
+    return {
+      'uid': uid,
+      'name': name,
+      'title': title,
+      'about': about,
+      'image': image,
+    };
   }
+
+  Host copyWith({
+    String? uid,
+    String? name,
+    String? title,
+    String? about,
+    String? image,
+  }) => Host(
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    title: title ?? this.title,
+    about: about ?? this.about,
+    image: image ?? this.image,
+  );
 }
 
-class BusinessDetails {
+class Origin {
   final String businessId;
   final String name;
   final String image;
 
-  BusinessDetails({
-    required this.businessId,
-    required this.name,
-    required this.image,
-  });
-  factory BusinessDetails.fromMap(Map<String, dynamic> map) {
-    return BusinessDetails(
+  Origin({required this.businessId, required this.name, required this.image});
+
+  factory Origin.fromMap(Map<String, dynamic> map) {
+    return Origin(
       businessId: map['businessId'],
       name: map['name'],
       image: map['image'],

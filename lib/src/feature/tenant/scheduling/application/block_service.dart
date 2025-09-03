@@ -6,8 +6,8 @@ class EventService {
 
   EventService(this._repository);
 
-  Future<void> create(Block event) {
-    return _repository.createEvent(event);
+  Future<void> create(Block event, String businessId) async {
+    return _repository.createNewBlock(event, businessId);
   }
 
   Future<List<Block>> getInstructorEvents(String instructorId) {

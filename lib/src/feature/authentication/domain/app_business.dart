@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod_boilerplate/src/feature/tenant/scheduling/domain/availability.dart';
 
 class AppBusiness {
   final String businessId;
@@ -165,13 +166,8 @@ class Role {
 class BusinessSettings {
   final Availability availability;
   final List<Holiday> holidays;
-  final List<String> closedDays;
 
-  BusinessSettings({
-    required this.availability,
-    required this.holidays,
-    required this.closedDays,
-  });
+  BusinessSettings({required this.availability, required this.holidays});
 
   factory BusinessSettings.fromMap(Map<String, dynamic> map) {
     return BusinessSettings(
@@ -179,7 +175,6 @@ class BusinessSettings {
       holidays: (map['holidays'] as List)
           .map((item) => Holiday.fromMap(item as Map<String, dynamic>))
           .toList(),
-      closedDays: List<String>.from(map['closedDays']),
     );
   }
 
@@ -187,30 +182,6 @@ class BusinessSettings {
     return {
       'availability': availability.toMap(),
       'holidays': holidays.map((holiday) => holiday.toMap()).toList(),
-      'closedDays': closedDays,
-    };
-  }
-}
-
-class Availability {
-  final List<DayHours> defaultHours;
-  final String timeZone;
-
-  Availability({required this.defaultHours, required this.timeZone});
-
-  factory Availability.fromMap(Map<String, dynamic> map) {
-    return Availability(
-      defaultHours: (map['defaultHours'] as List)
-          .map((item) => DayHours.fromMap(item as Map<String, dynamic>))
-          .toList(),
-      timeZone: map['timeZone'],
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'defaultHours': defaultHours.map((hours) => hours.toMap()).toList(),
-      'timeZone': timeZone,
     };
   }
 }
